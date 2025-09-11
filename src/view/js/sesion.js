@@ -1,7 +1,7 @@
 async function iniciar_sesion() {
     let dni = document.getElementById('dni').value;
     let password = document.getElementById('password').value;
-    
+
     if (dni == "" || password == "") {
         Swal.fire({
             type: 'error',
@@ -14,47 +14,40 @@ async function iniciar_sesion() {
     }
 
     try {
-        // Mostrar loading
-        document.getElementById('loading').style.display = 'block';
-        
-        // capturamos datos del formulario html
+        // Capturar datos del formulario
         const datos = new FormData(frm_login);
-        
-        //enviar datos hacia el controlador
+
+        // Enviar datos al controlador de login
         let respuesta = await fetch(base_url_server + 'src/control/Login.php?tipo=iniciar_sesion', {
             method: 'POST',
             mode: 'cors',
             cache: 'no-cache',
             body: datos
         });
-        
-        json = await respuesta.json();
-        
+
+        let json = await respuesta.json();
+
         if (json.status) {
+            // Preparar datos para iniciar sesión en el cliente
             const formData = new FormData();
             formData.append('session', json.contenido['sesion_id']);
             formData.append('usuario', json.contenido['sesion_usuario']);
             formData.append('nombres_apellidos', json.contenido['sesion_usuario_nom']);
             formData.append('token', json.contenido['sesion_token']);
-            // Removido id_ies
+            // Eliminado: formData.append('id_ies', json.contenido['sesion_ies']);
 
-            fetch(base_url + 'src/control/sesion_cliente.php?tipo=iniciar_sesion', {
+            // Enviar datos a sesion_cliente.php y esperar la respuesta
+            let respuestaSesion = await fetch(base_url + 'src/control/sesion_cliente.php?tipo=iniciar_sesion', {
                 method: 'POST',
                 mode: 'cors',
                 cache: 'no-cache',
-                body: formData
+                body: formData,
+                timer: 1800
+                
             });
 
-            // Mostrar mensaje de éxito
-            Swal.fire({
-                type: 'success',
-                title: 'Éxito',
-                text: json.msg,
-                timer: 1500,
-                showConfirmButton: false
-            }).then(() => {
-                location.replace(base_url);
-            });
+            location.replace(base_url);
+            location.replace(base_url);
         } else {
             Swal.fire({
                 type: 'error',
@@ -62,36 +55,26 @@ async function iniciar_sesion() {
                 text: json.msg,
                 footer: '',
                 timer: 1500
-            });
+            })
         }
+        //console.log(respuesta);
     } catch (e) {
-        console.log("Error al iniciar sesión: " + e);
-        Swal.fire({
-            type: 'error',
-            title: 'Error',
-            text: 'Error de conexión. Inténtalo nuevamente.',
-            footer: '',
-            timer: 1500
-        });
-    } finally {
-        // Ocultar loading
-        document.getElementById('loading').style.display = 'none';
+        console.log("Error al cargar categorias" + e);
     }
 }
 
+// Asignar evento al formulario
 if (document.querySelector('#frm_login')) {
-    // evita que se envie el formulario
-    let frm_iniciar_sesion = document.querySelector('#frm_login');
-    frm_iniciar_sesion.onsubmit = function (e) {
+    document.querySelector('#frm_login').onsubmit = function(e) {
         e.preventDefault();
         iniciar_sesion();
-    }
+    };
 }
 async function cerrar_sesion() {
     let respuesta = await fetch(base_url + 'src/control/sesion_cliente.php?tipo=cerrar_sesion');
     json = await respuesta.json();
     if (json.status) {
-        location.replace(base_url + "login");
+        location.replace(base_url);
     }
 }
 // ---------------------------------------------  CAMBIAR CONTRASEÑA -----------------------------------------------

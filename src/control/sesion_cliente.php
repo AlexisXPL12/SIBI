@@ -7,7 +7,7 @@ if ($tipo == "iniciar_sesion") {
     $_SESSION['sesion_usuario'] = $_POST['usuario'];
     $_SESSION['sesion_usuario_nom'] = $_POST['nombres_apellidos'];
     $_SESSION['sesion_token'] = $_POST['token'];
-    $_SESSION['sesion_ies'] = $_POST['id_ies'];
+    // Eliminado: $_SESSION['sesion_ies'] = $_POST['id_ies'];
 }
 if ($tipo == "cerrar_sesion") {
     session_start();
@@ -19,17 +19,17 @@ if ($tipo == "cerrar_sesion") {
 
 if ($tipo == "actualizar_ies_sesion") {
     //print_r($_POST);
-    $id_ies = $_POST['id_ies'];
-    session_start();
-    if ($_SESSION['sesion_ies'] != $id_ies) {
-        $_SESSION['sesion_ies'] = $id_ies;
-        if ($_SESSION['sesion_ies'] == $id_ies) {
-            $arr_Respuesta = array('status' => true, 'contenido' => '');
-        } else {
-            $arr_Respuesta = array('status' => false, 'contenido' => '');
-        }
-    } else {
+    //$id_ies = $_POST['id_ies'];
+    //session_start();
+    //if ($_SESSION['sesion_ies'] != $id_ies) {
+       // $_SESSION['sesion_ies'] = $id_ies;
+       // if ($_SESSION['sesion_ies'] == $id_ies) {
+            //$arr_Respuesta = array('status' => true, 'contenido' => '');
+        //} else {
+          //  $arr_Respuesta = array('status' => false, 'contenido' => '');
+       // }
+   // } else {
         $arr_Respuesta = array('status' => false, 'contenido' => '');
-    }
+  //  }
     echo json_encode($arr_Respuesta);
 }

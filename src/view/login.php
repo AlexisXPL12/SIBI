@@ -348,7 +348,7 @@
 
     <div class="login-container">
         <h1>Iniciar Sesión</h1>
-        <img src="https://sispa.iestphuanta.edu.pe/img/logo.png" alt="Logo" width="100%">
+        <img src="<?php echo BASE_URL ?>src/view/pp/assets/images/logo IES.png" alt="Logo" width="100%">
         <h4>Sistema de Control de Inventario</h4>
         
         <form id="frm_login">
