@@ -396,9 +396,10 @@
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="topnav-components">
                                         <a href="<?php echo BASE_URL ?>usuarios" class="dropdown-item">Usuarios</a>
-                                        <a href="<?php echo BASE_URL ?>instituciones" class="dropdown-item">Instituciones</a>
-                                        <a href="<?php echo BASE_URL ?>ambientes" class="dropdown-item">Ambientes</a>
                                         <a href="<?php echo BASE_URL ?>bienes" class="dropdown-item">Bienes</a>
+                                        <a href="<?php echo BASE_URL ?>ambientes" class="dropdown-item">Ambientes o dependencias</a>
+                                        <a href="<?php echo BASE_URL ?>categorias" class="dropdown-item">Categorias</a>
+                                        <a href="<?php echo BASE_URL ?>carreras" class="dropdown-item">Programas de Estudio</a>
                                         <a href="<?php echo BASE_URL ?>movimientos" class="dropdown-item">Movimientos</a>
                                         <a href="<?php echo BASE_URL ?>reportes" class="dropdown-item">Reportes</a>
                                     </div>

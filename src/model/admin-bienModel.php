@@ -23,9 +23,11 @@ class BienModel
 
         return $bienes;
     }
-    public function registrarBien($ambiente, $cod_patrimonial, $denominacion, $marca, $modelo, $tipo, $color, $serie, $dimensiones, $valor, $situacion, $estado_conservacion, $observaciones, $id_usuario, $id_ingreso)
+    public function registrarBien($codigo_patrimonial, $nombre_bien, $descripcion, $marca, $modelo, $serie, $color, $dimensiones, $id_categoria, $id_dependencia, $ubicacion_especifica, $fecha_adquisicion, $fecha_ingreso, $numero_factura, $numero_orden_compra, $estado_bien, $condicion_bien, $observaciones, $es_inventariable, $usuario_registro)
     {
-        $sql = $this->conexion->query("INSERT INTO bienes (id_ingreso_bienes ,id_ambiente,cod_patrimonial, denominacion, marca,modelo,tipo,color,serie,dimensiones,valor,situacion,estado_conservacion,observaciones,usuario_registro ) VALUES ('$id_ingreso','$ambiente', '$cod_patrimonial','$denominacion', '$marca', '$modelo', '$tipo', '$color', '$serie', '$dimensiones', '$valor', '$situacion', '$estado_conservacion', '$observaciones', '$id_usuario')");
+        $sql = $this->conexion->query("INSERT INTO bienes (codigo_patrimonial, nombre_bien, descripcion, marca, modelo, serie, color, dimensiones, id_categoria, id_dependencia, ubicacion_especifica, fecha_adquisicion, fecha_ingreso, numero_factura, numero_orden_compra, estado_bien, condicion_bien, observaciones, es_inventariable, usuario_registro)
+        VALUES ('$codigo_patrimonial', '$nombre_bien', '$descripcion', '$marca', '$modelo', '$serie', '$color', '$dimensiones', $id_categoria, $id_dependencia, '$ubicacion_especifica', '$fecha_adquisicion', '$fecha_ingreso', '$numero_factura', '$numero_orden_compra', '$estado_bien', '$condicion_bien', '$observaciones', $es_inventariable, '$usuario_registro')");
+
         if ($sql) {
             $sql = $this->conexion->insert_id;
         } else {
@@ -33,72 +35,86 @@ class BienModel
         }
         return $sql;
     }
-    public function actualizarBien($id, $cod_patrimonial, $denominacion, $marca, $modelo, $tipo, $color, $serie, $dimensiones, $valor, $situacion, $estado_conservacion, $observaciones)
+
+    public function actualizarBien($id_bien, $codigo_patrimonial, $nombre_bien, $descripcion, $marca, $modelo, $serie, $color, $dimensiones, $id_categoria, $id_dependencia, $ubicacion_especifica, $fecha_adquisicion, $fecha_ingreso, $numero_factura, $numero_orden_compra, $estado_bien, $condicion_bien, $observaciones, $es_inventariable, $usuario_registro)
     {
-        $sql = $this->conexion->query("UPDATE bienes SET cod_patrimonial='$cod_patrimonial',denominacion='$denominacion',marca='$marca',modelo='$modelo',tipo='$tipo',color='$color',serie='$serie',dimensiones='$dimensiones',valor='$valor',situacion='$situacion',estado_conservacion='$estado_conservacion',observaciones='$observaciones' WHERE id='$id'");
+        $sql = $this->conexion->query("UPDATE bienes SET
+            codigo_patrimonial='$codigo_patrimonial',
+            nombre_bien='$nombre_bien',
+            descripcion='$descripcion',
+            marca='$marca',
+            modelo='$modelo',
+            serie='$serie',
+            color='$color',
+            dimensiones='$dimensiones',
+            id_categoria=$id_categoria,
+            id_dependencia=$id_dependencia,
+            ubicacion_especifica='$ubicacion_especifica',
+            fecha_adquisicion='$fecha_adquisicion',
+            fecha_ingreso='$fecha_ingreso',
+            numero_factura='$numero_factura',
+            numero_orden_compra='$numero_orden_compra',
+            estado_bien='$estado_bien',
+            condicion_bien='$condicion_bien',
+            observaciones='$observaciones',
+            es_inventariable=$es_inventariable,
+            usuario_registro='$usuario_registro'
+            WHERE id_bien=$id_bien");
+
         return $sql;
     }
-    public function actualizarBien_Ambiente($id, $nuevo_ambiente)
+
+    public function buscarBienById($id_bien)
     {
-        $sql = $this->conexion->query("UPDATE bienes SET id_ambiente='$nuevo_ambiente'WHERE id='$id'");
-        return $sql;
-    }
-    public function buscarBienById($id)
-    {
-        $sql = $this->conexion->query("SELECT * FROM bienes WHERE id='$id'");
-        $sql = $sql->fetch_object();
-        return $sql;
-    }
-    public function buscarBienes_filtro($filtro, $ambiente)
-    {
-        $arrRespuesta = array();
-        $sql = $this->conexion->query("SELECT * FROM bienes WHERE (cod_patrimonial LIKE '$filtro%' OR denominacion LIKE '%$filtro%') AND id_ambiente='$ambiente'");
-        while ($objeto = $sql->fetch_object()) {
-            array_push($arrRespuesta, $objeto);
-        }
-        return $arrRespuesta;
-    }
-    public function buscarBienByCodigoPatrimonial($codigo)
-    {
-        $sql = $this->conexion->query("SELECT * FROM bienes WHERE cod_patrimonial ='$codigo'");
-        $sql = $sql->fetch_object();
-        return $sql;
-    }
-    public function buscarBienByCpdigoInstitucion($codigo, $institucion)
-    {
-        $sql = $this->conexion->query("SELECT * FROM bienes WHERE codigo='$codigo' AND id_ies='$institucion'");
+        $sql = $this->conexion->query("SELECT * FROM bienes WHERE id_bien=$id_bien");
         $sql = $sql->fetch_object();
         return $sql;
     }
 
-    public function buscarBienesOrderByDenominacion_tabla_filtro($busqueda_tabla_codigo, $busqueda_tabla_ambiente, $busqueda_tabla_denominacion, $ies)
+    public function buscarBienByCodigoPatrimonial($codigo_patrimonial)
     {
-        //condicionales para busqueda
-        $condicion = "";
-        $condicion .= " cod_patrimonial LIKE '$busqueda_tabla_codigo%' AND denominacion LIKE '$busqueda_tabla_denominacion%'";
-        if ($busqueda_tabla_ambiente > 0) {
-            $condicion .= " AND id_ambiente='$busqueda_tabla_ambiente'";
+        $sql = $this->conexion->query("SELECT * FROM bienes WHERE codigo_patrimonial='$codigo_patrimonial'");
+        $sql = $sql->fetch_object();
+        return $sql;
+    }
+
+    public function buscarBienesOrderByNombre_tabla_filtro($busqueda_codigo_patrimonial, $busqueda_nombre_bien)
+    {
+        $condicion = "1=1";
+        if (!empty($busqueda_codigo_patrimonial)) {
+            $condicion .= " AND codigo_patrimonial LIKE '%$busqueda_codigo_patrimonial%'";
         }
+        if (!empty($busqueda_nombre_bien)) {
+            $condicion .= " AND nombre_bien LIKE '%$busqueda_nombre_bien%'";
+        }
+
         $arrRespuesta = array();
-        $respuesta = $this->conexion->query("SELECT bienes.id FROM bienes
-                INNER JOIN ambientes_institucion ON bienes.id_ambiente = ambientes_institucion.id AND (ambientes_institucion.id_ies = '$ies') WHERE $condicion ORDER BY detalle");
+        $respuesta = $this->conexion->query("SELECT * FROM bienes WHERE $condicion ORDER BY nombre_bien");
+        if ($respuesta === false) {
+            throw new Exception("Error en la consulta SQL: " . $this->conexion->error);
+        }
         while ($objeto = $respuesta->fetch_object()) {
             array_push($arrRespuesta, $objeto);
         }
         return $arrRespuesta;
     }
-    public function buscarBienesOrderByDenominacion_tabla($pagina, $cantidad_mostrar, $busqueda_tabla_codigo, $busqueda_tabla_ambiente, $busqueda_tabla_denominacion, $ies)
+
+    public function buscarBienesOrderByNombre_tabla($pagina, $cantidad_mostrar, $busqueda_codigo_patrimonial, $busqueda_nombre_bien)
     {
-        //condicionales para busqueda
-        $condicion = "";
-        $condicion .= " cod_patrimonial LIKE '$busqueda_tabla_codigo%' AND denominacion LIKE '$busqueda_tabla_denominacion%'";
-        if ($busqueda_tabla_ambiente > 0) {
-            $condicion .= " AND id_ambiente='$busqueda_tabla_ambiente'";
+        $condicion = "1=1";
+        if (!empty($busqueda_codigo_patrimonial)) {
+            $condicion .= " AND codigo_patrimonial LIKE '%$busqueda_codigo_patrimonial%'";
         }
+        if (!empty($busqueda_nombre_bien)) {
+            $condicion .= " AND nombre_bien LIKE '%$busqueda_nombre_bien%'";
+        }
+
         $iniciar = ($pagina - 1) * $cantidad_mostrar;
         $arrRespuesta = array();
-        $respuesta = $this->conexion->query("SELECT bienes.id, bienes.id_ambiente,bienes.cod_patrimonial ,bienes.denominacion,bienes.marca,bienes.modelo,bienes.tipo,bienes.color,bienes.serie, bienes.dimensiones, bienes.valor, bienes.situacion, bienes.estado_conservacion,bienes.observaciones FROM bienes
-            INNER JOIN ambientes_institucion ON bienes.id_ambiente = ambientes_institucion.id AND (ambientes_institucion.id_ies = '$ies') WHERE $condicion  ORDER BY detalle LIMIT $iniciar, $cantidad_mostrar");
+        $respuesta = $this->conexion->query("SELECT * FROM bienes WHERE $condicion ORDER BY nombre_bien LIMIT $iniciar, $cantidad_mostrar");
+        if ($respuesta === false) {
+            throw new Exception("Error en la consulta SQL: " . $this->conexion->error);
+        }
         while ($objeto = $respuesta->fetch_object()) {
             array_push($arrRespuesta, $objeto);
         }

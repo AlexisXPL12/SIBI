@@ -95,7 +95,7 @@ if ($tipo == "listar") {
         //print_r($_POST);
         //repuesta
         $arr_Respuesta = array('status' => false, 'contenido' => '');
-        $arr_Ambiente = $objAmbiente->buscarAmbienteByInstitucion($id_ies);
+        $arr_Ambiente = $objAmbiente->buscarDependenciaById($id_ies);
         $arr_contenido = [];
         if (!empty($arr_Ambiente)) {
             // recorremos el array para agregar las opciones de las categorias
@@ -112,70 +112,71 @@ if ($tipo == "listar") {
     }
     echo json_encode($arr_Respuesta);
 }
-if ($tipo == "listar_ambientes_ordenados_tabla") {
+if ($tipo == "listar_dependencias_ordenadas_tabla") {
     $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
-    if ($objSesion->verificar_sesion_si_activa($id_sesion, $token)) {
-        //print_r($_POST);
-        $ies = $_POST['ies'];
-        $pagina = $_POST['pagina'];
-        $cantidad_mostrar = $_POST['cantidad_mostrar'];
-        $busqueda_tabla_codigo = $_POST['busqueda_tabla_codigo'];
-        $busqueda_tabla_ambiente = $_POST['busqueda_tabla_ambiente'];
-        //repuesta
-        $arr_Respuesta = array('status' => false, 'contenido' => '');
-        $busqueda_filtro = $objAmbiente->buscarAmbientesOrderByApellidosNombres_tabla_filtro($busqueda_tabla_codigo, $busqueda_tabla_ambiente, $ies);
-        $arr_Ambiente = $objAmbiente->buscarAmbientesOrderByApellidosNombres_tabla($pagina, $cantidad_mostrar, $busqueda_tabla_codigo, $busqueda_tabla_ambiente, $ies);
-        $arr_contenido = [];
-        if (!empty($arr_Ambiente)) {
-            $arr_Institucion = $objInstitucion->buscarInstitucionOrdenado();
-            $arr_Respuesta['instituciones'] = $arr_Institucion;
-            // recorremos el array para agregar las opciones de las categorias
-            for ($i = 0; $i < count($arr_Ambiente); $i++) {
-                // definimos el elemento como objeto
-                $arr_contenido[$i] = (object) [];
-                // agregamos solo la informacion que se desea enviar a la vista
-                $arr_contenido[$i]->id = $arr_Ambiente[$i]->id;
-                $arr_contenido[$i]->institucion = $arr_Ambiente[$i]->id_ies;
-                $arr_contenido[$i]->encargado = $arr_Ambiente[$i]->encargado;
-                $arr_contenido[$i]->codigo = $arr_Ambiente[$i]->codigo;
-                $arr_contenido[$i]->detalle = $arr_Ambiente[$i]->detalle;
-                $arr_contenido[$i]->otros_detalle = $arr_Ambiente[$i]->otros_detalle;
-                $opciones = '<button type="button" title="Editar" class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target=".modal_editar' . $arr_Ambiente[$i]->id . '"><i class="fa fa-edit"></i></button>';
-                $arr_contenido[$i]->options = $opciones;
+
+    try {
+        if ($objSesion->verificar_sesion_si_activa($id_sesion, $token)) {
+            $pagina = $_POST['pagina'] ?? 1;
+            $cantidad_mostrar = $_POST['cantidad_mostrar'] ?? 10;
+            $busqueda_tabla_codigo = $_POST['busqueda_tabla_codigo'] ?? '';
+            $busqueda_tabla_dependencia = $_POST['busqueda_tabla_dependencia'] ?? '';
+
+            $busqueda_filtro = $objAmbiente->buscarDependenciasOrderByNombre_tabla_filtro($busqueda_tabla_codigo, $busqueda_tabla_dependencia);
+            $arr_Dependencias = $objAmbiente->buscarDependenciasOrderByNombre_tabla($pagina, $cantidad_mostrar, $busqueda_tabla_codigo, $busqueda_tabla_dependencia);
+
+            $arr_contenido = [];
+            if (!empty($arr_Dependencias)) {
+                for ($i = 0; $i < count($arr_Dependencias); $i++) {
+                    $arr_contenido[$i] = (object) [];
+                    $arr_contenido[$i]->id = $arr_Dependencias[$i]->id_dependencia;
+                    $arr_contenido[$i]->encargado = $arr_Dependencias[$i]->responsable;
+                    $arr_contenido[$i]->codigo = $arr_Dependencias[$i]->codigo_dependencia;
+                    $arr_contenido[$i]->detalle = $arr_Dependencias[$i]->nombre_dependencia;
+                    $arr_contenido[$i]->otros_detalle = $arr_Dependencias[$i]->descripcion;
+                    $opciones = '<button type="button" title="Editar" class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target=".modal_editar' . $arr_Dependencias[$i]->id_dependencia . '"><i class="fa fa-edit"></i></button>';
+                    $arr_contenido[$i]->options = $opciones;
+                }
+                $arr_Respuesta['status'] = true;
+                $arr_Respuesta['contenido'] = $arr_contenido;
+                $arr_Respuesta['total'] = count($busqueda_filtro);
+            } else {
+                $arr_Respuesta['status'] = true;
+                $arr_Respuesta['contenido'] = [];
+                $arr_Respuesta['total'] = 0;
             }
-            $arr_Respuesta['total'] = count($busqueda_filtro);
-            $arr_Respuesta['status'] = true;
-            $arr_Respuesta['contenido'] = $arr_contenido;
         }
+    } catch (Exception $e) {
+        $arr_Respuesta['msg'] = 'Error en el servidor: ' . $e->getMessage();
     }
+
+    header('Content-Type: application/json');
     echo json_encode($arr_Respuesta);
+    exit;
 }
+
 if ($tipo == "registrar") {
     $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
+
     if ($objSesion->verificar_sesion_si_activa($id_sesion, $token)) {
-        //print_r($_POST);
-        //repuesta
         if ($_POST) {
-            $institucion = $_POST['ies'];
             $encargado = $_POST['encargado'];
             $codigo = $_POST['codigo'];
             $detalle = $_POST['detalle'];
             $otros_detalle = $_POST['otros_detalle'];
-            if ($institucion == "" || $codigo == "" || $detalle == "" || $otros_detalle == "") {
-                //repuesta
+
+            if (empty($encargado) || empty($codigo) || empty($detalle) || empty($otros_detalle)) {
                 $arr_Respuesta = array('status' => false, 'mensaje' => 'Error, campos vacíos');
             } else {
-                $arr_Usuario = $objAmbiente->buscarAmbienteByCpdigoInstitucion($codigo, $institucion);
-                if ($arr_Usuario) {
-                    $arr_Respuesta = array('status' => false, 'mensaje' => 'Registro Fallido, Usuario ya se encuentra registrado');
+                $arr_Dependencia = $objAmbiente->buscarDependenciaByCodigo($codigo);
+                if ($arr_Dependencia) {
+                    $arr_Respuesta = array('status' => false, 'mensaje' => 'Registro Fallido, el código ya se encuentra registrado');
                 } else {
-                    $id_usuario = $objAmbiente->registrarAmbiente($institucion, $encargado, $codigo, $detalle, $otros_detalle);
-                    if ($id_usuario > 0) {
-                        // array con los id de los sistemas al que tendra el acceso con su rol registrado
-                        // caso de administrador y director
+                    $id_dependencia = $objAmbiente->registrarDependencia($encargado, $codigo, $detalle, $otros_detalle);
+                    if ($id_dependencia > 0) {
                         $arr_Respuesta = array('status' => true, 'mensaje' => 'Registro Exitoso');
                     } else {
-                        $arr_Respuesta = array('status' => false, 'mensaje' => 'Error al registrar producto');
+                        $arr_Respuesta = array('status' => false, 'mensaje' => 'Error al registrar dependencia');
                     }
                 }
             }
@@ -183,37 +184,35 @@ if ($tipo == "registrar") {
     }
     echo json_encode($arr_Respuesta);
 }
+
 if ($tipo == "actualizar") {
     $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
+
     if ($objSesion->verificar_sesion_si_activa($id_sesion, $token)) {
-        //print_r($_POST);
-        //repuesta
         if ($_POST) {
             $id = $_POST['data'];
-            $id_ies = $_POST['id_ies'];
             $encargado = $_POST['encargado'];
             $codigo = $_POST['codigo'];
             $detalle = $_POST['detalle'];
             $otros_detalle = $_POST['otros_detalle'];
 
-            if ($id == "" || $id_ies == "" || $codigo == "" || $detalle == "" || $otros_detalle == "") {
-                //repuesta
+            if (empty($id) || empty($encargado) || empty($codigo) || empty($detalle) || empty($otros_detalle)) {
                 $arr_Respuesta = array('status' => false, 'mensaje' => 'Error, campos vacíos');
             } else {
-                $arr_Ambiente = $objAmbiente->buscarAmbienteByCpdigoInstitucion($codigo, $id_ies);
-                if ($arr_Ambiente) {
-                    if ($arr_Ambiente->id == $id) {
-                        $consulta = $objAmbiente->actualizarAmbiente($id, $id_ies, $encargado, $codigo, $detalle, $otros_detalle);
+                $arr_Dependencia = $objAmbiente->buscarDependenciaByCodigo($codigo);
+                if ($arr_Dependencia) {
+                    if ($arr_Dependencia->id_dependencia == $id) {
+                        $consulta = $objAmbiente->actualizarDependencia($id, $encargado, $codigo, $detalle, $otros_detalle);
                         if ($consulta) {
                             $arr_Respuesta = array('status' => true, 'mensaje' => 'Actualizado Correctamente');
                         } else {
                             $arr_Respuesta = array('status' => false, 'mensaje' => 'Error al actualizar registro');
                         }
                     } else {
-                        $arr_Respuesta = array('status' => false, 'mensaje' => 'dni ya esta registrado');
+                        $arr_Respuesta = array('status' => false, 'mensaje' => 'El código ya está registrado');
                     }
                 } else {
-                    $consulta = $objAmbiente->actualizarAmbiente($id, $id_ies, $encargado, $codigo, $detalle, $otros_detalle);
+                    $consulta = $objAmbiente->actualizarDependencia($id, $encargado, $codigo, $detalle, $otros_detalle);
                     if ($consulta) {
                         $arr_Respuesta = array('status' => true, 'mensaje' => 'Actualizado Correctamente');
                     } else {

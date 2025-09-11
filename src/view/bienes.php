@@ -1,4 +1,3 @@
-<!-- start page title -->
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12">
         <div class="card">
@@ -16,45 +15,32 @@
                 <h4 class="card-title">Filtros de Búsqueda</h4>
                 <div class="row col-12">
                     <div class="form-group row mb-3 col-6">
-                        <label for="busqueda_tabla_ambiente" class="col-5 col-form-label">Ambiente:</label>
+                        <label for="busqueda_codigo_patrimonial" class="col-5 col-form-label">Código Patrimonial:</label>
                         <div class="col-7">
-                            <select class="form-control" name="busqueda_tabla_ambiente" id="busqueda_tabla_ambiente">
-                            </select>
+                            <input type="text" class="form-control" name="busqueda_codigo_patrimonial" id="busqueda_codigo_patrimonial" placeholder="Ej: CP-001-2024">
                         </div>
                     </div>
                     <div class="form-group row mb-3 col-6">
-                        <label for="busqueda_tabla_codigo" class="col-5 col-form-label">Código:</label>
+                        <label for="busqueda_nombre_bien" class="col-5 col-form-label">Nombre del Bien:</label>
                         <div class="col-7">
-                            <input type="number" class="form-control" name="busqueda_tabla_codigo" id="busqueda_tabla_codigo">
-                        </div>
-                    </div>
-                    <div class="form-group row mb-3 col-6">
-                        <label for="busqueda_tabla_denominacion" class="col-5 col-form-label">Denominación:</label>
-                        <div class="col-7">
-                            <input type="text" class="form-control" name="busqueda_tabla_denominacion" id="busqueda_tabla_denominacion">
+                            <input type="text" class="form-control" name="busqueda_nombre_bien" id="busqueda_nombre_bien" placeholder="Ej: Laptop HP Pavilion">
                         </div>
                     </div>
                 </div>
-                <div class="form-group mb-0 text-center ">
-                    <button type="button" class="btn btn-primary waves-effect waves-light" onclick="numero_pagina(1);"><i class="fa fa-search"></i> Buscar</button>
+                <div class="form-group mb-0 text-center">
+                    <button type="button" class="btn btn-primary waves-effect waves-light" onclick="numero_pagina(1);">
+                        <i class="fa fa-search"></i> Buscar
+                    </button>
                 </div>
             </div>
         </div>
         <div class="card">
             <div class="card-body">
-                <!-- Botones de Excel y PDF -->
-                <a href="<?= BASE_URL ?>reporte-bienes" class="btn btn-success waves-effect waves-light">
-                    <i class="fa fa-file-excel"></i> Exportar a Excel
-                </a>
-                <a href="<?= BASE_URL ?>imprimir-bienes" class="btn btn-danger waves-effect waves-light">
-                    <i class="fa fa-file-pdf"></i> Exportar a PDF
-                </a>
                 <h4 class="card-title">Resultados de Búsqueda</h4>
-                <div id="filtros_tabla_header" class="form-group  row page-title-box d-flex align-items-center justify-content-between m-0 mb-1 p-0">
+                <div id="filtros_tabla_header" class="form-group row page-title-box d-flex align-items-center justify-content-between m-0 mb-1 p-0">
                     <input type="hidden" id="pagina" value="1">
-                    <input type="hidden" id="filtro_codigo" value="">
-                    <input type="hidden" id="filtro_ambiente" value="">
-                    <input type="hidden" id="filtro_denominacion" value="">
+                    <input type="hidden" id="filtro_codigo_patrimonial" value="">
+                    <input type="hidden" id="filtro_nombre_bien" value="">
                     <div>
                         <label for="cantidad_mostrar">Mostrar</label>
                         <select name="cantidad_mostrar" id="cantidad_mostrar" class="form-control-sm" onchange="numero_pagina(1);">
@@ -67,12 +53,10 @@
                     </div>
                 </div>
                 <div id="tablas"></div>
-                <div id="filtros_tabla_footer" class="form-group  row page-title-box d-flex align-items-center justify-content-between m-0 mb-1 p-0">
-                    <div id="texto_paginacion_tabla">
-                    </div>
+                <div id="filtros_tabla_footer" class="form-group row page-title-box d-flex align-items-center justify-content-between m-0 mb-1 p-0">
+                    <div id="texto_paginacion_tabla"></div>
                     <div id="paginacion_tabla">
-                        <ul class="pagination justify-content-end" id="lista_paginacion_tabla">
-                        </ul>
+                        <ul class="pagination justify-content-end" id="lista_paginacion_tabla"></ul>
                     </div>
                 </div>
                 <div id="modals_editar"></div>
@@ -82,6 +66,5 @@
 </div>
 <script src="<?php echo BASE_URL; ?>src/view/js/functions_bien.js"></script>
 <script>
-    listar_BienesOrdenados();
+    listar_bienes_ordenados();
 </script>
-<!-- end page title -->

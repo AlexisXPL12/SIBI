@@ -10,9 +10,9 @@ class AmbienteModel
         $this->conexion = new Conexion();
         $this->conexion = $this->conexion->connect();
     }
-    public function registrarAmbiente($institucion, $encargado, $codigo, $detalle, $otros_detalle)
+    public function registrarDependencia($encargado, $codigo, $detalle, $otros_detalle)
     {
-        $sql = $this->conexion->query("INSERT INTO ambientes_institucion (id_ies,encargado,codigo, detalle, otros_detalle) VALUES ('$institucion','$encargado','$codigo','$detalle','$otros_detalle')");
+        $sql = $this->conexion->query("INSERT INTO dependencias (responsable, codigo_dependencia, nombre_dependencia, descripcion) VALUES ('$encargado', '$codigo', '$detalle', '$otros_detalle')");
         if ($sql) {
             $sql = $this->conexion->insert_id;
         } else {
@@ -20,82 +20,87 @@ class AmbienteModel
         }
         return $sql;
     }
-    public function actualizarAmbiente($id, $id_ies, $encargado, $codigo, $detalle, $otros_detalle)
+
+    public function actualizarDependencia($id, $encargado, $codigo, $detalle, $otros_detalle)
     {
-        $sql = $this->conexion->query("UPDATE ambientes_institucion SET id_ies='$id_ies', encargado='$encargado', codigo='$codigo',detalle='$detalle',otros_detalle='$otros_detalle' WHERE id='$id'");
+        $sql = $this->conexion->query("UPDATE dependencias SET responsable='$encargado', codigo_dependencia='$codigo', nombre_dependencia='$detalle', descripcion='$otros_detalle' WHERE id_dependencia='$id'");
         return $sql;
     }
-    public function buscarAmbienteById($id)
+
+    public function buscarDependenciaById($id)
     {
-        $sql = $this->conexion->query("SELECT * FROM ambientes_institucion WHERE id='$id'");
+        $sql = $this->conexion->query("SELECT * FROM dependencias WHERE id_dependencia='$id'");
         $sql = $sql->fetch_object();
         return $sql;
     }
 
-    public function buscarUsuarioByNom($nomap)
+    public function buscarDependenciaByCodigo($codigo)
     {
-        $sql = $this->conexion->query("SELECT * FROM ambientes_institucion WHERE apellidos_nombres='$nomap'");
+        $sql = $this->conexion->query("SELECT * FROM dependencias WHERE codigo_dependencia='$codigo'");
         $sql = $sql->fetch_object();
         return $sql;
     }
-    public function buscarAmbienteByInstitucion($institucion)
+
+    public function buscarDependenciasOrderByNombre_tabla_filtro($busqueda_tabla_codigo, $busqueda_tabla_dependencia)
     {
-        $arrRespuesta = array();
-        $sql = $this->conexion->query("SELECT * FROM ambientes_institucion WHERE id_ies='$institucion'");
-        while ($objeto = $sql->fetch_object()) {
-            array_push($arrRespuesta, $objeto);
+        $condicion = "1=1";
+        if (!empty($busqueda_tabla_codigo)) {
+            $condicion .= " AND codigo_dependencia LIKE '%$busqueda_tabla_codigo%'";
         }
-        return $arrRespuesta;
-    }
-    public function buscarAmbienteByCpdigoInstitucion($codigo, $institucion)
-    {
-        $sql = $this->conexion->query("SELECT * FROM ambientes_institucion WHERE codigo='$codigo' AND id_ies='$institucion'");
-        $sql = $sql->fetch_object();
-        return $sql;
-    }
+        if (!empty($busqueda_tabla_dependencia)) {
+            $condicion .= " AND nombre_dependencia LIKE '%$busqueda_tabla_dependencia%'";
+        }
 
-    public function buscarAmbientesOrderByApellidosNombres_tabla_filtro($busqueda_tabla_codigo, $busqueda_tabla_ambiente, $ies)
-    {
-        //condicionales para busqueda
-        $condicion = "";
-        $condicion .= " codigo LIKE '$busqueda_tabla_codigo%' AND detalle LIKE '$busqueda_tabla_ambiente%' AND id_ies = '$ies'";
         $arrRespuesta = array();
-        $respuesta = $this->conexion->query("SELECT * FROM ambientes_institucion WHERE $condicion ORDER BY detalle");
+        $respuesta = $this->conexion->query("SELECT * FROM dependencias WHERE $condicion ORDER BY nombre_dependencia");
+        if ($respuesta === false) {
+            throw new Exception("Error en la consulta SQL: " . $this->conexion->error);
+        }
         while ($objeto = $respuesta->fetch_object()) {
             array_push($arrRespuesta, $objeto);
         }
         return $arrRespuesta;
     }
-    public function buscarAmbientesOrderByApellidosNombres_tabla($pagina, $cantidad_mostrar, $busqueda_tabla_codigo, $busqueda_tabla_ambiente, $ies)
+
+    public function buscarDependenciasOrderByNombre_tabla($pagina, $cantidad_mostrar, $busqueda_tabla_codigo, $busqueda_tabla_dependencia)
     {
-        //condicionales para busqueda
-        $condicion = "";
-        $condicion .= " codigo LIKE '$busqueda_tabla_codigo%' AND detalle LIKE '$busqueda_tabla_ambiente%' AND id_ies = '$ies'";
+        $condicion = "1=1";
+        if (!empty($busqueda_tabla_codigo)) {
+            $condicion .= " AND codigo_dependencia LIKE '%$busqueda_tabla_codigo%'";
+        }
+        if (!empty($busqueda_tabla_dependencia)) {
+            $condicion .= " AND nombre_dependencia LIKE '%$busqueda_tabla_dependencia%'";
+        }
+
         $iniciar = ($pagina - 1) * $cantidad_mostrar;
         $arrRespuesta = array();
-        $respuesta = $this->conexion->query("SELECT * FROM ambientes_institucion WHERE $condicion ORDER BY detalle LIMIT $iniciar, $cantidad_mostrar");
+        $respuesta = $this->conexion->query("SELECT * FROM dependencias WHERE $condicion ORDER BY nombre_dependencia LIMIT $iniciar, $cantidad_mostrar");
+        if ($respuesta === false) {
+            throw new Exception("Error en la consulta SQL: " . $this->conexion->error);
+        }
         while ($objeto = $respuesta->fetch_object()) {
             array_push($arrRespuesta, $objeto);
         }
         return $arrRespuesta;
-    }
+    }   
+
     // Método para el filtro completo (Excel y otros reportes)
-public function buscarAmbientesConDetalles_tabla_filtro($busqueda_codigo, $busqueda_detalle, $busqueda_encargado, $ies)
-{
-    $condicion = " a.id_ies = $ies ";
-    
-    if (!empty($busqueda_codigo)) {
-        $condicion .= " AND a.codigo LIKE '%$busqueda_codigo%'";
-    }
-    if (!empty($busqueda_detalle)) {
-        $condicion .= " AND a.detalle LIKE '%$busqueda_detalle%'";
-    }
-    if (!empty($busqueda_encargado)) {
-        $condicion .= " AND a.encargado LIKE '%$busqueda_encargado%'";
-    }
-    
-    $arrRespuesta = array();
-    $query = "
+    public function buscarAmbientesConDetalles_tabla_filtro($busqueda_codigo, $busqueda_detalle, $busqueda_encargado, $ies)
+    {
+        $condicion = " a.id_ies = $ies ";
+
+        if (!empty($busqueda_codigo)) {
+            $condicion .= " AND a.codigo LIKE '%$busqueda_codigo%'";
+        }
+        if (!empty($busqueda_detalle)) {
+            $condicion .= " AND a.detalle LIKE '%$busqueda_detalle%'";
+        }
+        if (!empty($busqueda_encargado)) {
+            $condicion .= " AND a.encargado LIKE '%$busqueda_encargado%'";
+        }
+
+        $arrRespuesta = array();
+        $query = "
         SELECT 
             a.*,
             COUNT(b.id) AS total_bienes,
@@ -106,33 +111,33 @@ public function buscarAmbientesConDetalles_tabla_filtro($busqueda_codigo, $busqu
         GROUP BY a.id
         ORDER BY a.codigo ASC
     ";
-    
-    $respuesta = $this->conexion->query($query);
-    while ($objeto = $respuesta->fetch_object()) {
-        array_push($arrRespuesta, $objeto);
-    }
-    return $arrRespuesta;
-}
 
-// Método para paginación con detalles completos
-public function buscarAmbientesConDetalles_tabla($pagina, $cantidad_mostrar, $busqueda_codigo, $busqueda_detalle, $busqueda_encargado, $ies)
-{
-    $condicion = " a.id_ies = $ies ";
-    
-    if (!empty($busqueda_codigo)) {
-        $condicion .= " AND a.codigo LIKE '%$busqueda_codigo%'";
+        $respuesta = $this->conexion->query($query);
+        while ($objeto = $respuesta->fetch_object()) {
+            array_push($arrRespuesta, $objeto);
+        }
+        return $arrRespuesta;
     }
-    if (!empty($busqueda_detalle)) {
-        $condicion .= " AND a.detalle LIKE '%$busqueda_detalle%'";
-    }
-    if (!empty($busqueda_encargado)) {
-        $condicion .= " AND a.encargado LIKE '%$busqueda_encargado%'";
-    }
-    
-    $inicio = ($pagina - 1) * $cantidad_mostrar;
-    
-    $arrRespuesta = array();
-    $query = "
+
+    // Método para paginación con detalles completos
+    public function buscarAmbientesConDetalles_tabla($pagina, $cantidad_mostrar, $busqueda_codigo, $busqueda_detalle, $busqueda_encargado, $ies)
+    {
+        $condicion = " a.id_ies = $ies ";
+
+        if (!empty($busqueda_codigo)) {
+            $condicion .= " AND a.codigo LIKE '%$busqueda_codigo%'";
+        }
+        if (!empty($busqueda_detalle)) {
+            $condicion .= " AND a.detalle LIKE '%$busqueda_detalle%'";
+        }
+        if (!empty($busqueda_encargado)) {
+            $condicion .= " AND a.encargado LIKE '%$busqueda_encargado%'";
+        }
+
+        $inicio = ($pagina - 1) * $cantidad_mostrar;
+
+        $arrRespuesta = array();
+        $query = "
         SELECT 
             a.*,
             COUNT(b.id) AS total_bienes,
@@ -146,42 +151,42 @@ public function buscarAmbientesConDetalles_tabla($pagina, $cantidad_mostrar, $bu
         ORDER BY a.codigo ASC
         LIMIT $inicio, $cantidad_mostrar
     ";
-    
-    $respuesta = $this->conexion->query($query);
-    while ($objeto = $respuesta->fetch_object()) {
-        array_push($arrRespuesta, $objeto);
-    }
-    return $arrRespuesta;
-}
 
-// Método para contar total de ambientes con filtros (para paginación)
-public function contarAmbientesConFiltros($busqueda_codigo, $busqueda_detalle, $busqueda_encargado, $ies)
-{
-    $condicion = " id_ies = $ies ";
-    
-    if (!empty($busqueda_codigo)) {
-        $condicion .= " AND codigo LIKE '%$busqueda_codigo%'";
+        $respuesta = $this->conexion->query($query);
+        while ($objeto = $respuesta->fetch_object()) {
+            array_push($arrRespuesta, $objeto);
+        }
+        return $arrRespuesta;
     }
-    if (!empty($busqueda_detalle)) {
-        $condicion .= " AND detalle LIKE '%$busqueda_detalle%'";
-    }
-    if (!empty($busqueda_encargado)) {
-        $condicion .= " AND encargado LIKE '%$busqueda_encargado%'";
-    }
-    
-    $query = "SELECT COUNT(*) as total FROM ambientes_institucion WHERE $condicion";
-    $respuesta = $this->conexion->query($query);
-    $objeto = $respuesta->fetch_object();
-    
-    return $objeto->total;
-}
 
-// Método para obtener estadísticas de ambientes
-public function obtenerEstadisticasAmbientes($ies)
-{
-    $arrRespuesta = array();
-    
-    $query = "
+    // Método para contar total de ambientes con filtros (para paginación)
+    public function contarAmbientesConFiltros($busqueda_codigo, $busqueda_detalle, $busqueda_encargado, $ies)
+    {
+        $condicion = " id_ies = $ies ";
+
+        if (!empty($busqueda_codigo)) {
+            $condicion .= " AND codigo LIKE '%$busqueda_codigo%'";
+        }
+        if (!empty($busqueda_detalle)) {
+            $condicion .= " AND detalle LIKE '%$busqueda_detalle%'";
+        }
+        if (!empty($busqueda_encargado)) {
+            $condicion .= " AND encargado LIKE '%$busqueda_encargado%'";
+        }
+
+        $query = "SELECT COUNT(*) as total FROM ambientes_institucion WHERE $condicion";
+        $respuesta = $this->conexion->query($query);
+        $objeto = $respuesta->fetch_object();
+
+        return $objeto->total;
+    }
+
+    // Método para obtener estadísticas de ambientes
+    public function obtenerEstadisticasAmbientes($ies)
+    {
+        $arrRespuesta = array();
+
+        $query = "
         SELECT 
             COUNT(DISTINCT a.id) as total_ambientes,
             COUNT(b.id) as total_bienes_en_ambientes,
@@ -192,19 +197,19 @@ public function obtenerEstadisticasAmbientes($ies)
         LEFT JOIN bienes b ON a.id = b.id_ambiente
         WHERE a.id_ies = $ies
     ";
-    
-    $respuesta = $this->conexion->query($query);
-    $objeto = $respuesta->fetch_object();
-    
-    return $objeto;
-}
 
-// Método para obtener ambientes con más bienes
-public function obtenerAmbientesConMasBienes($ies, $limite = 5)
-{
-    $arrRespuesta = array();
-    
-    $query = "
+        $respuesta = $this->conexion->query($query);
+        $objeto = $respuesta->fetch_object();
+
+        return $objeto;
+    }
+
+    // Método para obtener ambientes con más bienes
+    public function obtenerAmbientesConMasBienes($ies, $limite = 5)
+    {
+        $arrRespuesta = array();
+
+        $query = "
         SELECT 
             a.id,
             a.codigo,
@@ -220,21 +225,21 @@ public function obtenerAmbientesConMasBienes($ies, $limite = 5)
         ORDER BY total_bienes DESC, valor_total_bienes DESC
         LIMIT $limite
     ";
-    
-    $respuesta = $this->conexion->query($query);
-    while ($objeto = $respuesta->fetch_object()) {
-        array_push($arrRespuesta, $objeto);
-    }
-    
-    return $arrRespuesta;
-}
 
-// Método para obtener bienes de un ambiente específico
-public function obtenerBienesDeAmbiente($id_ambiente)
-{
-    $arrRespuesta = array();
-    
-    $query = "
+        $respuesta = $this->conexion->query($query);
+        while ($objeto = $respuesta->fetch_object()) {
+            array_push($arrRespuesta, $objeto);
+        }
+
+        return $arrRespuesta;
+    }
+
+    // Método para obtener bienes de un ambiente específico
+    public function obtenerBienesDeAmbiente($id_ambiente)
+    {
+        $arrRespuesta = array();
+
+        $query = "
         SELECT 
             b.*,
             i.detalle as detalle_ingreso,
@@ -245,29 +250,29 @@ public function obtenerBienesDeAmbiente($id_ambiente)
         WHERE b.id_ambiente = $id_ambiente
         ORDER BY b.fecha_registro DESC
     ";
-    
-    $respuesta = $this->conexion->query($query);
-    while ($objeto = $respuesta->fetch_object()) {
-        array_push($arrRespuesta, $objeto);
+
+        $respuesta = $this->conexion->query($query);
+        while ($objeto = $respuesta->fetch_object()) {
+            array_push($arrRespuesta, $objeto);
+        }
+
+        return $arrRespuesta;
     }
-    
-    return $arrRespuesta;
-}
 
-// Método para validar si un ambiente puede ser eliminado
-public function puedeEliminarAmbiente($id_ambiente)
-{
-    $query = "SELECT COUNT(*) as total_bienes FROM bienes WHERE id_ambiente = $id_ambiente";
-    $respuesta = $this->conexion->query($query);
-    $objeto = $respuesta->fetch_object();
-    
-    return $objeto->total_bienes == 0;
-}
+    // Método para validar si un ambiente puede ser eliminado
+    public function puedeEliminarAmbiente($id_ambiente)
+    {
+        $query = "SELECT COUNT(*) as total_bienes FROM bienes WHERE id_ambiente = $id_ambiente";
+        $respuesta = $this->conexion->query($query);
+        $objeto = $respuesta->fetch_object();
 
-// Método para obtener resumen de un ambiente
-public function obtenerResumenAmbiente($id_ambiente)
-{
-    $query = "
+        return $objeto->total_bienes == 0;
+    }
+
+    // Método para obtener resumen de un ambiente
+    public function obtenerResumenAmbiente($id_ambiente)
+    {
+        $query = "
         SELECT 
             a.*,
             COUNT(b.id) as total_bienes,
@@ -281,16 +286,16 @@ public function obtenerResumenAmbiente($id_ambiente)
         WHERE a.id = $id_ambiente
         GROUP BY a.id
     ";
-    
-    $respuesta = $this->conexion->query($query);
-    $objeto = $respuesta->fetch_object();
-    
-    return $objeto;
-}
-public function listarTodosLosAmbientes()
-{
-    $arrRespuesta = array();
-    $query = "
+
+        $respuesta = $this->conexion->query($query);
+        $objeto = $respuesta->fetch_object();
+
+        return $objeto;
+    }
+    public function listarTodosLosAmbientes()
+    {
+        $arrRespuesta = array();
+        $query = "
         SELECT
             a.id,
             a.id_ies,
@@ -307,10 +312,10 @@ public function listarTodosLosAmbientes()
         LEFT JOIN institucion i ON a.id_ies = i.id
         ORDER BY i.nombre ASC, a.codigo ASC;
     ";
-    $respuesta = $this->conexion->query($query);
-    while ($objeto = $respuesta->fetch_object()) {
-        array_push($arrRespuesta, $objeto);
+        $respuesta = $this->conexion->query($query);
+        while ($objeto = $respuesta->fetch_object()) {
+            array_push($arrRespuesta, $objeto);
+        }
+        return $arrRespuesta;
     }
-    return $arrRespuesta;
-}
 }
