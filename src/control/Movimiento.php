@@ -1,21 +1,23 @@
 <?php
 session_start();
 require_once('../model/admin-sesionModel.php');
+require_once('../model/admin-carreraModel.php');
 require_once('../model/admin-movimientoModel.php');
 require_once('../model/admin-ambienteModel.php');
 require_once('../model/admin-bienModel.php');
-require_once('../model/admin-institucionModel.php');
+require_once('../model/admin-categoriaModel.php');
 require_once('../model/admin-usuarioModel.php');
 require_once('../model/adminModel.php');
 $tipo = $_GET['tipo'];
 
 //instanciar la clase categoria model
 $objSesion = new SessionModel();
+$objCarrera = new CarreraModel();
 $objMovimiento = new MovimientoModel();
 $objAmbiente = new AmbienteModel();
 $objBien = new BienModel();
 $objAdmin = new AdminModel();
-$objInstitucion = new InstitucionModel();
+$objCategoria = new CategoriaModel();
 $objUsuario = new UsuarioModel();
 
 //variables de sesion
@@ -29,7 +31,6 @@ if ($tipo == "listar") {
         //print_r($_POST);
         //repuesta
         $arr_Respuesta = array('status' => false, 'contenido' => '');
-        $arr_Ambiente = $objAmbiente->buscarAmbienteByInstitucion($id_ies);
         $arr_contenido = [];
         if (!empty($arr_Ambiente)) {
             // recorremos el array para agregar las opciones de las categorias
@@ -174,7 +175,7 @@ if ($tipo == "registrar") {
                             $id_detalle_movimiento = $objMovimiento->registrarDetalleMovimiento($id_movimiento, $id_bien);
                             if ($id_detalle_movimiento > 0) {
                                 // actulizar ambiente del bien
-                                $respuesta_bien = $objBien->actualizarBien_Ambiente($id_bien, $ambiente_destino);
+                                $respuesta_bien = $objBien->actualizarBien($id_bien);
                                 if (!$respuesta_bien) {
                                     $contar_errores++;
                                 }

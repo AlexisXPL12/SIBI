@@ -1,21 +1,23 @@
 <?php
 session_start();
 require_once('../model/admin-sesionModel.php');
+require_once('../model/admin-carreraModel.php');
 require_once('../model/admin-movimientoModel.php');
 require_once('../model/admin-ambienteModel.php');
 require_once('../model/admin-bienModel.php');
-require_once('../model/admin-institucionModel.php');
+require_once('../model/admin-categoriaModel.php');
 require_once('../model/admin-usuarioModel.php');
 require_once('../model/adminModel.php');
 $tipo = $_GET['tipo'];
 
 //instanciar la clase categoria model
 $objSesion = new SessionModel();
+$objCarrera = new CarreraModel();
 $objMovimiento = new MovimientoModel();
 $objAmbiente = new AmbienteModel();
 $objBien = new BienModel();
+$objCategoria = new CategoriaModel();
 $objAdmin = new AdminModel();
-$objInstitucion = new InstitucionModel();
 $objUsuario = new UsuarioModel();
 
 //variables de sesion
