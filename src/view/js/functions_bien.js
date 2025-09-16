@@ -243,7 +243,6 @@ async function datos_form() {
         const datos = new FormData();
         datos.append('sesion', session_session);
         datos.append('token', token_token);
-        datos.append('ies', session_ies);
         //enviar datos hacia el controlador
         let respuesta = await fetch(base_url_server + 'src/control/Ambiente.php?tipo=listar', {
             method: 'POST',
