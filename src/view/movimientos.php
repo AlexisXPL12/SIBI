@@ -1,4 +1,3 @@
-<!-- start page title -->
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12">
         <div class="card">
@@ -15,59 +14,59 @@
             <div class="card-body">
                 <h4 class="card-title">Filtros de Búsqueda</h4>
                 <div class="row col-12">
-                    <div class="form-group row mb-3 col-6">
-                        <label for="busqueda_tabla_amb_origen" class="col-5 col-form-label">Ambiente de Origen:</label>
+                    <div class="form-group row mb-3 col-3">
+                        <label for="busqueda_tipo_movimiento" class="col-5 col-form-label">Tipo:</label>
                         <div class="col-7">
-                            <select class="form-control" name="busqueda_tabla_amb_origen" id="busqueda_tabla_amb_origen">
+                            <select class="form-control" name="busqueda_tipo_movimiento" id="busqueda_tipo_movimiento">
+                                <option value="">Todos</option>
+                                <option value="INGRESO">INGRESO</option>
+                                <option value="TRASLADO">TRASLADO</option>
+                                <option value="BAJA">BAJA</option>
+                                <option value="PRESTAMO">PRESTAMO</option>
+                                <option value="DEVOLUCION">DEVOLUCION</option>
                             </select>
                         </div>
                     </div>
-                    <div class="form-group row mb-3 col-6">
-                        <label for="busqueda_tabla_amb_destino" class="col-5 col-form-label">Ambiente de Destino:</label>
+                    <div class="form-group row mb-3 col-3">
+                        <label for="busqueda_estado_movimiento" class="col-5 col-form-label">Estado:</label>
                         <div class="col-7">
-                            <select class="form-control" name="busqueda_tabla_amb_destino" id="busqueda_tabla_amb_destino">
+                            <select class="form-control" name="busqueda_estado_movimiento" id="busqueda_estado_movimiento">
+                                <option value="">Todos</option>
+                                <option value="PENDIENTE">PENDIENTE</option>
+                                <option value="EJECUTADO">EJECUTADO</option>
+                                <option value="CANCELADO">CANCELADO</option>
                             </select>
                         </div>
                     </div>
-                    <?php
-                    $hoy = date("Y-m-d");
-                    $fecha_antes = strtotime('-1 months', strtotime($hoy));
-                    $fecha_antes = date('Y-m-d', $fecha_antes);
-                    ?>
-                    <div class="form-group row mb-3 col-6">
-                        <label for="busqueda_fecha_desde" class="col-5 col-form-label">Desde:</label>
+                    <div class="form-group row mb-3 col-3">
+                        <label for="busqueda_bien" class="col-5 col-form-label">Bien:</label>
                         <div class="col-7">
-                            <input type="date" class="form-control" name="busqueda_fecha_desde" id="busqueda_fecha_desde" max="<?php echo $hoy; ?>" value="<?php echo $fecha_antes; ?>">
+                            <input type="text" class="form-control" name="busqueda_bien" id="busqueda_bien" placeholder="ID del bien">
                         </div>
                     </div>
-                    <div class="form-group row mb-3 col-6">
-                        <label for="busqueda_fecha_hasta" class="col-5 col-form-label">Hasta:</label>
+                    <div class="form-group row mb-3 col-3">
+                        <label for="busqueda_dependencia" class="col-5 col-form-label">Dependencia:</label>
                         <div class="col-7">
-                            <input type="date" class="form-control" name="busqueda_fecha_hasta" id="busqueda_fecha_hasta" max="<?php echo $hoy; ?>" value="<?php echo $hoy; ?>">
+                            <input type="text" class="form-control" name="busqueda_dependencia" id="busqueda_dependencia" placeholder="ID de dependencia">
                         </div>
                     </div>
                 </div>
-                <div class="form-group mb-0 text-center ">
-                    <button type="button" class="btn btn-primary waves-effect waves-light" onclick="numero_pagina(1);"><i class="fa fa-search"></i> Buscar</button>
+                <div class="form-group mb-0 text-center">
+                    <button type="button" class="btn btn-primary waves-effect waves-light" onclick="numero_pagina(1);">
+                        <i class="fa fa-search"></i> Buscar
+                    </button>
                 </div>
             </div>
         </div>
         <div class="card">
             <div class="card-body">
-                <!-- Botones de Excel y PDF -->
-                <a href="<?= BASE_URL ?>reporte-movimiento" class="btn btn-success waves-effect waves-light">
-                    <i class="fa fa-file-excel"></i> Exportar a Excel
-                </a>
-                <a href="<?= BASE_URL ?>imprimir-movimientosg" class="btn btn-danger waves-effect waves-light">
-                    <i class="fa fa-file-pdf"></i> Exportar a PDF
-                </a>
                 <h4 class="card-title">Resultados de Búsqueda</h4>
-                <div id="filtros_tabla_header" class="form-group  row page-title-box d-flex align-items-center justify-content-between m-0 mb-1 p-0">
+                <div id="filtros_tabla_header" class="form-group row page-title-box d-flex align-items-center justify-content-between m-0 mb-1 p-0">
                     <input type="hidden" id="pagina" value="1">
-                    <input type="hidden" id="filtro_ambiente_origen" value="">
-                    <input type="hidden" id="filtro_ambiente_destino" value="">
-                    <input type="hidden" id="filtro_fecha_inicio" value="">
-                    <input type="hidden" id="filtro_fecha_fin" value="">
+                    <input type="hidden" id="filtro_tipo_movimiento" value="">
+                    <input type="hidden" id="filtro_estado_movimiento" value="">
+                    <input type="hidden" id="filtro_bien" value="">
+                    <input type="hidden" id="filtro_dependencia" value="">
                     <div>
                         <label for="cantidad_mostrar">Mostrar</label>
                         <select name="cantidad_mostrar" id="cantidad_mostrar" class="form-control-sm" onchange="numero_pagina(1);">
@@ -80,23 +79,18 @@
                     </div>
                 </div>
                 <div id="tablas"></div>
-                <div id="filtros_tabla_footer" class="form-group  row page-title-box d-flex align-items-center justify-content-between m-0 mb-1 p-0">
-                    <div id="texto_paginacion_tabla">
-                    </div>
+                <div id="filtros_tabla_footer" class="form-group row page-title-box d-flex align-items-center justify-content-between m-0 mb-1 p-0">
+                    <div id="texto_paginacion_tabla"></div>
                     <div id="paginacion_tabla">
-                        <ul class="pagination justify-content-end" id="lista_paginacion_tabla">
-                        </ul>
+                        <ul class="pagination justify-content-end" id="lista_paginacion_tabla"></ul>
                     </div>
                 </div>
                 <div id="modals_editar"></div>
-                <div id="modals_permisos"></div>
-
             </div>
         </div>
     </div>
 </div>
 <script src="<?php echo BASE_URL; ?>src/view/js/functions_movimiento.js"></script>
 <script>
-    listar_MovimientosOrdenados();
+    listar_movimientos_ordenados();
 </script>
-<!-- end page title -->

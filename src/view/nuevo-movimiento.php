@@ -1,4 +1,3 @@
-<!-- start page title -->
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12">
         <div class="card">
@@ -7,112 +6,79 @@
                 <br>
                 <form class="form-horizontal" id="frmRegistrar">
                     <div class="form-group row mb-2">
-                        <label for="ambiente_origen" class="col-3 col-form-label">Ambiente de Origen:</label>
+                        <label for="id_bien" class="col-3 col-form-label">Bien:</label>
                         <div class="col-9">
-                            <select class="form-control" name="ambiente_origen" id="ambiente_origen" onchange="reiniciar_movimiento();">
+                            <select class="form-control" id="id_bien" name="id_bien" required>
+                                <option value="">Seleccione un bien</option>
                             </select>
                         </div>
                     </div>
                     <div class="form-group row mb-2">
-                        <label for="ambiente_destino" class="col-3 col-form-label">Ambiente Destino:</label>
+                        <label for="tipo_movimiento" class="col-3 col-form-label">Tipo de Movimiento:</label>
                         <div class="col-9">
-                            <select class="form-control" name="ambiente_destino" id="ambiente_destino">
+                            <select class="form-control" id="tipo_movimiento" name="tipo_movimiento" required>
+                                <option value="">Seleccione un tipo</option>
+                                <option value="INGRESO">INGRESO</option>
+                                <option value="TRASLADO">TRASLADO</option>
+                                <option value="BAJA">BAJA</option>
+                                <option value="PRESTAMO">PRESTAMO</option>
+                                <option value="DEVOLUCION">DEVOLUCION</option>
                             </select>
                         </div>
                     </div>
                     <div class="form-group row mb-2">
-                        <label for="descripcion" class="col-3 col-form-label">Descripción</label>
+                        <label for="id_dependencia_origen" class="col-3 col-form-label">Dependencia Origen:</label>
                         <div class="col-9">
-                            <textarea name="descripcion" id="descripcion" class="form-control" rows="5"></textarea>
+                            <select class="form-control" id="id_dependencia_origen" name="id_dependencia_origen">
+                                <option value="">Seleccione una dependencia</option>
+                            </select>
                         </div>
                     </div>
                     <div class="form-group row mb-2">
-                        <label for="detalle" class="col-3 col-form-label">Detalle de bienes : </label>
+                        <label for="id_dependencia_destino" class="col-3 col-form-label">Dependencia Destino:</label>
                         <div class="col-9">
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th colspan="4" class="text-center">
-                                            Lista de Bienes
-                                            <button type="button" class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target=".modal_agregar">+ Agregar</button>
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                        <th>Nro</th>
-                                        <th>Código</th>
-                                        <th>Denominación</th>
-                                        <th>Acción</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="contenido_bienes_tabla_movimientos">
-
-                                </tbody>
-                                
-                            </table>
+                            <select class="form-control" id="id_dependencia_destino" name="id_dependencia_destino">
+                                <option value="">Seleccione una dependencia</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row mb-2">
+                        <label for="motivo" class="col-3 col-form-label">Motivo:</label>
+                        <div class="col-9">
+                            <textarea name="motivo" id="motivo" class="form-control" required></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group row mb-2">
+                        <label for="observaciones" class="col-3 col-form-label">Observaciones:</label>
+                        <div class="col-9">
+                            <textarea name="observaciones" id="observaciones" class="form-control"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group row mb-2">
+                        <label for="documento_referencia" class="col-3 col-form-label">Documento de Referencia:</label>
+                        <div class="col-9">
+                            <input type="text" class="form-control" id="documento_referencia" name="documento_referencia">
+                        </div>
+                    </div>
+                    <div class="form-group row mb-2">
+                        <label for="usuario_solicita" class="col-3 col-form-label">Usuario que Solicita:</label>
+                        <div class="col-9">
+                            <input type="text" class="form-control" id="usuario_solicita" name="usuario_solicita" value="<?php echo $_SESSION['nombre_usuario']; ?>" readonly>
                         </div>
                     </div>
                     <div class="form-group mb-0 justify-content-end row text-center">
                         <div class="col-12">
                             <a href="<?php echo BASE_URL; ?>movimientos" class="btn btn-light waves-effect waves-light">Regresar</a>
-                            <button type="button" class="btn btn-success waves-effect waves-light" onclick="registrar_movimiento();">Registrar</button>
+                            <button type="button" class="btn btn-success waves-effect waves-light" onclick="registrarMovimiento();">Registrar</button>
                         </div>
                     </div>
                 </form>
-                <div class="modal fade modal_agregar" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h6 class="modal-title h5" id="myLargeModalLabel">Agregar Bien a Movimiento</h6>
-                                <button type="button" class="close waves-effect waves-light" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form id="frmAgregarBienes">
-                                    <div class="form-group row mb-2">
-                                        <label for="codigo_patrimonial_form" class="col-3 col-form-label">Código Patrimonial y/o denominación:</label>
-                                        <div class="col-6">
-                                            <input type="text" name="codigo_patrimonial" id="codigo_patrimonial_form" class="form-control">
-                                        </div>
-                                        <div class="col-3">
-                                            <button type="button" class="btn btn-primary" onclick="buscar_bien();"><i class="fa fa-search"></i> Buscar</button>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row mb-2" id="tabla_bienes">
-                                        <table class="table table-bordered" style="width: 100%;">
-                                            <thead>
-                                                <tr>
-                                                    <th>Código Patrimonial</th>
-                                                    <th>Denominación</th>
-                                                    <th>Ambiente</th>
-                                                    <th>Acciones</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="detalle_busqueda_bienes">
-                                                
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <br>
-                                    <div class="form-group mb-0 justify-content-end row text-center">
-                                        <div class="col-12">
-                                            <button type="button" class="btn btn-light waves-effect waves-light" data-dismiss="modal">Cancelar</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 </div>
 <script src="<?php echo BASE_URL; ?>src/view/js/functions_movimiento.js"></script>
 <script>
-    datos_form();
-    var lista_bienes_movimiento =[];
-    var bienes;
-    var v_ambientes;
+    cargarDatosRegistro();
 </script>
-<!-- end page title -->
+
