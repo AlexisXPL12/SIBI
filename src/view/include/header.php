@@ -396,6 +396,7 @@
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="topnav-components">
                                         <a href="<?php echo BASE_URL ?>usuarios" class="dropdown-item">Usuarios</a>
+                                        <a href="<?php echo BASE_URL ?>clientes-api" class="dropdown-item">Clientes</a>
                                         <a href="<?php echo BASE_URL ?>bienes" class="dropdown-item">Bienes</a>
                                         <a href="<?php echo BASE_URL ?>ambientes" class="dropdown-item">Ambientes o dependencias</a>
                                         <a href="<?php echo BASE_URL ?>categorias" class="dropdown-item">Categorias</a>
