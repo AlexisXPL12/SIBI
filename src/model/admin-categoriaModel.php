@@ -10,6 +10,18 @@ class CategoriaModel
         $this->conexion = new Conexion();
         $this->conexion = $this->conexion->connect();
     }
+    public function listarCategorias()
+{
+    $arrRespuesta = array();
+    $respuesta = $this->conexion->query("SELECT id_categoria, nombre_categoria FROM categorias WHERE estado = 'ACTIVO' ORDER BY nombre_categoria");
+    if ($respuesta === false) {
+        throw new Exception("Error en la consulta SQL: " . $this->conexion->error);
+    }
+    while ($objeto = $respuesta->fetch_object()) {
+        array_push($arrRespuesta, $objeto);
+    }
+    return $arrRespuesta;
+}
 
     public function registrarCategoria($codigo_categoria, $nombre_categoria, $descripcion, $vida_util_anos, $estado)
     {

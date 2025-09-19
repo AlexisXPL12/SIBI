@@ -452,5 +452,44 @@ async function registrarBien() {
         console.log("Error al registrar bien: " + e);
     }
 }
+async function cargarCategorias() {
+    try {
+        let respuesta = await fetch(base_url_server + 'src/control/Categoria.php?tipo=listar_categorias');
+        let json = await respuesta.json();
+
+        if (json.status) {
+            let contenido_select = '<option value="">Seleccione una categoría</option>';
+            json.contenido.forEach(categoria => {
+                contenido_select += `<option value="${categoria.id_categoria}">${categoria.nombre_categoria}</option>`;
+            });
+            document.getElementById('id_categoria').innerHTML = contenido_select;
+        }
+    } catch (error) {
+        console.log("Error al cargar categorías: " + error);
+    }
+}
+
+async function cargarDependencias() {
+    try {
+        let respuesta = await fetch(base_url_server + 'src/control/Ambiente.php?tipo=listar_dependencias');
+        let json = await respuesta.json();
+
+        if (json.status) {
+            let contenido_select = '<option value="">Seleccione una dependencia</option>';
+            json.contenido.forEach(dependencia => {
+                contenido_select += `<option value="${dependencia.id_dependencia}">${dependencia.nombre_dependencia}</option>`;
+            });
+            document.getElementById('id_dependencia').innerHTML = contenido_select;
+        }
+    } catch (error) {
+        console.log("Error al cargar dependencias: " + error);
+    }
+}
+
+// Llamar a estas funciones al cargar la página
+$(document).ready(function() {
+    cargarCategorias();
+    cargarDependencias();
+});
 
 

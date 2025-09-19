@@ -24,6 +24,39 @@ $objUsuario = new UsuarioModel();
 $id_sesion = $_REQUEST['sesion'];
 $token = $_REQUEST['token'];
 
+if ($tipo == "listar_dependencias") {
+    $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
+
+    try {
+        if (empty($id_sesion) || empty($token) || !$objSesion->verificar_sesion_si_activa($id_sesion, $token)) {
+            throw new Exception("Sesión no válida");
+        }
+
+        $arr_Dependencias = $objAmbiente->listarDependencias();
+
+        $arr_contenido = [];
+        if (!empty($arr_Dependencias)) {
+            foreach ($arr_Dependencias as $dependencia) {
+                $arr_contenido[] = [
+                    'id_dependencia' => $dependencia->id_dependencia,
+                    'nombre_dependencia' => $dependencia->nombre_dependencia
+                ];
+            }
+            $arr_Respuesta['status'] = true;
+            $arr_Respuesta['contenido'] = $arr_contenido;
+        } else {
+            $arr_Respuesta['status'] = true;
+            $arr_Respuesta['contenido'] = [];
+        }
+    } catch (Exception $e) {
+        $arr_Respuesta['msg'] = 'Error en el servidor: ' . $e->getMessage();
+    }
+
+    header('Content-Type: application/json');
+    echo json_encode($arr_Respuesta);
+    exit;
+}
+
 if ($tipo == "listar_ambientes_ordenados_tabla_e") {
     $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
     if ($objSesion->verificar_sesion_si_activa($id_sesion, $token)) {

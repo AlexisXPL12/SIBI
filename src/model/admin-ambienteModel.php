@@ -10,6 +10,19 @@ class AmbienteModel
         $this->conexion = new Conexion();
         $this->conexion = $this->conexion->connect();
     }
+    public function listarDependencias()
+    {
+        $arrRespuesta = array();
+        $respuesta = $this->conexion->query("SELECT id_dependencia, nombre_dependencia FROM dependencias WHERE estado = 'ACTIVO' ORDER BY nombre_dependencia");
+        if ($respuesta === false) {
+            throw new Exception("Error en la consulta SQL: " . $this->conexion->error);
+        }
+        while ($objeto = $respuesta->fetch_object()) {
+            array_push($arrRespuesta, $objeto);
+        }
+        return $arrRespuesta;
+    }
+
     public function registrarDependencia($encargado, $codigo, $detalle, $otros_detalle)
     {
         $sql = $this->conexion->query("INSERT INTO dependencias (responsable, codigo_dependencia, nombre_dependencia, descripcion) VALUES ('$encargado', '$codigo', '$detalle', '$otros_detalle')");
@@ -82,7 +95,7 @@ class AmbienteModel
             array_push($arrRespuesta, $objeto);
         }
         return $arrRespuesta;
-    }   
+    }
 
     // Método para el filtro completo (Excel y otros reportes)
     public function buscarAmbientesConDetalles_tabla_filtro($busqueda_codigo, $busqueda_detalle, $busqueda_encargado, $ies)

@@ -54,7 +54,6 @@ if ($tipo == "listar_movimientos_ordenados_tabla") {
                     $arr_contenido[$i]->observaciones = $arr_Movimientos[$i]->observaciones;
                     $arr_contenido[$i]->documento_referencia = $arr_Movimientos[$i]->documento_referencia;
                     $arr_contenido[$i]->usuario_solicita = $arr_Movimientos[$i]->usuario_solicita;
-                    $arr_contenido[$i]->usuario_autoriza = $arr_Movimientos[$i]->usuario_autoriza;
                     $arr_contenido[$i]->fecha_solicitud = $arr_Movimientos[$i]->fecha_solicitud;
                     $arr_contenido[$i]->fecha_ejecucion = $arr_Movimientos[$i]->fecha_ejecucion;
                     $arr_contenido[$i]->estado_movimiento = $arr_Movimientos[$i]->estado_movimiento;

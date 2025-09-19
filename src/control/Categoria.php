@@ -24,6 +24,38 @@ $objUsuario = new UsuarioModel();
 $id_sesion = $_REQUEST['sesion'];
 $token = $_REQUEST['token'];
 
+if ($tipo == "listar_categorias") {
+    $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
+
+    try {
+        if (empty($id_sesion) || empty($token) || !$objSesion->verificar_sesion_si_activa($id_sesion, $token)) {
+            throw new Exception("Sesión no válida");
+        }
+
+        $arr_Categorias = $objCategoria->listarCategorias();
+
+        $arr_contenido = [];
+        if (!empty($arr_Categorias)) {
+            foreach ($arr_Categorias as $categoria) {
+                $arr_contenido[] = [
+                    'id_categoria' => $categoria->id_categoria,
+                    'nombre_categoria' => $categoria->nombre_categoria
+                ];
+            }
+            $arr_Respuesta['status'] = true;
+            $arr_Respuesta['contenido'] = $arr_contenido;
+        } else {
+            $arr_Respuesta['status'] = true;
+            $arr_Respuesta['contenido'] = [];
+        }
+    } catch (Exception $e) {
+        $arr_Respuesta['msg'] = 'Error en el servidor: ' . $e->getMessage();
+    }
+
+    header('Content-Type: application/json');
+    echo json_encode($arr_Respuesta);
+    exit;
+}
 if ($tipo == "listar_categorias_ordenadas_tabla") {
     $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
 

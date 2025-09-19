@@ -81,4 +81,3 @@
 <script>
     cargarDatosRegistro();
 </script>
-

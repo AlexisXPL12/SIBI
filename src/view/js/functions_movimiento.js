@@ -580,4 +580,3 @@ async function registrarMovimiento() {
         console.log("Error al registrar movimiento: " + e);
     }
 }
-
