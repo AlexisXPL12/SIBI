@@ -56,8 +56,6 @@ if ($tipo == "listar_bienes_ordenados_tabla") {
                     $arr_contenido[$i]->ubicacion_especifica = $arr_Bienes[$i]->ubicacion_especifica;
                     $arr_contenido[$i]->fecha_adquisicion = $arr_Bienes[$i]->fecha_adquisicion;
                     $arr_contenido[$i]->fecha_ingreso = $arr_Bienes[$i]->fecha_ingreso;
-                    $arr_contenido[$i]->numero_factura = $arr_Bienes[$i]->numero_factura;
-                    $arr_contenido[$i]->numero_orden_compra = $arr_Bienes[$i]->numero_orden_compra;
                     $arr_contenido[$i]->estado_bien = $arr_Bienes[$i]->estado_bien;
                     $arr_contenido[$i]->condicion_bien = $arr_Bienes[$i]->condicion_bien;
                     $arr_contenido[$i]->observaciones = $arr_Bienes[$i]->observaciones;
@@ -89,6 +87,14 @@ if ($tipo == "registrar") {
     $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
 
     if ($objSesion->verificar_sesion_si_activa($id_sesion, $token)) {
+        $usuarioSesion = $objSesion->obtenerUsuarioPorSesion($id_sesion);
+        if (!$usuarioSesion) {
+            $arr_Respuesta = array('status' => false, 'mensaje' => 'Error, usuario no encontrado en la sesión');
+            echo json_encode($arr_Respuesta);
+            exit;
+        }
+        $usuario_registro = $usuarioSesion->id;
+
         if ($_POST) {
             $codigo_patrimonial = $_POST['codigo_patrimonial'];
             $nombre_bien = $_POST['nombre_bien'];
@@ -103,8 +109,6 @@ if ($tipo == "registrar") {
             $ubicacion_especifica = $_POST['ubicacion_especifica'];
             $fecha_adquisicion = $_POST['fecha_adquisicion'];
             $fecha_ingreso = $_POST['fecha_ingreso'];
-            $numero_factura = $_POST['numero_factura'];
-            $numero_orden_compra = $_POST['numero_orden_compra'];
             $estado_bien = $_POST['estado_bien'];
             $condicion_bien = $_POST['condicion_bien'];
             $observaciones = $_POST['observaciones'];
@@ -118,7 +122,26 @@ if ($tipo == "registrar") {
                 if ($arr_Bien) {
                     $arr_Respuesta = array('status' => false, 'mensaje' => 'Registro Fallido, el código patrimonial ya se encuentra registrado');
                 } else {
-                    $id_bien = $objBien->registrarBien($codigo_patrimonial, $nombre_bien, $descripcion, $marca, $modelo, $serie, $color, $dimensiones, $id_categoria, $id_dependencia, $ubicacion_especifica, $fecha_adquisicion, $fecha_ingreso, $numero_factura, $numero_orden_compra, $estado_bien, $condicion_bien, $observaciones, $es_inventariable, $usuario_registro);
+                    $id_bien = $objBien->registrarBien(
+                        $codigo_patrimonial,
+                        $nombre_bien,
+                        $descripcion,
+                        $marca,
+                        $modelo,
+                        $serie,
+                        $color,
+                        $dimensiones,
+                        $id_categoria,
+                        $id_dependencia,
+                        $ubicacion_especifica,
+                        $fecha_adquisicion,
+                        $fecha_ingreso,
+                        $estado_bien,
+                        $condicion_bien,
+                        $observaciones,
+                        $es_inventariable,
+                        $usuario_registro
+                    );
                     if ($id_bien > 0) {
                         $arr_Respuesta = array('status' => true, 'mensaje' => 'Registro Exitoso');
                     } else {
@@ -199,11 +222,11 @@ if ($tipo == "datos_registro") {
 }
 if ($tipo == "listar_todos_bienes") {
     $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
-    
+
     if ($objSesion->verificar_sesion_si_activa($id_sesion, $token)) {
         $arr_Respuesta = array('status' => false, 'contenido' => []);
         $arr_Bienes = $objBien->listarTodosLosBienes();
-        
+
         $arr_contenido = [];
         if (!empty($arr_Bienes)) {
             foreach ($arr_Bienes as $bien) {
@@ -245,8 +268,6 @@ if ($tipo == "listar_todos_bienes") {
             $arr_Respuesta['contenido'] = $arr_contenido;
         }
     }
-    
+
     echo json_encode($arr_Respuesta);
 }
-
-

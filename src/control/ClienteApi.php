@@ -5,6 +5,14 @@ $tipo = $_GET['tipo'];
 $model = new ClientApiModel();
 
 switch ($tipo) {
+    case 'listar_clientes_select':
+    $datos = $model->listarClientesSelect();
+    echo json_encode([
+        'status' => true,
+        'contenido' => $datos
+    ]);
+    break;
+
     case 'registrar':
         $ruc = $_POST['ruc'];
         $razon_social = $_POST['razon_social'];

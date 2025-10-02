@@ -126,20 +126,14 @@ if ($tipo == "listar_ambientes_ordenados_tabla_e") {
 if ($tipo == "listar") {
     $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
     if ($objSesion->verificar_sesion_si_activa($id_sesion, $token)) {
-        $id_ies = $_POST['ies'];
-        //print_r($_POST);
-        //repuesta
         $arr_Respuesta = array('status' => false, 'contenido' => '');
-        $arr_Ambiente = $objAmbiente->buscarDependenciaById($id_ies);
+        $arr_Ambiente = $objAmbiente->listarDependencias(); 
         $arr_contenido = [];
         if (!empty($arr_Ambiente)) {
-            // recorremos el array para agregar las opciones de las categorias
             for ($i = 0; $i < count($arr_Ambiente); $i++) {
-                // definimos el elemento como objeto
                 $arr_contenido[$i] = (object) [];
-                // agregamos solo la informacion que se desea enviar a la vista
-                $arr_contenido[$i]->id = $arr_Ambiente[$i]->id;
-                $arr_contenido[$i]->detalle = $arr_Ambiente[$i]->detalle;
+                $arr_contenido[$i]->id_dependencia = $arr_Ambiente[$i]->id_dependencia; 
+                $arr_contenido[$i]->nombre_dependencia = $arr_Ambiente[$i]->nombre_dependencia; 
             }
             $arr_Respuesta['status'] = true;
             $arr_Respuesta['contenido'] = $arr_contenido;
@@ -147,6 +141,7 @@ if ($tipo == "listar") {
     }
     echo json_encode($arr_Respuesta);
 }
+
 if ($tipo == "listar_dependencias_ordenadas_tabla") {
     $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
 

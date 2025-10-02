@@ -244,7 +244,7 @@ async function datos_form() {
         datos.append('sesion', session_session);
         datos.append('token', token_token);
         //enviar datos hacia el controlador
-        let respuesta = await fetch(base_url_server + 'src/control/Ambiente.php?tipo=listar', {
+        let respuesta = await fetch(base_url_server + 'src/control/Ambiente.php?tipo=listar_dependencias', {
             method: 'POST',
             mode: 'cors',
             cache: 'no-cache',
@@ -267,12 +267,14 @@ async function datos_form() {
 async function listar_ambientes(datos, ambiente = 'ambiente') {
     try {
         let contenido_select = '<option value="">Seleccione</option>';
-        if (Array.isArray(datos)) {
-            datos.forEach(element => {
-                let selected = "";
-                contenido_select += '<option value="' + element.id + '" ' + selected + '>' + element.detalle + '</option>';
+        if (json.status) {
+            let contenido_select = '<option value="">Seleccione</option>';
+            datos.forEach(el => {
+                contenido_select += `<option value="${el.id}">${el.nombre_dependencia}</option>`;
             });
-            document.getElementById(ambiente).innerHTML = contenido_select;
+
+            const elCat = document.getElementById('id_dependencia');
+            if (elCat) elCat.innerHTML = contenido_select;
         }
 
     } catch (error) {
@@ -321,6 +323,33 @@ function listar_bienes_ingreso() {
         ocultarPopupCarga();
     }
 }
+async function cargarCategorias() {
+    try {
+        const datos = new FormData();
+        datos.append('sesion', session_session);
+        datos.append('token', token_token);
+
+        let respuesta = await fetch(base_url_server + 'src/control/Categoria.php?tipo=listar_categorias', {
+            method: 'POST',
+            body: datos
+        });
+
+        let json = await respuesta.json();
+
+        if (json.status) {
+            let contenido_select = '<option value="">Seleccione</option>';
+            json.contenido.forEach(el => {
+                contenido_select += `<option value="${el.id}">${el.nombre_categoria}</option>`;
+            });
+
+            const elCat = document.getElementById('id_categoria');
+            if (elCat) elCat.innerHTML = contenido_select;
+        }
+    } catch (e) {
+        console.log("Error cargando categorías " + e);
+    }
+}
+
 function agregar_bien_ingreso() {
     try {
         mostrarPopupCarga();
@@ -412,6 +441,17 @@ async function registrarBien() {
 
     try {
         const datos = new FormData(document.getElementById('frmRegistrar'));
+
+        // Capturar dimensiones
+        let largo = document.querySelector('#dim_largo').value || 0;
+        let ancho = document.querySelector('#dim_ancho').value || 0;
+        let alto = document.querySelector('#dim_alto').value || 0;
+        let dimensiones = `${largo}x${ancho}x${alto} cm`;
+
+        // Eliminar si existe y reemplazar
+        datos.delete('dimensiones');
+        datos.append('dimensiones', dimensiones);
+
         datos.append('sesion', session_session);
         datos.append('token', token_token);
 
@@ -452,44 +492,7 @@ async function registrarBien() {
         console.log("Error al registrar bien: " + e);
     }
 }
-async function cargarCategorias() {
-    try {
-        let respuesta = await fetch(base_url_server + 'src/control/Categoria.php?tipo=listar_categorias');
-        let json = await respuesta.json();
 
-        if (json.status) {
-            let contenido_select = '<option value="">Seleccione una categoría</option>';
-            json.contenido.forEach(categoria => {
-                contenido_select += `<option value="${categoria.id_categoria}">${categoria.nombre_categoria}</option>`;
-            });
-            document.getElementById('id_categoria').innerHTML = contenido_select;
-        }
-    } catch (error) {
-        console.log("Error al cargar categorías: " + error);
-    }
-}
 
-async function cargarDependencias() {
-    try {
-        let respuesta = await fetch(base_url_server + 'src/control/Ambiente.php?tipo=listar_dependencias');
-        let json = await respuesta.json();
-
-        if (json.status) {
-            let contenido_select = '<option value="">Seleccione una dependencia</option>';
-            json.contenido.forEach(dependencia => {
-                contenido_select += `<option value="${dependencia.id_dependencia}">${dependencia.nombre_dependencia}</option>`;
-            });
-            document.getElementById('id_dependencia').innerHTML = contenido_select;
-        }
-    } catch (error) {
-        console.log("Error al cargar dependencias: " + error);
-    }
-}
-
-// Llamar a estas funciones al cargar la página
-$(document).ready(function() {
-    cargarCategorias();
-    cargarDependencias();
-});
 
 

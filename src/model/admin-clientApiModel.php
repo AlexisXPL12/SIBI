@@ -25,6 +25,18 @@ class ClientApiModel
         return $sql;
     }
 
+    public function listarClientesSelect()
+    {
+        $arrRespuesta = array();
+        $query = "SELECT id, razon_social FROM client_api WHERE estado = 1 ORDER BY razon_social ASC";
+        $respuesta = $this->conexion->query($query);
+        while ($objeto = $respuesta->fetch_object()) {
+            array_push($arrRespuesta, $objeto);
+        }
+        return $arrRespuesta;
+    }
+
+
     public function actualizarCliente($id, $ruc, $razon_social, $telefono, $correo, $estado)
     {
         $sql = $this->conexion->query("
@@ -83,5 +95,3 @@ class ClientApiModel
         return $objeto->total;
     }
 }
-?>
-

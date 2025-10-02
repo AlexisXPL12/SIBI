@@ -291,7 +291,7 @@ async function registrarDependencia() {
                 timer: 1000
             });
             setTimeout(() => {
-                window.location.href = base_url + 'dependencias';
+                window.location.href = base_url + 'ambientes';
             }, 1000);
         } else if (json.msg == "Error_Sesion") {
             alerta_sesion();

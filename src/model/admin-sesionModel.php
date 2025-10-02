@@ -10,6 +10,14 @@ class SessionModel
         $this->conexion = new Conexion();
         $this->conexion = $this->conexion->connect();
     }
+    public function obtenerUsuarioPorSesion($id_sesion)
+    {
+        $sql = $this->conexion->query("SELECT u.id, u.nombres_apellidos, u.dni, u.correo FROM sesiones s JOIN usuarios u ON s.id_usuario = u.id WHERE s.id = '$id_sesion'");
+        if (!$sql) {
+            die("Error en la consulta: " . $this->conexion->error);
+        }
+        return $sql->fetch_object();
+    }
     public function registrarSesion($id_usuario, $fecha_hora_inicio, $fecha_hora_fin, $token)
     {
         $sql = $this->conexion->query("INSERT INTO sesiones (id_usuario , fecha_hora_inicio, fecha_hora_fin, token) VALUES ('$id_usuario','$fecha_hora_inicio','$fecha_hora_fin','$token')");

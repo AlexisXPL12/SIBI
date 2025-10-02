@@ -23,10 +23,10 @@ class BienModel
 
         return $bienes;
     }
-    public function registrarBien($codigo_patrimonial, $nombre_bien, $descripcion, $marca, $modelo, $serie, $color, $dimensiones, $id_categoria, $id_dependencia, $ubicacion_especifica, $fecha_adquisicion, $fecha_ingreso, $numero_factura, $numero_orden_compra, $estado_bien, $condicion_bien, $observaciones, $es_inventariable, $usuario_registro)
+    public function registrarBien($codigo_patrimonial, $nombre_bien, $descripcion, $marca, $modelo, $serie, $color, $dimensiones, $id_categoria, $id_dependencia, $ubicacion_especifica, $fecha_adquisicion, $fecha_ingreso, $estado_bien, $condicion_bien, $observaciones, $es_inventariable, $usuario_registro)
     {
-        $sql = $this->conexion->query("INSERT INTO bienes (codigo_patrimonial, nombre_bien, descripcion, marca, modelo, serie, color, dimensiones, id_categoria, id_dependencia, ubicacion_especifica, fecha_adquisicion, fecha_ingreso, numero_factura, numero_orden_compra, estado_bien, condicion_bien, observaciones, es_inventariable, usuario_registro)
-        VALUES ('$codigo_patrimonial', '$nombre_bien', '$descripcion', '$marca', '$modelo', '$serie', '$color', '$dimensiones', $id_categoria, $id_dependencia, '$ubicacion_especifica', '$fecha_adquisicion', '$fecha_ingreso', '$numero_factura', '$numero_orden_compra', '$estado_bien', '$condicion_bien', '$observaciones', $es_inventariable, '$usuario_registro')");
+        $sql = $this->conexion->query("INSERT INTO bienes (codigo_patrimonial, nombre_bien, descripcion, marca, modelo, serie, color, dimensiones, id_categoria, id_dependencia, ubicacion_especifica, fecha_adquisicion, fecha_ingreso, estado_bien, condicion_bien, observaciones, es_inventariable, usuario_registro)
+        VALUES ('$codigo_patrimonial', '$nombre_bien', '$descripcion', '$marca', '$modelo', '$serie', '$color', '$dimensiones', $id_categoria, $id_dependencia, '$ubicacion_especifica', '$fecha_adquisicion', '$fecha_ingreso', '$estado_bien', '$condicion_bien', '$observaciones', $es_inventariable, '$usuario_registro')");
 
         if ($sql) {
             $sql = $this->conexion->insert_id;

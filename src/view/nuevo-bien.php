@@ -50,9 +50,11 @@
                                 </div>
                             </div>
                             <div class="form-group row mb-2">
-                                <label for="dimensiones" class="col-4 col-form-label">Dimensiones:</label>
-                                <div class="col-8">
-                                    <input type="text" class="form-control" id="dimensiones" name="dimensiones" placeholder="Ej: 35x25x5 cm">
+                                <label for="dimensiones" class="col-4 col-form-label">Dimensiones (cm):</label>
+                                <div class="col-8 d-flex gap-2">
+                                    <input type="number" class="form-control" id="dim_largo" name="dim_largo" placeholder="Largo" min="0" step="0.01" required>
+                                    <input type="number" class="form-control" id="dim_ancho" name="dim_ancho" placeholder="Ancho" min="0" step="0.01" required>
+                                    <input type="number" class="form-control" id="dim_alto" name="dim_alto" placeholder="Alto" min="0" step="0.01" required>
                                 </div>
                             </div>
                         </div>
@@ -91,18 +93,6 @@
                                 <label for="fecha_ingreso" class="col-4 col-form-label">Fecha Ingreso:</label>
                                 <div class="col-8">
                                     <input type="date" class="form-control" id="fecha_ingreso" name="fecha_ingreso" required>
-                                </div>
-                            </div>
-                            <div class="form-group row mb-2">
-                                <label for="numero_factura" class="col-4 col-form-label">Número Factura:</label>
-                                <div class="col-8">
-                                    <input type="text" class="form-control" id="numero_factura" name="numero_factura" placeholder="Número de factura">
-                                </div>
-                            </div>
-                            <div class="form-group row mb-2">
-                                <label for="numero_orden_compra" class="col-4 col-form-label">Número Orden Compra:</label>
-                                <div class="col-8">
-                                    <input type="text" class="form-control" id="numero_orden_compra" name="numero_orden_compra" placeholder="Número de orden de compra">
                                 </div>
                             </div>
                             <div class="form-group row mb-2">
@@ -159,3 +149,9 @@
     </div>
 </div>
 <script src="<?php echo BASE_URL; ?>src/view/js/functions_bien.js"></script>
+<script>
+    datos_form();       
+    cargarCategorias();  
+    var lista_bienes_registro = [];
+    var v_ambientes = [];
+</script>
