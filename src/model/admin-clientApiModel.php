@@ -36,7 +36,6 @@ class ClientApiModel
         return $arrRespuesta;
     }
 
-
     public function actualizarCliente($id, $ruc, $razon_social, $telefono, $correo, $estado)
     {
         $sql = $this->conexion->query("
@@ -93,5 +92,19 @@ class ClientApiModel
         $respuesta = $this->conexion->query($query);
         $objeto = $respuesta->fetch_object();
         return $objeto->total;
+    }
+    // ==================================================
+    // BUSCAR BIEN POR DENOMINACIÓN (para API externa)
+    // ==================================================
+    public function buscarBienByDenominacion($denominacion)
+    {
+        $sql = "SELECT id, denominacion, descripcion, estado
+                FROM bien
+                WHERE denominacion LIKE ? AND estado = 1
+                ORDER BY denominacion ASC";
+
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->execute(["%$denominacion%"]);
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
 }

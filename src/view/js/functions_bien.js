@@ -428,7 +428,7 @@ async function registrarBien() {
     let nombre_bien = document.querySelector('#nombre_bien').value;
     let descripcion = document.querySelector('#descripcion').value;
 
-    if (codigo_patrimonial == "" || nombre_bien == "") {
+    if (codigo_patrimonial == "" || nombre_bien == "" || descripcion == "") {
         Swal.fire({
             type: 'error',
             title: 'Error',
@@ -452,6 +452,8 @@ async function registrarBien() {
         datos.delete('dimensiones');
         datos.append('dimensiones', dimensiones);
 
+        // Agregar usuario_registro desde la sesión
+        datos.append('usuario_registro', session_usuario);
         datos.append('sesion', session_session);
         datos.append('token', token_token);
 

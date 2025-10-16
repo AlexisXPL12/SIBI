@@ -115,7 +115,7 @@ if ($tipo == "registrar") {
             $es_inventariable = $_POST['es_inventariable'];
             $usuario_registro = $_POST['usuario_registro'];
 
-            if (empty($codigo_patrimonial) || empty($nombre_bien)) {
+            if ($codigo_patrimonial || $nombre_bien){
                 $arr_Respuesta = array('status' => false, 'mensaje' => 'Error, campos obligatorios vacíos');
             } else {
                 $arr_Bien = $objBien->buscarBienByCodigoPatrimonial($codigo_patrimonial);

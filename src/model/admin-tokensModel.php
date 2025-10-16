@@ -10,24 +10,9 @@ class TokenModel
         $this->conexion = $this->conexion->connect();
     }
 
-    public function generar_llave($cantidad = 32)
+    public function registrarToken($cliente, $token_final)
     {
-        $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ/}{[]@#$%&*()';
-        $llave = '';
-        $max = strlen($permitted_chars) - 1;
-        for ($i = 0; $i < $cantidad; $i++) {
-            $llave .= $permitted_chars[rand(0, $max)];
-        }
-        return $llave;
-    }
-
-    public function registrarToken($id_client_api, $fecha_registro, $estado)
-    {
-        $token = $this->generar_llave(); // Genera el token automáticamente
-        $sql = $this->conexion->query("
-            INSERT INTO tokens (id_client_api, token, fecha_registro, estado)
-            VALUES ('$id_client_api', '$token', '$fecha_registro', '$estado')
-        ");
+        $sql = $this->conexion->query("INSERT INTO tokens (id_client_api, token) VALUES ('$cliente','$token_final')");
         if ($sql) {
             $sql = $this->conexion->insert_id;
         } else {
@@ -46,12 +31,9 @@ class TokenModel
         return $sql;
     }
 
-    public function buscarTokensConFiltros($busqueda_token, $busqueda_cliente, $busqueda_estado)
+    public function buscarTokensConFiltros($busqueda_cliente, $busqueda_estado)
     {
         $condicion = "1=1";
-        if (!empty($busqueda_token)) {
-            $condicion .= " AND t.token LIKE '%$busqueda_token%'";
-        }
         if (!empty($busqueda_cliente)) {
             $condicion .= " AND t.id_client_api = '$busqueda_cliente'";
         }

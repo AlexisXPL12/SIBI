@@ -114,16 +114,15 @@ function generarfilastabla(item) {
     nueva_fila.className = "filas_tabla";
     let estado = item.estado == 1 ? "ACTIVO" : "INACTIVO";
     nueva_fila.innerHTML = `
-    <th>${cont}</th>
-    <td>${item.token}</td>
-    <td>${item.razon_social}</td>
-    <td>${item.fecha_registro}</td>
-    <td>${estado}</td>
-    <td>
-        <button class="btn btn-info btn-sm" data-toggle="modal" data-target=".modal_editar${item.id}">Editar</button>
-    </td>
-`;
-
+        <th>${cont}</th>
+        <td>${item.token}</td>
+        <td>${item.razon_social}</td>
+        <td>${item.fecha_registro}</td>
+        <td>${estado}</td>
+        <td>
+            <button class="btn btn-info btn-sm" data-toggle="modal" data-target=".modal_editar${item.id}">Editar</button>
+        </td>
+    `;
     document.querySelector('#modals_editar').innerHTML += `
         <div class="modal fade modal_editar${item.id}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
@@ -173,13 +172,10 @@ function generarfilastabla(item) {
             </div>
         </div>
     `;
-    // Cargar clientes en el modal de edición
-    let selectModal = document.getElementById(`id_client_api${item.id}`);
-    json.contenido.forEach(cliente => {
-        let selected = (cliente.id == item.id_client_api) ? 'selected' : '';
-        selectModal.innerHTML += `<option value="${cliente.id}" ${selected}>${cliente.razon_social}</option>`;
-    });
     document.querySelector('#contenido_tabla').appendChild(nueva_fila);
+
+    // Cargar clientes en el select del modal específico
+    cargarClientesEnSelectModal(item.id, item.id_client_api);
 }
 
 async function registrar_token() {
@@ -294,3 +290,29 @@ async function actualizarToken(id) {
         console.log("Error al actualizar token: " + e);
     }
 }
+async function cargarClientesEnSelectModal(modalId, idClienteSeleccionado) {
+    try {
+        const formData = new FormData();
+        formData.append('sesion', session_session);
+        formData.append('token', token_token);
+
+        let respuesta = await fetch(base_url_server + 'src/control/ClienteApi.php?tipo=listar_clientes_select', {
+            method: 'POST',
+            mode: 'cors',
+            cache: 'no-cache',
+            body: formData
+        });
+        let json = await respuesta.json();
+        if (json.status) {
+            let selectCliente = document.getElementById(`id_client_api${modalId}`);
+            selectCliente.innerHTML = '<option value="">Seleccione un cliente</option>';
+            json.contenido.forEach(cliente => {
+                let selected = (cliente.id == idClienteSeleccionado) ? 'selected' : '';
+                selectCliente.innerHTML += `<option value="${cliente.id}" ${selected}>${cliente.razon_social}</option>`;
+            });
+        }
+    } catch (e) {
+        console.log("Error al cargar clientes en modal: " + e);
+    }
+}
+

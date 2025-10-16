@@ -32,13 +32,12 @@ $model         = new ClientApiModel();
 $tipo = $_GET['tipo'];
 
 if ($tipo == "listar_clientes_select") {
-    $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
+
     $datos = $model->listarClientesSelect();
     $arr_Respuesta = array('status' => true, 'msg' => '', 'contenido' => $datos);
     echo json_encode($arr_Respuesta);
 
 } elseif ($tipo == "registrar") {
-    $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
 
     $ruc = $_POST['ruc'];
     $razon_social = $_POST['razon_social'];
@@ -58,7 +57,6 @@ if ($tipo == "listar_clientes_select") {
     echo json_encode($arr_Respuesta);
 
 } elseif ($tipo == "actualizar") {
-    $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
 
     $id = $_POST['data'];
     $ruc = $_POST['ruc'];
@@ -78,7 +76,6 @@ if ($tipo == "listar_clientes_select") {
     echo json_encode($arr_Respuesta);
 
 } elseif ($tipo == "listar_clientes_api_ordenados_tabla") {
-    $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
 
     $pagina = $_POST['pagina'];
     $cantidad_mostrar = $_POST['cantidad_mostrar'];
@@ -99,7 +96,6 @@ if ($tipo == "listar_clientes_select") {
     echo json_encode($arr_Respuesta);
 
 } elseif ($tipo == "verBienApiByNombre") {
-    $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
 
     // Validación del token (ejemplo similar a tu lógica original)
     $token = $_POST['token']; // o $_GET, según cómo lo envíes
