@@ -154,9 +154,7 @@
     cargarCategorias();  
     var lista_bienes_registro = [];
     var v_ambientes = [];
-    let session_usuario = <?php echo json_encode(  $_SESSION['sesion_usuario'] = $_POST['usuario']); ?>;
 </script>
 <script>
-    let session_usuario = <?php echo $_GET['id_u'];?>;
-    verPersona(id_u);
+    let session_usuario = <?php echo isset($_SESSION['sesion_usuario']) ? json_encode($_SESSION['sesion_usuario']) : 'null'; ?>;
 </script>

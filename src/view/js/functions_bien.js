@@ -239,49 +239,33 @@ async function actualizarBien(id) {
 async function datos_form() {
     try {
         mostrarPopupCarga();
-        // capturamos datos del formulario html
         const datos = new FormData();
         datos.append('sesion', session_session);
         datos.append('token', token_token);
-        //enviar datos hacia el controlador
+
         let respuesta = await fetch(base_url_server + 'src/control/Ambiente.php?tipo=listar_dependencias', {
             method: 'POST',
             mode: 'cors',
             cache: 'no-cache',
             body: datos
         });
-        json = await respuesta.json();
+
+        let json = await respuesta.json();
+
         if (json.status) {
-            listar_ambientes(json.contenido);
-            v_ambientes = json.contenido;
-        } else if (json.msg == "Error_Sesion") {
-            alerta_sesion();
+            let contenido_select = '<option value="">Seleccione</option>';
+            json.contenido.forEach(el => {
+                contenido_select += `<option value="${el.id}">${el.nombre_dependencia}</option>`;
+            });
+            document.getElementById('id_dependencia').innerHTML = contenido_select;
         }
-        //console.log(json);
     } catch (e) {
-        console.log("Oops, ocurrio un error " + e);
+        console.log("Error cargando dependencias: ", e);
     } finally {
         ocultarPopupCarga();
     }
 }
-async function listar_ambientes(datos, ambiente = 'ambiente') {
-    try {
-        let contenido_select = '<option value="">Seleccione</option>';
-        if (json.status) {
-            let contenido_select = '<option value="">Seleccione</option>';
-            datos.forEach(el => {
-                contenido_select += `<option value="${el.id}">${el.nombre_dependencia}</option>`;
-            });
 
-            const elCat = document.getElementById('id_dependencia');
-            if (elCat) elCat.innerHTML = contenido_select;
-        }
-
-    } catch (error) {
-        console.log("ocurrio un error al listar sedes " + error);
-    }
-
-}
 function listar_bienes_ingreso() {
     try {
         mostrarPopupCarga();
@@ -341,14 +325,13 @@ async function cargarCategorias() {
             json.contenido.forEach(el => {
                 contenido_select += `<option value="${el.id}">${el.nombre_categoria}</option>`;
             });
-
-            const elCat = document.getElementById('id_categoria');
-            if (elCat) elCat.innerHTML = contenido_select;
+            document.getElementById('id_categoria').innerHTML = contenido_select;
         }
     } catch (e) {
-        console.log("Error cargando categorías " + e);
+        console.log("Error cargando categorías: ", e);
     }
 }
+
 
 function agregar_bien_ingreso() {
     try {
@@ -424,15 +407,14 @@ function eliminar_bien_ingreso(index) {
     listar_bienes_ingreso();
 }
 async function registrarBien() {
-    let codigo_patrimonial = document.querySelector('#codigo_patrimonial').value;
-    let nombre_bien = document.querySelector('#nombre_bien').value;
-    let descripcion = document.querySelector('#descripcion').value;
+    const id_categoria = document.getElementById('id_categoria').value;
+    const id_dependencia = document.getElementById('id_dependencia').value;
 
-    if (codigo_patrimonial == "" || nombre_bien == "" || descripcion == "") {
+    if (!id_categoria || !id_dependencia) {
         Swal.fire({
             type: 'error',
             title: 'Error',
-            text: 'Campos obligatorios vacíos...',
+            text: 'Debe seleccionar una categoría y una dependencia.',
             confirmButtonClass: 'btn btn-confirm mt-2',
             footer: ''
         });

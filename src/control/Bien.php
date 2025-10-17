@@ -113,7 +113,8 @@ if ($tipo == "registrar") {
             $condicion_bien = $_POST['condicion_bien'];
             $observaciones = $_POST['observaciones'];
             $es_inventariable = $_POST['es_inventariable'];
-            $usuario_registro = $_POST['usuario_registro'];
+            $usuario_registro = $_POST['usuario_registro'] ?? $usuarioSesion->id;
+
 
             if ($codigo_patrimonial || $nombre_bien){
                 $arr_Respuesta = array('status' => false, 'mensaje' => 'Error, campos obligatorios vacíos');
