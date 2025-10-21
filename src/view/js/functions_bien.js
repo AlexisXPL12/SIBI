@@ -32,10 +32,9 @@ async function listar_bienes_ordenados() {
         if (!respuesta.ok) {
             throw new Error(`Error en la solicitud: ${respuesta.status} ${respuesta.statusText}`);
         }
-
+        
         let json = await respuesta.json();
 
-        document.querySelector('#modals_editar').innerHTML = ``;
 
         if (json.status) {
             let datos = json.contenido;
@@ -64,6 +63,7 @@ async function listar_bienes_ordenados() {
                     generarFilaTabla(item);
                 });
             }
+            document.querySelector('#modals_editar').innerHTML = ``;
         } else if (json.msg == "Error_Sesion") {
             alerta_sesion();
         } else {
@@ -73,7 +73,6 @@ async function listar_bienes_ordenados() {
                 </div>
             `;
         }
-
         if (json.total) {
             let paginacion = generar_paginacion(json.total, cantidad_mostrar);
             let texto_paginacion = generar_texto_paginacion(json.total, cantidad_mostrar);
@@ -332,7 +331,47 @@ async function cargarCategorias() {
     }
 }
 
+function listar_bienes_ingreso() {
+    try {
+        mostrarPopupCarga();
+        document.querySelector('#contenido_bienes_tabla_ingresos').innerHTML = '';
+        let cont = 1;
+        $(".filas_tabla_bienes").each(function () {
+            cont++;
+        });
+        let index = 0;
+        let contador = 0
+        lista_bienes_registro.forEach(item => {
+            let nueva_fila = document.createElement("tr");
+            nueva_fila.id = "fila" + item.id;
+            nueva_fila.className = "filas_tabla_bienes";
 
+            nombre_amb = '';
+
+            v_ambientes.forEach(ambiente => {
+                if (ambiente.id == item.ambiente) {
+                    nombre_amb = ambiente.detalle;
+                }
+            })
+            nueva_fila.innerHTML = `
+                            <th>${contador}</th>
+                            <td>${item.cod_patrimonial}</td>
+                            <td>${item.denominacion}</td>
+                            <td>${nombre_amb}</td>
+                            <td><button type="button" class="btn btn-danger" onclick="eliminar_bien_ingreso(${index});"><i class="fa fa-trash"></i></button></td>
+                `;
+            document.querySelector('#contenido_bienes_tabla_ingresos').appendChild(nueva_fila);
+            index++;
+            contador++;
+        });
+        //console.log(lista_bienes_registro);
+
+    } catch (error) {
+        console.log("ocurrio un error al agregar el bien " + error);
+    } finally {
+        ocultarPopupCarga();
+    }
+}
 function agregar_bien_ingreso() {
     try {
         mostrarPopupCarga();
@@ -409,12 +448,12 @@ function eliminar_bien_ingreso(index) {
 async function registrarBien() {
     const id_categoria = document.getElementById('id_categoria').value;
     const id_dependencia = document.getElementById('id_dependencia').value;
-
-    if (!id_categoria || !id_dependencia) {
+    console.log("id_categoria:", id_categoria, "id_dependencia:", id_dependencia); // Verifica los valores
+    if (!id_categoria || !id_dependencia || id_categoria === 'undefined' || id_dependencia === 'undefined' || id_categoria === '' || id_dependencia === '') {
         Swal.fire({
             type: 'error',
             title: 'Error',
-            text: 'Debe seleccionar una categoría y una dependencia.',
+            text: 'Debe seleccionar una categoría y una dependencia válidas.',
             confirmButtonClass: 'btn btn-confirm mt-2',
             footer: ''
         });

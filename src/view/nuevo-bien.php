@@ -64,7 +64,9 @@
                                 <div class="col-8">
                                     <select class="form-control" id="id_categoria" name="id_categoria" required>
                                         <option value="">Seleccione una categoría</option>
-                                        <!-- Aquí se cargarían las categorías desde la base de datos -->
+                                        <option value="1">Equipos de Cómputo</option>
+                                        <option value="2">Equipos de Laboratorio</option>
+                                        <!-- ... -->
                                     </select>
                                 </div>
                             </div>
@@ -73,7 +75,9 @@
                                 <div class="col-8">
                                     <select class="form-control" id="id_dependencia" name="id_dependencia" required>
                                         <option value="">Seleccione una dependencia</option>
-                                        <!-- Aquí se cargarían las dependencias desde la base de datos -->
+                                        <option value="1">Administración General</option>
+                                        <option value="2">Computación e Informática</option>
+                                        <!-- ... -->
                                     </select>
                                 </div>
                             </div>
@@ -150,11 +154,8 @@
 </div>
 <script src="<?php echo BASE_URL; ?>src/view/js/functions_bien.js"></script>
 <script>
-    datos_form();       
-    cargarCategorias();  
+    datos_form();
+    cargarCategorias();
     var lista_bienes_registro = [];
     var v_ambientes = [];
-</script>
-<script>
-    let session_usuario = <?php echo isset($_SESSION['sesion_usuario']) ? json_encode($_SESSION['sesion_usuario']) : 'null'; ?>;
 </script>

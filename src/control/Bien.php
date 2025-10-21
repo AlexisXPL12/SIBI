@@ -8,7 +8,6 @@ require_once('../model/admin-bienModel.php');
 require_once('../model/admin-categoriaModel.php');
 require_once('../model/admin-usuarioModel.php');
 require_once('../model/adminModel.php');
-
 $tipo = $_GET['tipo'];
 
 //instanciar la clase categoria model
