@@ -29,8 +29,10 @@
     <script>
         const base_url = '<?php echo BASE_URL; ?>';
         const base_url_server = '<?php echo BASE_URL_SERVER; ?>';
+        const session_usuario = '<?php echo $_SESSION["sesion_usuario"] ; ?>';
         const session_session = '<?php echo $_SESSION['sesion_id']; ?>';
         const token_token = '<?php echo $_SESSION['sesion_token']; ?>';
+
     </script>
     <?php date_default_timezone_set('America/Lima');  ?>
     <style>

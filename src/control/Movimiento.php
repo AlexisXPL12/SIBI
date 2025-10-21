@@ -90,14 +90,43 @@ if ($tipo == "listar_movimientos_ordenados_tabla") {
 
 if ($tipo == "datos_registro") {
     $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
-
     if ($objSesion->verificar_sesion_si_activa($id_sesion, $token)) {
+        $usuarioSesion = $objSesion->obtenerUsuarioPorSesion($id_sesion);
         $arr_Respuesta['bienes'] = $objMovimiento->obtenerBienesDisponibles();
         $arr_Respuesta['dependencias'] = $objMovimiento->obtenerDependencias();
+
+        // Obtener la dependencia del usuario actual
+        if (isset($usuarioSesion->id_dependencia)) {
+            $usuarioDependencia = $objAmbiente->buscarDependenciaById($usuarioSesion->id_dependencia);
+            $arr_Respuesta['usuario_dependencia_id'] = $usuarioDependencia->id_dependencia;
+            $arr_Respuesta['usuario_dependencia_nombre'] = $usuarioDependencia->nombre_dependencia;
+        }
+
         $arr_Respuesta['status'] = true;
     }
     echo json_encode($arr_Respuesta);
 }
+if ($tipo == "obtener_dependencia_bien") {
+    $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
+    if ($objSesion->verificar_sesion_si_activa($id_sesion, $token)) {
+        $id_bien = $_POST['id_bien'] ?? '';
+        if (!empty($id_bien)) {
+            $bien = $objBien->buscarBienById($id_bien);
+            if ($bien) {
+                $arr_Respuesta['dependencia_id'] = $bien->id_dependencia;
+                $dependencia = $objAmbiente->buscarDependenciaById($bien->id_dependencia);
+                $arr_Respuesta['dependencia_nombre'] = $dependencia ? $dependencia->nombre_dependencia : 'Desconocida';
+                $arr_Respuesta['status'] = true;
+            } else {
+                $arr_Respuesta['msg'] = 'Bien no encontrado';
+            }
+        } else {
+            $arr_Respuesta['msg'] = 'ID de bien no proporcionado';
+        }
+    }
+    echo json_encode($arr_Respuesta);
+}
+
 
 if ($tipo == "registrar") {
     $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');

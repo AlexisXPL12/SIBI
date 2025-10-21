@@ -254,16 +254,19 @@ async function datos_form() {
         if (json.status) {
             let contenido_select = '<option value="">Seleccione</option>';
             json.contenido.forEach(el => {
-                contenido_select += `<option value="${el.id}">${el.nombre_dependencia}</option>`;
+                contenido_select += `<option value="${el.id_dependencia}">${el.nombre_dependencia}</option>`;
             });
             document.getElementById('id_dependencia').innerHTML = contenido_select;
+        } else {
+            console.error("Error al cargar dependencias:", json.msg);
         }
     } catch (e) {
-        console.log("Error cargando dependencias: ", e);
+        console.error("Error cargando dependencias: ", e);
     } finally {
         ocultarPopupCarga();
     }
 }
+
 
 function listar_bienes_ingreso() {
     try {
@@ -322,14 +325,17 @@ async function cargarCategorias() {
         if (json.status) {
             let contenido_select = '<option value="">Seleccione</option>';
             json.contenido.forEach(el => {
-                contenido_select += `<option value="${el.id}">${el.nombre_categoria}</option>`;
+                contenido_select += `<option value="${el.id_categoria}">${el.nombre_categoria}</option>`;
             });
             document.getElementById('id_categoria').innerHTML = contenido_select;
+        } else {
+            console.error("Error al cargar categorías:", json.msg);
         }
     } catch (e) {
-        console.log("Error cargando categorías: ", e);
+        console.error("Error cargando categorías: ", e);
     }
 }
+
 
 function listar_bienes_ingreso() {
     try {
@@ -448,8 +454,11 @@ function eliminar_bien_ingreso(index) {
 async function registrarBien() {
     const id_categoria = document.getElementById('id_categoria').value;
     const id_dependencia = document.getElementById('id_dependencia').value;
-    console.log("id_categoria:", id_categoria, "id_dependencia:", id_dependencia); // Verifica los valores
-    if (!id_categoria || !id_dependencia || id_categoria === 'undefined' || id_dependencia === 'undefined' || id_categoria === '' || id_dependencia === '') {
+
+    console.log("id_categoria:", id_categoria, "id_dependencia:", id_dependencia);
+
+    if (!id_categoria || id_categoria === '' || id_categoria === 'undefined' ||
+        !id_dependencia || id_dependencia === '' || id_dependencia === 'undefined') {
         Swal.fire({
             type: 'error',
             title: 'Error',
@@ -486,6 +495,7 @@ async function registrarBien() {
         });
 
         let json = await respuesta.json();
+
         if (json.status) {
             document.getElementById("frmRegistrar").reset();
             Swal.fire({
@@ -499,22 +509,24 @@ async function registrarBien() {
             setTimeout(() => {
                 window.location.href = base_url + 'bienes';
             }, 1000);
-        } else if (json.msg == "Error_Sesion") {
+        } else if (json.msg === "Error_Sesion") {
             alerta_sesion();
         } else {
             Swal.fire({
                 type: 'error',
                 title: 'Error',
-                text: json.mensaje,
+                text: json.mensaje || 'Error desconocido.',
                 confirmButtonClass: 'btn btn-confirm mt-2',
                 footer: '',
                 timer: 1000
             });
         }
     } catch (e) {
-        console.log("Error al registrar bien: " + e);
+        console.error("Error al registrar bien: ", e);
     }
 }
+
+
 
 
 

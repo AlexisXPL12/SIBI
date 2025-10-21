@@ -154,8 +154,10 @@
 </div>
 <script src="<?php echo BASE_URL; ?>src/view/js/functions_bien.js"></script>
 <script>
-    datos_form();
+   document.addEventListener('DOMContentLoaded', function() {
     cargarCategorias();
+    datos_form();
+    });
     var lista_bienes_registro = [];
     var v_ambientes = [];
 </script>

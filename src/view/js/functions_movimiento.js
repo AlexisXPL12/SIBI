@@ -470,16 +470,13 @@ async function cargarDatosRegistro() {
         const formData = new FormData();
         formData.append('sesion', session_session);
         formData.append('token', token_token);
-
         let respuesta = await fetch(base_url_server + 'src/control/Movimiento.php?tipo=datos_registro', {
             method: 'POST',
             mode: 'cors',
             cache: 'no-cache',
             body: formData
         });
-
         let json = await respuesta.json();
-
         if (json.status) {
             // Cargar bienes
             let selectBien = document.getElementById('id_bien');
@@ -491,30 +488,90 @@ async function cargarDatosRegistro() {
                 selectBien.appendChild(option);
             });
 
-            // Cargar dependencias
-            let selectOrigen = document.getElementById('id_dependencia_origen');
+            // Cargar dependencias destino
             let selectDestino = document.getElementById('id_dependencia_destino');
-
-            selectOrigen.innerHTML = '<option value="">Seleccione una dependencia</option>';
             selectDestino.innerHTML = '<option value="">Seleccione una dependencia</option>';
-
             json.dependencias.forEach(dependencia => {
-                let optionOrigen = document.createElement('option');
-                optionOrigen.value = dependencia.id_dependencia;
-                optionOrigen.textContent = dependencia.nombre_dependencia;
-
                 let optionDestino = document.createElement('option');
                 optionDestino.value = dependencia.id_dependencia;
                 optionDestino.textContent = dependencia.nombre_dependencia;
-
-                selectOrigen.appendChild(optionOrigen);
                 selectDestino.appendChild(optionDestino);
             });
+
+            // Cargar dependencia de origen del usuario
+            let selectOrigen = document.getElementById('id_dependencia_origen');
+            selectOrigen.innerHTML = '';
+            if (json.usuario_dependencia_id && json.usuario_dependencia_nombre) {
+                let optionOrigen = document.createElement('option');
+                optionOrigen.value = json.usuario_dependencia_id;
+                optionOrigen.textContent = json.usuario_dependencia_nombre;
+                optionOrigen.selected = true;
+                selectOrigen.appendChild(optionOrigen);
+            }
+            selectOrigen.disabled = true;
         }
     } catch (e) {
         console.error("Error al cargar datos para el registro: ", e);
     }
 }
+
+// Asegúrate de que esta función esté definida antes de ser utilizada
+async function cargarDependenciaDelBien(idBien) {
+    if (!idBien) {
+        return;
+    }
+
+    try {
+        const formData = new FormData();
+        formData.append('id_bien', idBien);
+        formData.append('sesion', session_session);
+        formData.append('token', token_token);
+
+        let respuesta = await fetch(base_url_server + 'src/control/Movimiento.php?tipo=obtener_dependencia_bien', {
+            method: 'POST',
+            mode: 'cors',
+            cache: 'no-cache',
+            body: formData
+        });
+
+        let json = await respuesta.json();
+        console.log(json); // Verifica la respuesta del servidor
+
+        if (json.status) {
+            let selectOrigen = document.getElementById('id_dependencia_origen');
+            selectOrigen.innerHTML = '';
+
+            if (json.dependencia_id && json.dependencia_nombre) {
+                let optionOrigen = document.createElement('option');
+                optionOrigen.value = json.dependencia_id;
+                optionOrigen.textContent = json.dependencia_nombre;
+                optionOrigen.selected = true;
+                selectOrigen.appendChild(optionOrigen);
+            }
+        } else {
+            console.error("Error al cargar la dependencia del bien: ", json.msg);
+        }
+    } catch (e) {
+        console.error("Error al cargar la dependencia del bien: ", e);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    cargarDatosRegistro();
+
+    // Asegúrate de que el elemento id_bien exista antes de agregar el evento
+    let selectBien = document.getElementById('id_bien');
+    if (selectBien) {
+        selectBien.addEventListener('change', function() {
+            cargarDependenciaDelBien(this.value);
+        });
+    } else {
+        console.error("Elemento id_bien no encontrado");
+    }
+});
+
+
+
 
 async function registrarMovimiento() {
     let id_bien = document.querySelector('#id_bien').value;
@@ -551,6 +608,7 @@ async function registrarMovimiento() {
         });
 
         let json = await respuesta.json();
+
         if (json.status) {
             document.getElementById("frmRegistrar").reset();
             Swal.fire({

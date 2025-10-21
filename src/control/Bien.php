@@ -85,6 +85,15 @@ if ($tipo == "listar_bienes_ordenados_tabla") {
 if ($tipo == "registrar") {
     $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
 
+    $id_sesion = $_POST['sesion'] ?? '';
+    $token = $_POST['token'] ?? '';
+
+    if (empty($id_sesion) || empty($token)) {
+        $arr_Respuesta['msg'] = 'Sesión o token no proporcionados.';
+        echo json_encode($arr_Respuesta);
+        exit;
+    }
+
     if ($objSesion->verificar_sesion_si_activa($id_sesion, $token)) {
         $usuarioSesion = $objSesion->obtenerUsuarioPorSesion($id_sesion);
         if (!$usuarioSesion) {
@@ -92,67 +101,75 @@ if ($tipo == "registrar") {
             echo json_encode($arr_Respuesta);
             exit;
         }
+
         $usuario_registro = $usuarioSesion->id;
 
         if ($_POST) {
-            $codigo_patrimonial = $_POST['codigo_patrimonial'];
-            $nombre_bien = $_POST['nombre_bien'];
-            $descripcion = $_POST['descripcion'];
-            $marca = $_POST['marca'];
-            $modelo = $_POST['modelo'];
-            $serie = $_POST['serie'];
-            $color = $_POST['color'];
-            $dimensiones = $_POST['dimensiones'];
-            $id_categoria = $_POST['id_categoria'];
-            $id_dependencia = $_POST['id_dependencia'];
-            $ubicacion_especifica = $_POST['ubicacion_especifica'];
-            $fecha_adquisicion = $_POST['fecha_adquisicion'];
-            $fecha_ingreso = $_POST['fecha_ingreso'];
-            $estado_bien = $_POST['estado_bien'];
-            $condicion_bien = $_POST['condicion_bien'];
-            $observaciones = $_POST['observaciones'];
-            $es_inventariable = $_POST['es_inventariable'];
+            $codigo_patrimonial = trim($_POST['codigo_patrimonial'] ?? '');
+            $nombre_bien = trim($_POST['nombre_bien'] ?? '');
+
+            // Validar que los campos obligatorios no estén vacíos
+            if (empty($codigo_patrimonial) || empty($nombre_bien)) {
+                $arr_Respuesta = array('status' => false, 'mensaje' => 'Error, campos obligatorios vacíos');
+                echo json_encode($arr_Respuesta);
+                exit;
+            }
+
+            $descripcion = $_POST['descripcion'] ?? '';
+            $marca = $_POST['marca'] ?? '';
+            $modelo = $_POST['modelo'] ?? '';
+            $serie = $_POST['serie'] ?? '';
+            $color = $_POST['color'] ?? '';
+            $dimensiones = $_POST['dimensiones'] ?? '';
+            $id_categoria = $_POST['id_categoria'] ?? '';
+            $id_dependencia = $_POST['id_dependencia'] ?? '';
+            $ubicacion_especifica = $_POST['ubicacion_especifica'] ?? '';
+            $fecha_adquisicion = $_POST['fecha_adquisicion'] ?? '';
+            $fecha_ingreso = $_POST['fecha_ingreso'] ?? '';
+            $estado_bien = $_POST['estado_bien'] ?? '';
+            $condicion_bien = $_POST['condicion_bien'] ?? '';
+            $observaciones = $_POST['observaciones'] ?? '';
+            $es_inventariable = $_POST['es_inventariable'] ?? '';
             $usuario_registro = $_POST['usuario_registro'] ?? $usuarioSesion->id;
 
+            $arr_Bien = $objBien->buscarBienByCodigoPatrimonial($codigo_patrimonial);
+            if ($arr_Bien) {
+                $arr_Respuesta = array('status' => false, 'mensaje' => 'Registro Fallido, el código patrimonial ya se encuentra registrado');
+                echo json_encode($arr_Respuesta);
+                exit;
+            }
 
-            if ($codigo_patrimonial || $nombre_bien){
-                $arr_Respuesta = array('status' => false, 'mensaje' => 'Error, campos obligatorios vacíos');
+            $id_bien = $objBien->registrarBien(
+                $codigo_patrimonial,
+                $nombre_bien,
+                $descripcion,
+                $marca,
+                $modelo,
+                $serie,
+                $color,
+                $dimensiones,
+                $id_categoria,
+                $id_dependencia,
+                $ubicacion_especifica,
+                $fecha_adquisicion,
+                $fecha_ingreso,
+                $estado_bien,
+                $condicion_bien,
+                $observaciones,
+                $es_inventariable,
+                $usuario_registro
+            );
+
+            if ($id_bien > 0) {
+                $arr_Respuesta = array('status' => true, 'mensaje' => 'Registro Exitoso');
             } else {
-                $arr_Bien = $objBien->buscarBienByCodigoPatrimonial($codigo_patrimonial);
-                if ($arr_Bien) {
-                    $arr_Respuesta = array('status' => false, 'mensaje' => 'Registro Fallido, el código patrimonial ya se encuentra registrado');
-                } else {
-                    $id_bien = $objBien->registrarBien(
-                        $codigo_patrimonial,
-                        $nombre_bien,
-                        $descripcion,
-                        $marca,
-                        $modelo,
-                        $serie,
-                        $color,
-                        $dimensiones,
-                        $id_categoria,
-                        $id_dependencia,
-                        $ubicacion_especifica,
-                        $fecha_adquisicion,
-                        $fecha_ingreso,
-                        $estado_bien,
-                        $condicion_bien,
-                        $observaciones,
-                        $es_inventariable,
-                        $usuario_registro
-                    );
-                    if ($id_bien > 0) {
-                        $arr_Respuesta = array('status' => true, 'mensaje' => 'Registro Exitoso');
-                    } else {
-                        $arr_Respuesta = array('status' => false, 'mensaje' => 'Error al registrar bien');
-                    }
-                }
+                $arr_Respuesta = array('status' => false, 'mensaje' => 'Error al registrar bien');
             }
         }
     }
     echo json_encode($arr_Respuesta);
 }
+
 
 if ($tipo == "actualizar") {
     $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');

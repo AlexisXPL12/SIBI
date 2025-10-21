@@ -11,6 +11,7 @@
                             <select class="form-control" id="id_bien" name="id_bien" required>
                                 <option value="">Seleccione un bien</option>
                             </select>
+
                         </div>
                     </div>
                     <div class="form-group row mb-2">
@@ -29,7 +30,8 @@
                     <div class="form-group row mb-2">
                         <label for="id_dependencia_origen" class="col-3 col-form-label">Dependencia Origen:</label>
                         <div class="col-9">
-                            <select class="form-control" id="id_dependencia_origen" name="id_dependencia_origen">
+                            <select class="form-control" id="id_dependencia_origen" name="id_dependencia_origen"
+                                disabled>
                                 <option value="">Seleccione una dependencia</option>
                             </select>
                         </div>
@@ -57,19 +59,16 @@
                     <div class="form-group row mb-2">
                         <label for="documento_referencia" class="col-3 col-form-label">Documento de Referencia:</label>
                         <div class="col-9">
-                            <input type="text" class="form-control" id="documento_referencia" name="documento_referencia">
-                        </div>
-                    </div>
-                    <div class="form-group row mb-2">
-                        <label for="usuario_solicita" class="col-3 col-form-label">Usuario que Solicita:</label>
-                        <div class="col-9">
-                            <input type="text" class="form-control" id="usuario_solicita" name="usuario_solicita" value="<?php echo $_SESSION['nombre_usuario']; ?>" readonly>
+                            <input type="text" class="form-control" id="documento_referencia"
+                                name="documento_referencia">
                         </div>
                     </div>
                     <div class="form-group mb-0 justify-content-end row text-center">
                         <div class="col-12">
-                            <a href="<?php echo BASE_URL; ?>movimientos" class="btn btn-light waves-effect waves-light">Regresar</a>
-                            <button type="button" class="btn btn-success waves-effect waves-light" onclick="registrarMovimiento();">Registrar</button>
+                            <a href="<?php echo BASE_URL; ?>movimientos"
+                                class="btn btn-light waves-effect waves-light">Regresar</a>
+                            <button type="button" class="btn btn-success waves-effect waves-light"
+                                onclick="registrarMovimiento();">Registrar</button>
                         </div>
                     </div>
                 </form>
@@ -80,4 +79,12 @@
 <script src="<?php echo BASE_URL; ?>src/view/js/functions_movimiento.js"></script>
 <script>
     cargarDatosRegistro();
+    document.addEventListener('DOMContentLoaded', function () {
+        cargarDatosRegistro();
+
+        // Agregar evento onchange al select de bienes
+        document.getElementById('id_bien').addEventListener('change', function () {
+            cargarDependenciaDelBien(this.value);
+        });
+    });
 </script>

@@ -10,6 +10,11 @@ class MovimientoModel
         $this->conexion = new Conexion();
         $this->conexion = $this->conexion->connect();
     }
+    public function buscarBienById($id_bien)
+    {
+        $sql = $this->conexion->query("SELECT b.*, d.nombre_dependencia FROM bienes b LEFT JOIN dependencias d ON b.id_dependencia = d.id_dependencia WHERE b.id_bien = $id_bien");
+        return $sql->fetch_object();
+    }
 
     public function registrarMovimiento($id_bien, $tipo_movimiento, $id_dependencia_origen, $id_dependencia_destino, $motivo, $observaciones, $documento_referencia, $usuario_solicita)
     {
