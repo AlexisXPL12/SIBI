@@ -10,8 +10,14 @@ async function listar_movimientos_ordenados() {
         let cantidad_mostrar = document.getElementById('cantidad_mostrar').value;
         let busqueda_tipo_movimiento = document.getElementById('busqueda_tipo_movimiento').value;
         let busqueda_estado_movimiento = document.getElementById('busqueda_estado_movimiento').value;
-        let busqueda_bien = document.getElementById('busqueda_bien').value;
-        let busqueda_dependencia = document.getElementById('busqueda_dependencia').value;
+
+        // Eliminamos las líneas que buscan los elementos eliminados
+        // let busqueda_bien = document.getElementById('busqueda_bien').value;
+        // let busqueda_dependencia = document.getElementById('busqueda_dependencia').value;
+
+        // Asignamos valores vacíos para los filtros eliminados
+        let busqueda_bien = '';
+        let busqueda_dependencia = '';
 
         document.getElementById('filtro_tipo_movimiento').value = busqueda_tipo_movimiento;
         document.getElementById('filtro_estado_movimiento').value = busqueda_estado_movimiento;
@@ -40,7 +46,6 @@ async function listar_movimientos_ordenados() {
         }
 
         let json = await respuesta.json();
-
         document.querySelector('#modals_editar').innerHTML = ``;
 
         if (json.status) {
@@ -106,7 +111,6 @@ function generarFilaTabla(item) {
     $(".filas_tabla").each(function () {
         cont++;
     });
-
     let origen_destino = '';
     if (item.dependencia_origen) {
         origen_destino += item.dependencia_origen;
@@ -114,11 +118,9 @@ function generarFilaTabla(item) {
     if (item.dependencia_destino) {
         origen_destino += ' → ' + item.dependencia_destino;
     }
-
     let nueva_fila = document.createElement("tr");
     nueva_fila.id = "fila" + item.id;
     nueva_fila.className = "filas_tabla";
-
     nueva_fila.innerHTML = `
         <th>${cont}</th>
         <td>${item.nombre_bien || 'N/A'} (${item.codigo_patrimonial || 'N/A'})</td>
@@ -127,101 +129,24 @@ function generarFilaTabla(item) {
         <td>${item.motivo}</td>
         <td><span class="badge ${item.estado_movimiento === 'PENDIENTE' ? 'badge-warning' : item.estado_movimiento === 'EJECUTADO' ? 'badge-success' : 'badge-danger'}">${item.estado_movimiento}</span></td>
         <td>${item.fecha_solicitud}</td>
-        <td>${item.options}</td>
-    `;
-
-    document.querySelector('#modals_editar').innerHTML += `
-        <div class="modal fade modal_editar${item.id}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header text-center">
-                        <h5 class="modal-title h4" id="myLargeModalLabel">Actualizar datos del movimiento</h5>
-                        <button type="button" class="close waves-effect waves-light" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="col-12">
-                            <form class="form-horizontal" id="frmActualizar${item.id}">
-                                <div class="form-group row mb-2">
-                                    <label for="id_bien${item.id}" class="col-3 col-form-label">Bien:</label>
-                                    <div class="col-9">
-                                        <select class="form-control" id="id_bien${item.id}" name="id_bien" required>
-                                            <option value="">Seleccione un bien</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row mb-2">
-                                    <label for="tipo_movimiento${item.id}" class="col-3 col-form-label">Tipo de Movimiento:</label>
-                                    <div class="col-9">
-                                        <select class="form-control" id="tipo_movimiento${item.id}" name="tipo_movimiento" required>
-                                            <option value="INGRESO" ${item.tipo_movimiento === 'INGRESO' ? 'selected' : ''}>INGRESO</option>
-                                            <option value="TRASLADO" ${item.tipo_movimiento === 'TRASLADO' ? 'selected' : ''}>TRASLADO</option>
-                                            <option value="BAJA" ${item.tipo_movimiento === 'BAJA' ? 'selected' : ''}>BAJA</option>
-                                            <option value="PRESTAMO" ${item.tipo_movimiento === 'PRESTAMO' ? 'selected' : ''}>PRESTAMO</option>
-                                            <option value="DEVOLUCION" ${item.tipo_movimiento === 'DEVOLUCION' ? 'selected' : ''}>DEVOLUCION</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row mb-2">
-                                    <label for="id_dependencia_origen${item.id}" class="col-3 col-form-label">Dependencia Origen:</label>
-                                    <div class="col-9">
-                                        <select class="form-control" id="id_dependencia_origen${item.id}" name="id_dependencia_origen">
-                                            <option value="">Seleccione una dependencia</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row mb-2">
-                                    <label for="id_dependencia_destino${item.id}" class="col-3 col-form-label">Dependencia Destino:</label>
-                                    <div class="col-9">
-                                        <select class="form-control" id="id_dependencia_destino${item.id}" name="id_dependencia_destino">
-                                            <option value="">Seleccione una dependencia</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row mb-2">
-                                    <label for="motivo${item.id}" class="col-3 col-form-label">Motivo:</label>
-                                    <div class="col-9">
-                                        <textarea name="motivo" id="motivo${item.id}" class="form-control" required>${item.motivo}</textarea>
-                                    </div>
-                                </div>
-                                <div class="form-group row mb-2">
-                                    <label for="observaciones${item.id}" class="col-3 col-form-label">Observaciones:</label>
-                                    <div class="col-9">
-                                        <textarea name="observaciones" id="observaciones${item.id}" class="form-control">${item.observaciones}</textarea>
-                                    </div>
-                                </div>
-                                <div class="form-group row mb-2">
-                                    <label for="documento_referencia${item.id}" class="col-3 col-form-label">Documento de Referencia:</label>
-                                    <div class="col-9">
-                                        <input type="text" class="form-control" id="documento_referencia${item.id}" name="documento_referencia" value="${item.documento_referencia}">
-                                    </div>
-                                </div>
-                                <div class="form-group row mb-2">
-                                    <label for="usuario_solicita${item.id}" class="col-3 col-form-label">Usuario que Solicita:</label>
-                                    <div class="col-9">
-                                        <input type="text" class="form-control" id="usuario_solicita${item.id}" name="usuario_solicita" value="${item.usuario_solicita}" readonly>
-                                    </div>
-                                </div>
-                                <div class="form-group mb-0 justify-content-end row text-center">
-                                    <div class="col-12">
-                                        <button type="button" class="btn btn-light waves-effect waves-light" data-dismiss="modal">Cancelar</button>
-                                        <button type="button" class="btn btn-success waves-effect waves-light" onclick="actualizarMovimiento(${item.id})">Actualizar</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+        <td>
+            <div class="btn-group" role="group">
+                <button type="button" title="Editar" class="btn btn-primary btn-sm waves-effect waves-light" data-toggle="modal" data-target=".modal_editar${item.id}">
+                    <i class="fa fa-edit"></i>
+                </button>
+                ${item.estado_movimiento === 'PENDIENTE' ?
+                    `<button type="button" title="Ejecutar" class="btn btn-success btn-sm waves-effect waves-light" onclick="ejecutarMovimiento(${item.id})">
+                        <i class="fa fa-check"></i>
+                    </button>
+                    <button type="button" title="Cancelar" class="btn btn-danger btn-sm waves-effect waves-light" onclick="cancelarMovimiento(${item.id})">
+                        <i class="fa fa-times"></i>
+                    </button>` : ''}
             </div>
-        </div>
+        </td>
     `;
-
     document.querySelector('#contenido_tabla').appendChild(nueva_fila);
-
-    // Cargar datos en los selects del modal
-    cargarDatosModal(item.id);
 }
+
 
 async function cargarDatosModal(id) {
     try {
@@ -376,14 +301,12 @@ async function ejecutarMovimiento(id) {
                 formData.append('usuario_autoriza', session_usuario);
                 formData.append('sesion', session_session);
                 formData.append('token', token_token);
-
                 let respuesta = await fetch(base_url_server + 'src/control/Movimiento.php?tipo=ejecutar', {
                     method: 'POST',
                     mode: 'cors',
                     cache: 'no-cache',
                     body: formData
                 });
-
                 let json = await respuesta.json();
                 if (json.status) {
                     Swal.fire({
@@ -430,14 +353,12 @@ async function cancelarMovimiento(id) {
                 formData.append('usuario_autoriza', session_usuario);
                 formData.append('sesion', session_session);
                 formData.append('token', token_token);
-
                 let respuesta = await fetch(base_url_server + 'src/control/Movimiento.php?tipo=cancelar', {
                     method: 'POST',
                     mode: 'cors',
                     cache: 'no-cache',
                     body: formData
                 });
-
                 let json = await respuesta.json();
                 if (json.status) {
                     Swal.fire({
@@ -465,6 +386,7 @@ async function cancelarMovimiento(id) {
         }
     });
 }
+
 async function cargarDatosRegistro() {
     try {
         const formData = new FormData();
@@ -518,9 +440,9 @@ async function cargarDatosRegistro() {
 // Asegúrate de que esta función esté definida antes de ser utilizada
 async function cargarDependenciaDelBien(idBien) {
     if (!idBien) {
+        document.getElementById('id_dependencia_origen').innerHTML = '<option value="">Seleccione una dependencia</option>';
         return;
     }
-
     try {
         const formData = new FormData();
         formData.append('id_bien', idBien);
@@ -535,43 +457,39 @@ async function cargarDependenciaDelBien(idBien) {
         });
 
         let json = await respuesta.json();
-        console.log(json); // Verifica la respuesta del servidor
-
-        if (json.status) {
+        if (json.status && json.dependencia_id && json.dependencia_nombre) {
             let selectOrigen = document.getElementById('id_dependencia_origen');
-            selectOrigen.innerHTML = '';
-
-            if (json.dependencia_id && json.dependencia_nombre) {
-                let optionOrigen = document.createElement('option');
-                optionOrigen.value = json.dependencia_id;
-                optionOrigen.textContent = json.dependencia_nombre;
-                optionOrigen.selected = true;
-                selectOrigen.appendChild(optionOrigen);
-            }
+            selectOrigen.innerHTML = ''; // Limpiar opciones anteriores
+            let optionOrigen = document.createElement('option');
+            optionOrigen.value = json.dependencia_id;
+            optionOrigen.textContent = json.dependencia_nombre;
+            optionOrigen.selected = true;
+            selectOrigen.appendChild(optionOrigen);
         } else {
             console.error("Error al cargar la dependencia del bien: ", json.msg);
+            let selectOrigen = document.getElementById('id_dependencia_origen');
+            selectOrigen.innerHTML = '<option value="">Dependencia no encontrada</option>';
         }
     } catch (e) {
         console.error("Error al cargar la dependencia del bien: ", e);
+        let selectOrigen = document.getElementById('id_dependencia_origen');
+        selectOrigen.innerHTML = '<option value="">Error al cargar</option>';
     }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     cargarDatosRegistro();
 
     // Asegúrate de que el elemento id_bien exista antes de agregar el evento
     let selectBien = document.getElementById('id_bien');
     if (selectBien) {
-        selectBien.addEventListener('change', function() {
+        selectBien.addEventListener('change', function () {
             cargarDependenciaDelBien(this.value);
         });
     } else {
         console.error("Elemento id_bien no encontrado");
     }
 });
-
-
-
 
 async function registrarMovimiento() {
     let id_bien = document.querySelector('#id_bien').value;
@@ -581,7 +499,6 @@ async function registrarMovimiento() {
     let motivo = document.querySelector('#motivo').value;
     let observaciones = document.querySelector('#observaciones').value;
     let documento_referencia = document.querySelector('#documento_referencia').value;
-    let usuario_solicita = document.querySelector('#usuario_solicita').value;
 
     if (id_bien == "" || tipo_movimiento == "" || motivo == "") {
         Swal.fire({
@@ -595,9 +512,13 @@ async function registrarMovimiento() {
     }
 
     try {
+        document.getElementById('id_dependencia_origen').disabled = false;
+
         const datos = new FormData(document.getElementById('frmRegistrar'));
+        datos.append('usuario_solicita', session_usuario);
         datos.append('sesion', session_session);
         datos.append('token', token_token);
+        datos.append('usuario_solicita', session_usuario);
         datos.append('estado_movimiento', 'PENDIENTE');
 
         let respuesta = await fetch(base_url_server + 'src/control/Movimiento.php?tipo=registrar', {
@@ -606,6 +527,8 @@ async function registrarMovimiento() {
             cache: 'no-cache',
             body: datos
         });
+
+        document.getElementById('id_dependencia_origen').disabled = true;
 
         let json = await respuesta.json();
 

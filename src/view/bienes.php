@@ -12,23 +12,25 @@
         </div>
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">Filtros de Búsqueda</h4>
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h4 class="card-title mb-0">Filtros de Búsqueda</h4>
+                </div>
                 <div class="row col-12">
                     <div class="form-group row mb-3 col-6">
                         <label for="busqueda_codigo_patrimonial" class="col-5 col-form-label">Código Patrimonial:</label>
                         <div class="col-7">
-                            <input type="text" class="form-control" name="busqueda_codigo_patrimonial" id="busqueda_codigo_patrimonial" placeholder="Ej: CP-001-2024">
+                            <input type="text" class="form-control" name="busqueda_codigo_patrimonial" id="busqueda_codigo_patrimonial" placeholder="Ej: IES-001-2025">
                         </div>
                     </div>
                     <div class="form-group row mb-3 col-6">
                         <label for="busqueda_nombre_bien" class="col-5 col-form-label">Nombre del Bien:</label>
                         <div class="col-7">
-                            <input type="text" class="form-control" name="busqueda_nombre_bien" id="busqueda_nombre_bien" placeholder="Ej: Laptop HP Pavilion">
+                            <input type="text" class="form-control" name="busqueda_nombre_bien" id="busqueda_nombre_bien" placeholder="Ej: Laptop, Proyector, Taladro">
                         </div>
                     </div>
                 </div>
                 <div class="form-group mb-0 text-center">
-                    <button type="button" class="btn btn-primary waves-effect waves-light" onclick="numero_pagina(1);">
+                    <button type="button" class="btn btn-primary waves-effect waves-light" onclick="buscar_y_limpiar();">
                         <i class="fa fa-search"></i> Buscar
                     </button>
                 </div>
@@ -67,4 +69,16 @@
 <script src="<?php echo BASE_URL; ?>src/view/js/functions_bien.js"></script>
 <script>
     listar_bienes_ordenados();
+
+    // Función para buscar y limpiar automáticamente después
+    function buscar_y_limpiar() {
+        // Ejecutar la búsqueda
+        numero_pagina(1);
+        
+        // Limpiar los campos después de buscar
+        setTimeout(function() {
+            document.getElementById('busqueda_codigo_patrimonial').value = '';
+            document.getElementById('busqueda_nombre_bien').value = '';
+        }, 500);
+    }
 </script>

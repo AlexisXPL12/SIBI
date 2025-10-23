@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 14-10-2025 a las 10:48:15
+-- Tiempo de generación: 23-10-2025 a las 07:15:54
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -62,7 +62,48 @@ INSERT INTO `bienes` (`id_bien`, `codigo_patrimonial`, `codigo_barra`, `nombre_b
 (1, 'CP-001-2024', NULL, 'Laptop HP Pavilion', 'Laptop para laboratorio de programaciÃ³n', 'HP', 'Pavilion 15', NULL, NULL, NULL, 1, 2, 'Laboratorio de ProgramaciÃ³n', NULL, '2024-01-15', NULL, NULL, 'ACTIVO', 'NUEVO', NULL, 1, 'admin', '2025-09-03 04:32:51', '2025-09-03 04:32:51'),
 (2, 'CP-002-2024', NULL, 'Proyector Epson', 'Proyector para aulas', 'Epson', 'PowerLite X41+', NULL, NULL, NULL, 5, 2, 'Aula 201', NULL, '2024-01-20', NULL, NULL, 'ACTIVO', 'BUENO', NULL, 1, 'admin', '2025-09-03 04:32:51', '2025-09-03 04:32:51'),
 (3, 'HE-001-2024', NULL, 'Taladro ElÃ©ctrico', 'Taladro para taller de mecÃ¡nica', 'DeWalt', 'DW511', NULL, NULL, NULL, 3, 4, 'Taller Principal', NULL, '2024-02-01', NULL, NULL, 'ACTIVO', 'NUEVO', NULL, 1, 'admin', '2025-09-03 04:32:51', '2025-09-03 04:32:51'),
-(4, 'MO-001-2024', NULL, 'Escritorio de Oficina', 'Escritorio para Ã¡rea administrativa', 'Steelcase', 'Series 7', NULL, NULL, NULL, 4, 1, 'Oficina Principal', NULL, '2024-01-10', NULL, NULL, 'ACTIVO', 'BUENO', NULL, 1, 'admin', '2025-09-03 04:32:51', '2025-09-03 04:32:51');
+(4, 'MO-001-2024', NULL, 'Escritorio de Oficina', 'Escritorio para Ã¡rea administrativa', 'Steelcase', 'Series 7', NULL, NULL, NULL, 4, 1, 'Oficina Principal', NULL, '2024-01-10', NULL, NULL, 'ACTIVO', 'BUENO', NULL, 1, 'admin', '2025-09-03 04:32:51', '2025-09-03 04:32:51'),
+(6, '12345', NULL, 'Laptop', 'Is very nice', 'Asus', 'i5', '715236123', 'Negro', '18x30x3 cm', 1, 10, 'Contabiidad', '2025-02-12', '2025-02-12', NULL, NULL, 'ACTIVO', 'NUEVO', 'Ninguna', 1, '18', '2025-10-22 23:29:45', '2025-10-22 23:29:45'),
+(7, 'IES-001-2025', NULL, 'Laptop Dell Inspiron 15', 'Laptop para uso académico - 8GB RAM, 256GB SSD', 'Dell', 'Inspiron 15 3520', 'DL2025ABC001', 'Negro', NULL, 1, 2, 'Laboratorio de Programación - Mesa 1', '2025-01-15', '2025-01-15', NULL, NULL, 'ACTIVO', 'NUEVO', 'Incluye cargador original', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(8, 'IES-002-2025', NULL, 'Laptop Lenovo ThinkPad', 'Laptop para docentes - 16GB RAM, 512GB SSD', 'Lenovo', 'ThinkPad E14', 'LN2025XYZ002', 'Negro', NULL, 1, 2, 'Oficina de Coordinación', '2025-01-20', '2025-01-20', NULL, NULL, 'ACTIVO', 'NUEVO', 'Sistema operativo Windows 11 Pro', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(9, 'IES-003-2025', NULL, 'Computadora de Escritorio HP', 'PC All-in-One para administración', 'HP', 'All-in-One 24-df1', 'HP2025DEF003', 'Blanco', NULL, 1, 1, 'Secretaría Académica', '2025-02-01', '2025-02-01', NULL, NULL, 'ACTIVO', 'NUEVO', 'Monitor de 24 pulgadas integrado', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(10, 'IES-004-2025', NULL, 'Tablet Samsung Galaxy Tab', 'Tablet para presentaciones móviles', 'Samsung', 'Galaxy Tab S8', 'SM2025GHI004', 'Gris', NULL, 1, 1, 'Dirección General', '2025-02-10', '2025-02-10', NULL, NULL, 'ACTIVO', 'NUEVO', 'Incluye stylus y funda protectora', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(11, 'IES-005-2025', NULL, 'Laptop Asus VivoBook', 'Laptop para laboratorio de redes', 'Asus', 'VivoBook 15 X513', 'AS2025JKL005', 'Azul', NULL, 1, 2, 'Laboratorio de Redes - Estación 5', '2025-02-15', '2025-02-15', NULL, NULL, 'ACTIVO', 'NUEVO', 'Configurado con software de simulación', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(12, 'IES-006-2025', NULL, 'Osciloscopio Digital Tektronix', 'Osciloscopio de 100 MHz para laboratorio', 'Tektronix', 'TBS 2104', 'TK2025MNO006', 'Negro/Gris', NULL, 2, 3, 'Laboratorio de Electrotecnia - Mesa 2', '2025-01-25', '2025-01-25', NULL, NULL, 'ACTIVO', 'NUEVO', 'Incluye sondas y manual de usuario', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(13, 'IES-007-2025', NULL, 'Multímetro Digital Fluke', 'Multímetro de precisión industrial', 'Fluke', '87V', 'FK2025PQR007', 'Amarillo', NULL, 2, 3, 'Laboratorio de Electrotecnia - Gaveta 3', '2025-01-25', '2025-01-25', NULL, NULL, 'ACTIVO', 'NUEVO', 'Con estuche de transporte', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(14, 'IES-008-2025', NULL, 'Fuente de Alimentación Regulable', 'Fuente DC 0-30V, 0-5A', 'GW Instek', 'GPS-3030DD', 'GW2025STU008', 'Gris', NULL, 2, 3, 'Laboratorio de Electrotecnia - Estante A', '2025-02-05', '2025-02-05', NULL, NULL, 'ACTIVO', 'NUEVO', 'Doble salida independiente', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(15, 'IES-009-2025', NULL, 'Microscopio Biológico', 'Microscopio trinocular LED', 'Olympus', 'CX23', 'OL2025VWX009', 'Blanco', NULL, 2, 8, 'Laboratorio de Ciencias - Mesa Central', '2025-02-20', '2025-02-20', NULL, NULL, 'ACTIVO', 'NUEVO', 'Incluye oculares y objetivos', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(16, 'IES-010-2025', NULL, 'Generador de Funciones', 'Generador de señales hasta 20 MHz', 'Rigol', 'DG1022Z', 'RG2025YZA010', 'Negro', NULL, 2, 3, 'Laboratorio de Electrotecnia - Mesa 5', '2025-03-01', '2025-03-01', NULL, NULL, 'ACTIVO', 'NUEVO', 'Con salida USB y software', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(17, 'IES-011-2025', NULL, 'Taladro Percutor Bosch', 'Taladro eléctrico profesional 850W', 'Bosch', 'GSB 16 RE', 'BS2025BCD011', 'Azul', NULL, 3, 4, 'Taller de Mecánica - Caja de Herramientas 1', '2025-01-30', '2025-01-30', NULL, NULL, 'ACTIVO', 'NUEVO', 'Incluye maletín y brocas', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(18, 'IES-012-2025', NULL, 'Esmeril Angular Makita', 'Esmeril de 4.5 pulgadas 720W', 'Makita', 'GA4530', 'MK2025EFG012', 'Verde', NULL, 3, 4, 'Taller de Mecánica - Estante B', '2025-01-30', '2025-01-30', NULL, NULL, 'ACTIVO', 'NUEVO', 'Con discos de corte y desbaste', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(19, 'IES-013-2025', NULL, 'Juego de Llaves Combinadas', 'Set de 12 llaves métricas 6-19mm', 'Stanley', 'STMT74175', 'ST2025HIJ013', 'Cromado', NULL, 3, 4, 'Taller de Mecánica - Panel de Herramientas', '2025-02-08', '2025-02-08', NULL, NULL, 'ACTIVO', 'NUEVO', 'Acero cromo-vanadio', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(20, 'IES-014-2025', NULL, 'Soldadora Inverter Lincoln', 'Soldadora eléctrica 160A', 'Lincoln Electric', 'Invertec 160S', 'LE2025KLM014', 'Rojo', NULL, 3, 9, 'Taller de Soldadura - Estación 2', '2025-02-12', '2025-02-12', NULL, NULL, 'ACTIVO', 'NUEVO', 'Con cables y pinza', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(21, 'IES-015-2025', NULL, 'Compresor de Aire Ingersoll', 'Compresor portátil 50L 2HP', 'Ingersoll Rand', 'SS3L2', 'IR2025NOP015', 'Rojo', NULL, 3, 4, 'Taller de Mecánica - Zona de Compresores', '2025-02-25', '2025-02-25', NULL, NULL, 'ACTIVO', 'NUEVO', 'Incluye manguera y accesorios', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(22, 'IES-016-2025', NULL, 'Escritorio Ejecutivo de Madera', 'Escritorio de 1.60m con cajonera', 'Steelcase', 'Series 7 Executive', NULL, 'Caoba', NULL, 4, 1, 'Dirección General', '2025-01-10', '2025-01-10', NULL, NULL, 'ACTIVO', 'NUEVO', 'Madera de primera calidad', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(23, 'IES-017-2025', NULL, 'Silla Ergonómica de Oficina', 'Silla giratoria con soporte lumbar', 'Herman Miller', 'Aeron Size B', NULL, 'Negro', NULL, 4, 1, 'Dirección General', '2025-01-10', '2025-01-10', NULL, NULL, 'ACTIVO', 'NUEVO', 'Ajuste de altura y brazos', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(24, 'IES-018-2025', NULL, 'Mesa de Trabajo para Laboratorio', 'Mesa de acero inoxidable 2m x 1m', 'Lab Pro', 'LT-2000', NULL, 'Acero', NULL, 4, 8, 'Laboratorio Multifuncional', '2025-01-18', '2025-01-18', NULL, NULL, 'ACTIVO', 'NUEVO', 'Resistente a químicos', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(25, 'IES-019-2025', NULL, 'Estante Metálico Industrial', 'Estantería 5 niveles 2m altura', 'Metalsistem', 'MS-5N200', NULL, 'Gris', NULL, 4, 9, 'Almacén de Talleres', '2025-02-03', '2025-02-03', NULL, NULL, 'ACTIVO', 'NUEVO', 'Capacidad 200kg por nivel', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(26, 'IES-020-2025', NULL, 'Sillas Apilables para Aula', 'Set de 30 sillas con paleta', 'Mobiliario Escolar', 'ME-AP30', NULL, 'Azul', NULL, 4, 2, 'Aula 301', '2025-02-15', '2025-02-15', NULL, NULL, 'ACTIVO', 'NUEVO', 'Estructura metálica reforzada', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(27, 'IES-021-2025', NULL, 'Proyector Epson PowerLite', 'Proyector 3LCD 3600 lúmenes', 'Epson', 'PowerLite X49', 'EP2025QRS021', 'Blanco', NULL, 5, 2, 'Aula 201', '2025-01-22', '2025-01-22', NULL, NULL, 'ACTIVO', 'NUEVO', 'Incluye control remoto y cables', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(28, 'IES-022-2025', NULL, 'Pantalla de Proyección Eléctrica', 'Pantalla motorizada 100 pulgadas', 'Elite Screens', 'Spectrum Electric', NULL, 'Blanco', NULL, 5, 2, 'Aula 201', '2025-01-22', '2025-01-22', NULL, NULL, 'ACTIVO', 'NUEVO', 'Control remoto y pared', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(29, 'IES-023-2025', NULL, 'Sistema de Audio Bose', 'Parlantes activos 200W', 'Bose', 'L1 Compact', 'BO2025TUV023', 'Negro', NULL, 5, 1, 'Auditorio Principal', '2025-02-05', '2025-02-05', NULL, NULL, 'ACTIVO', 'NUEVO', 'Sistema portátil con trípode', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(30, 'IES-024-2025', NULL, 'Cámara de Videoconferencia', 'Cámara HD 1080p con micrófono', 'Logitech', 'MeetUp', 'LG2025WXY024', 'Negro', NULL, 5, 1, 'Sala de Reuniones', '2025-02-18', '2025-02-18', NULL, NULL, 'ACTIVO', 'NUEVO', 'Ángulo de visión 120°', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(31, 'IES-025-2025', NULL, 'Televisor Smart LG', 'TV LED 65 pulgadas 4K', 'LG', '65UN7300', 'LG2025ZAB025', 'Negro', NULL, 5, 7, 'Sala de Espera', '2025-03-01', '2025-03-01', NULL, NULL, 'ACTIVO', 'NUEVO', 'Incluye soporte de pared', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(32, 'IES-026-2025', NULL, 'Torno Paralelo Industrial', 'Torno de 1m entre puntos', 'Optimum', 'OPTIturn TU 3008', 'OP2025CDE026', 'Verde', NULL, 6, 9, 'Taller de Mecánica de Producción', '2025-02-10', '2025-02-10', NULL, NULL, 'ACTIVO', 'NUEVO', 'Incluye accesorios básicos', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(33, 'IES-027-2025', NULL, 'Fresadora Universal', 'Fresadora vertical/horizontal', 'Optimum', 'OPTImill MF4', 'OP2025FGH027', 'Verde', NULL, 6, 9, 'Taller de Mecánica de Producción', '2025-02-10', '2025-02-10', NULL, NULL, 'ACTIVO', 'NUEVO', 'Con plato divisor', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(34, 'IES-028-2025', NULL, 'Sierra de Cinta para Metal', 'Sierra industrial 220V', 'Jet', 'HVBS-710G', 'JT2025IJK028', 'Azul', NULL, 6, 9, 'Taller de Corte', '2025-02-20', '2025-02-20', NULL, NULL, 'ACTIVO', 'NUEVO', 'Corte angular hasta 60°', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(35, 'IES-029-2025', NULL, 'Prensa Hidráulica', 'Prensa de 20 toneladas', 'Bahco', 'BH6P20', 'BH2025LMN029', 'Rojo', NULL, 6, 4, 'Taller de Mecánica Automotriz', '2025-03-05', '2025-03-05', NULL, NULL, 'ACTIVO', 'NUEVO', 'Con manómetro de presión', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(36, 'IES-030-2025', NULL, 'Elevador de Autos', 'Elevador hidráulico 4 toneladas', 'Rotary', 'SM14N', 'RT2025OPQ030', 'Rojo', NULL, 6, 4, 'Taller de Mecánica Automotriz - Fosa 1', '2025-03-10', '2025-03-10', NULL, NULL, 'ACTIVO', 'NUEVO', 'Instalación profesional incluida', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(37, 'IES-031-2025', NULL, 'Impresora Multifuncional HP', 'Impresora láser color WiFi', 'HP', 'LaserJet Pro MFP M479fdw', 'HP2025RST031', 'Blanco', NULL, 7, 1, 'Secretaría Académica', '2025-01-12', '2025-01-12', NULL, NULL, 'ACTIVO', 'NUEVO', 'Imprime, escanea, copia y fax', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(38, 'IES-032-2025', NULL, 'Fotocopiadora Xerox', 'Copiadora multifuncional A3', 'Xerox', 'WorkCentre 5330', 'XR2025UVW032', 'Gris', NULL, 7, 1, 'Centro de Copiado', '2025-01-28', '2025-01-28', NULL, NULL, 'ACTIVO', 'NUEVO', 'Capacidad 30 ppm', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(39, 'IES-033-2025', NULL, 'Escáner Documental Epson', 'Escáner de alta velocidad', 'Epson', 'WorkForce DS-780N', 'EP2025XYZ033', 'Negro', NULL, 7, 1, 'Archivo General', '2025-02-16', '2025-02-16', NULL, NULL, 'ACTIVO', 'NUEVO', 'Alimentador automático 100 hojas', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(40, 'IES-034-2025', NULL, 'Destructora de Documentos', 'Destructora nivel P-4', 'Fellowes', 'Powershred 99Ci', 'FW2025ABC034', 'Negro', NULL, 7, 1, 'Oficina Administrativa', '2025-02-22', '2025-02-22', NULL, NULL, 'ACTIVO', 'NUEVO', 'Corte cruzado seguro', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(41, 'IES-035-2025', NULL, 'Teléfono IP Cisco', 'Teléfono VoIP escritorio', 'Cisco', '8841', 'CS2025DEF035', 'Negro', NULL, 7, 1, 'Dirección General', '2025-03-03', '2025-03-03', NULL, NULL, 'ACTIVO', 'NUEVO', 'Pantalla a color 5 pulgadas', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(42, 'IES-036-2025', NULL, 'Refrigeradora Samsung', 'Refrigerador 2 puertas 400L', 'Samsung', 'RT38K5982BS', 'SM2025GHI036', 'Acero Inoxidable', NULL, 8, 1, 'Sala de Descanso Docente', '2025-01-14', '2025-01-14', NULL, NULL, 'ACTIVO', 'NUEVO', 'Tecnología No Frost', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(43, 'IES-037-2025', NULL, 'Microondas LG', 'Horno microondas 1.5 pies', 'LG', 'MS1535GIS', 'LG2025JKL037', 'Plateado', NULL, 8, 1, 'Sala de Descanso Docente', '2025-01-14', '2025-01-14', NULL, NULL, 'ACTIVO', 'NUEVO', 'Función grill', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(44, 'IES-038-2025', NULL, 'Dispensador de Agua Electrolux', 'Dispensador frío/caliente', 'Electrolux', 'EQAXF01TXWG', 'EL2025MNO038', 'Blanco', NULL, 8, 1, 'Recepción', '2025-02-02', '2025-02-02', NULL, NULL, 'ACTIVO', 'NUEVO', 'Con filtro purificador', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(45, 'IES-039-2025', NULL, 'Cafetera Industrial Oster', 'Cafetera de 12 tazas', 'Oster', 'BVSTDCDR5B', 'OS2025PQR039', 'Negro', NULL, 8, 1, 'Sala de Profesores', '2025-02-14', '2025-02-14', NULL, NULL, 'ACTIVO', 'NUEVO', 'Programable 24 horas', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43'),
+(46, 'IES-040-2025', NULL, 'Ventilador Industrial Honeywell', 'Ventilador de pie 20 pulgadas', 'Honeywell', 'HSF600E', 'HN2025STU040', 'Negro', NULL, 8, 2, 'Aula 305', '2025-03-08', '2025-03-08', NULL, NULL, 'ACTIVO', 'NUEVO', '3 velocidades, oscilante', 1, 'admin', '2025-10-23 04:29:43', '2025-10-23 04:29:43');
 
 -- --------------------------------------------------------
 
@@ -113,14 +154,14 @@ CREATE TABLE `categorias` (
 --
 
 INSERT INTO `categorias` (`id_categoria`, `codigo_categoria`, `nombre_categoria`, `descripcion`, `vida_util_anos`, `estado`, `fecha_creacion`) VALUES
-(1, 'CAT-001', 'Equipos de CÃ³mputo', 'Computadoras, laptops, tablets', 4, 'ACTIVO', '2025-09-03 04:32:51'),
-(2, 'CAT-002', 'Equipos de Laboratorio', 'Instrumentos y equipos para laboratorios tÃ©cnicos', 8, 'ACTIVO', '2025-09-03 04:32:51'),
-(3, 'CAT-003', 'Herramientas', 'Herramientas manuales y elÃ©ctricas', 6, 'ACTIVO', '2025-09-03 04:32:51'),
+(1, 'CAT-001', 'Equipos de Cómputo', 'Computadoras, laptops, tablets', 4, 'ACTIVO', '2025-09-03 04:32:51'),
+(2, 'CAT-002', 'Equipos de Laboratorio', 'Instrumentos y equipos para laboratorios técnicos', 8, 'ACTIVO', '2025-09-03 04:32:51'),
+(3, 'CAT-003', 'Herramientas', 'Herramientas manuales y eléctricas', 6, 'ACTIVO', '2025-09-03 04:32:51'),
 (4, 'CAT-004', 'Mobiliario', 'Escritorios, sillas, mesas de trabajo', 10, 'ACTIVO', '2025-09-03 04:32:51'),
 (5, 'CAT-005', 'Equipos Audiovisuales', 'Proyectores, parlantes, pantallas', 5, 'ACTIVO', '2025-09-03 04:32:51'),
-(6, 'CAT-006', 'Maquinaria', 'MÃ¡quinas para talleres y laboratorios', 12, 'ACTIVO', '2025-09-03 04:32:51'),
+(6, 'CAT-006', 'Maquinaria', 'Máquinas para talleres y laboratorios', 12, 'ACTIVO', '2025-09-03 04:32:51'),
 (7, 'CAT-007', 'Equipos de Oficina', 'Impresoras, fotocopiadoras', 5, 'ACTIVO', '2025-09-03 04:32:51'),
-(8, 'CAT-008', 'ElectrodomÃ©sticos', 'Refrigeradoras, microondas', 8, 'ACTIVO', '2025-09-03 04:32:51');
+(8, 'CAT-008', 'Electrodomésticos', 'Refrigeradoras, microondas', 8, 'ACTIVO', '2025-09-03 04:32:51');
 
 -- --------------------------------------------------------
 
@@ -182,16 +223,21 @@ CREATE TABLE `dependencias` (
 --
 
 INSERT INTO `dependencias` (`id_dependencia`, `codigo_dependencia`, `nombre_dependencia`, `descripcion`, `responsable`, `telefono`, `email`, `estado`, `fecha_creacion`, `fecha_actualizacion`) VALUES
-(1, 'DEP-001', 'AdministraciÃ³n General', 'Ãrea administrativa y direcciÃ³n', 'Director General', NULL, NULL, 'ACTIVO', '2025-09-03 04:32:51', '2025-09-03 04:32:51'),
-(2, 'DEP-002', 'ComputaciÃ³n e InformÃ¡tica', 'Carrera de computaciÃ³n e informÃ¡tica', 'Jefe de Carrera', NULL, NULL, 'ACTIVO', '2025-09-03 04:32:51', '2025-09-03 04:32:51'),
-(3, 'DEP-003', 'Electrotecnia Industrial', 'Carrera de electricidad industrial', 'Jefe de Carrera', NULL, NULL, 'ACTIVO', '2025-09-03 04:32:51', '2025-09-03 04:32:51'),
-(4, 'DEP-004', 'MecÃ¡nica Automotriz', 'Carrera de mecÃ¡nica automotriz', 'Jefe de Carrera', NULL, NULL, 'ACTIVO', '2025-09-03 04:32:51', '2025-09-03 04:32:51'),
-(5, 'DEP-005', 'ConstrucciÃ³n Civil', 'Carrera de construcciÃ³n civil', 'Jefe de Carrera', NULL, NULL, 'ACTIVO', '2025-09-03 04:32:51', '2025-09-03 04:32:51'),
-(6, 'DEP-006', 'AdministraciÃ³n de Empresas', 'Carrera de administraciÃ³n', 'Jefe de Carrera', NULL, NULL, 'ACTIVO', '2025-09-03 04:32:51', '2025-09-03 04:32:51'),
-(7, 'DEP-007', 'Biblioteca', 'Centro de recursos bibliogrÃ¡ficos', 'Bibliotecario', NULL, NULL, 'ACTIVO', '2025-09-03 04:32:51', '2025-09-03 04:32:51'),
-(8, 'DEP-008', 'Laboratorios', 'Laboratorios especializados', 'Coordinador de Laboratorios', NULL, NULL, 'ACTIVO', '2025-09-03 04:32:51', '2025-09-03 04:32:51'),
-(9, 'DEP-009', 'Talleres', 'Talleres de prÃ¡ctica', 'Coordinador de Talleres', NULL, NULL, 'ACTIVO', '2025-09-03 04:32:51', '2025-09-03 04:32:51'),
-(10, 'DEP-010', 'Recursos Humanos', 'GestiÃ³n de personal', 'Jefe de RRHH', NULL, NULL, 'ACTIVO', '2025-09-03 04:32:51', '2025-09-03 04:32:51');
+(1, 'DEP-001', 'Dirección General', 'Dirección y administración general de la institución', 'Director General', NULL, NULL, 'ACTIVO', '2025-09-03 04:32:51', '2025-10-23 05:15:14'),
+(2, 'DEP-002', 'Secretaría Académica', 'Gestión académica y registro de estudiantes', 'Secretario Académico', NULL, NULL, 'ACTIVO', '2025-09-03 04:32:51', '2025-10-23 05:15:14'),
+(3, 'DEP-003', 'Administración y Finanzas', 'Gestión administrativa y financiera', 'Jefe de Administración', NULL, NULL, 'ACTIVO', '2025-09-03 04:32:51', '2025-10-23 05:15:14'),
+(4, 'DEP-004', 'Recursos Humanos', 'Gestión de personal docente y administrativo', 'Jefe de Recursos Humanos', NULL, NULL, 'ACTIVO', '2025-09-03 04:32:51', '2025-10-23 05:15:14'),
+(5, 'DEP-005', 'Logística y Patrimonio', 'Control patrimonial y gestión logística', 'Jefe de Logística', NULL, NULL, 'ACTIVO', '2025-09-03 04:32:51', '2025-10-23 05:15:14'),
+(6, 'DEP-006', 'Biblioteca', 'Centro de recursos bibliográficos y documentales', 'Bibliotecario', NULL, NULL, 'ACTIVO', '2025-09-03 04:32:51', '2025-10-23 05:15:14'),
+(7, 'DEP-007', 'Laboratorios de Cómputo', 'Laboratorios de computación e informática', 'Coordinador de Laboratorios', NULL, NULL, 'ACTIVO', '2025-09-03 04:32:51', '2025-10-23 05:15:14'),
+(8, 'DEP-008', 'Talleres Técnicos', 'Talleres de práctica para carreras técnicas', 'Coordinador de Talleres', NULL, NULL, 'ACTIVO', '2025-09-03 04:32:51', '2025-10-23 05:15:14'),
+(9, 'DEP-009', 'Mantenimiento', 'Mantenimiento de infraestructura y equipos', 'Jefe de Mantenimiento', NULL, NULL, 'ACTIVO', '2025-09-03 04:32:51', '2025-10-23 05:15:14'),
+(10, 'DEP-010', 'Servicios Generales', 'Limpieza, seguridad y servicios complementarios', 'Jefe de Servicios', NULL, NULL, 'ACTIVO', '2025-09-03 04:32:51', '2025-10-23 05:15:14'),
+(11, '321312', 'Laboratorio', 'dawdwad', 'Juan Julian', NULL, NULL, 'ACTIVO', '2025-10-21 10:42:05', '2025-10-21 10:42:05'),
+(12, 'DEP-011', 'Bienestar Estudiantil', 'Atención y apoyo a estudiantes', 'Coordinador de Bienestar', NULL, NULL, 'ACTIVO', '2025-10-23 05:15:14', '2025-10-23 05:15:14'),
+(13, 'DEP-012', 'Producción', 'Área de producción y servicios técnicos', 'Jefe de Producción', NULL, NULL, 'ACTIVO', '2025-10-23 05:15:14', '2025-10-23 05:15:14'),
+(14, 'DEP-013', 'Investigación e Innovación', 'Proyectos de investigación y desarrollo', 'Coordinador de Investigación', NULL, NULL, 'ACTIVO', '2025-10-23 05:15:14', '2025-10-23 05:15:14'),
+(15, 'DEP-014', 'Calidad Académica', 'Evaluación y mejora continua', 'Coordinador de Calidad', NULL, NULL, 'ACTIVO', '2025-10-23 05:15:14', '2025-10-23 05:15:14');
 
 -- --------------------------------------------------------
 
@@ -230,6 +276,15 @@ CREATE TABLE `movimientos` (
   `estado_movimiento` enum('PENDIENTE','EJECUTADO','CANCELADO') DEFAULT 'PENDIENTE'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 
+--
+-- Volcado de datos para la tabla `movimientos`
+--
+
+INSERT INTO `movimientos` (`id_movimiento`, `id_bien`, `tipo_movimiento`, `id_dependencia_origen`, `id_dependencia_destino`, `motivo`, `observaciones`, `documento_referencia`, `usuario_solicita`, `usuario_autoriza`, `fecha_solicitud`, `fecha_ejecucion`, `estado_movimiento`) VALUES
+(1, 6, 'TRASLADO', 10, 7, '321231', 'eawe', 'Factura', '18', NULL, '2025-10-23 02:09:33', NULL, 'PENDIENTE'),
+(2, 4, 'BAJA', 1, 9, 'de', 'dea', 'Informe Técnico', '18', NULL, '2025-10-23 03:53:13', NULL, 'PENDIENTE'),
+(3, 4, 'PRESTAMO', 1, 10, 'dawd', 'awdw', 'Acta de Entrega', '13', NULL, '2025-10-23 04:06:50', NULL, 'PENDIENTE');
+
 -- --------------------------------------------------------
 
 --
@@ -251,33 +306,14 @@ CREATE TABLE `sesiones` (
 --
 
 INSERT INTO `sesiones` (`id`, `id_usuario`, `fecha_hora_inicio`, `fecha_hora_fin`, `token`, `ip_address`, `user_agent`) VALUES
-(1, 13, '2025-09-10 19:20:23', '2025-09-11 03:20:23', 'ABrg/QG4l1G89fzG*iNT/O6[*[odBb', NULL, NULL),
-(2, 13, '2025-09-10 19:20:33', '2025-09-11 03:20:33', '13NBHb}2T(r5ZmNAWyh(wc1BcLHZ/{', NULL, NULL),
-(3, 13, '2025-09-10 19:20:54', '2025-09-11 03:20:54', 'tuSQa2@&ZE$OxI]}rUnsIdUIGCfvhC', NULL, NULL),
-(4, 13, '2025-09-10 19:21:02', '2025-09-11 03:21:02', ']@RBo{ur*i5[}1voeBlX}qUcq2hq0C', NULL, NULL),
-(5, 13, '2025-09-10 19:24:26', '2025-09-11 03:24:26', '{9k&f7mDrOkEDNPJVTF8WyHBvs]gs%', NULL, NULL),
-(6, 13, '2025-09-10 19:24:49', '2025-09-11 03:24:49', '1/]G4W/Bre11e0k6oB0tpwIqSDvWVZ', NULL, NULL),
-(7, 13, '2025-09-10 19:27:46', '2025-09-11 03:27:46', 'oickH24cS1(YzG]#C%BGtihmH1$@*a', NULL, NULL),
-(8, 13, '2025-09-10 19:32:10', '2025-09-11 03:32:10', 'W9dA/nV$b0POP*YleP]PZtL]YKRCFH', NULL, NULL),
-(9, 13, '2025-09-10 19:35:56', '2025-09-11 03:35:56', 'jo&ogB%YGV4eWJ#ZgOdZ0Jv%mj4CwC', NULL, NULL),
-(10, 13, '2025-09-10 19:36:06', '2025-09-11 03:36:06', 'Sm{ELWpFXKrNk0t9atDLd2c7RYd&uf', NULL, NULL),
-(11, 13, '2025-09-10 19:36:36', '2025-09-11 03:36:36', 'Kuie/GsR}Wpn12LiP}KZ{[Ph0rQD0y', NULL, NULL),
-(12, 13, '2025-09-10 19:37:00', '2025-09-11 03:37:00', 'TZ{p9EYoXs}rE@YLhyDl4tV1@*ne/j', NULL, NULL),
-(13, 13, '2025-09-10 19:40:12', '2025-09-11 03:40:12', 'oaSr9Fmt#x3E*(ph#sJUcHXZoFZtB[', NULL, NULL),
-(14, 13, '2025-09-10 19:40:41', '2025-09-11 03:40:41', 'jTcUYid6dc#SqWdey[jCDn]LO/qZyl', NULL, NULL),
-(15, 13, '2025-09-10 19:46:26', '2025-09-11 03:46:26', 'OOZ)Ml%#Q0Q2NYf5Jx2uuwG@HFIrE@', NULL, NULL),
-(16, 13, '2025-09-10 19:51:44', '2025-09-10 20:04:00', 'HSsV*P6Ym7d)m03D(i9#3elCnbX&o&', NULL, NULL),
-(17, 13, '2025-09-10 20:03:18', '2025-09-10 20:04:39', 't2&RYzzz44)2]t9uja9DZ&l%]PKdVm', NULL, NULL),
-(18, 13, '2025-09-10 20:03:21', '2025-09-10 20:05:21', 'YJlgHrXHMHYbPs{C@YYK5WHeveF{/C', NULL, NULL),
-(19, 13, '2025-09-10 20:22:01', '2025-09-10 20:23:02', 'v%ru$KETE[OALFKapduj4kkoR@p]eX', NULL, NULL),
-(20, 13, '2025-09-10 20:22:19', '2025-09-10 20:30:31', '3jjY6R%LD&s7qAl&l[tD9RAqTIo88e', NULL, NULL),
-(21, 13, '2025-09-10 20:29:44', '2025-09-10 20:30:45', 'Odd(#PBWyRC$xiEcEUMDTif7x3z78e', NULL, NULL),
-(22, 13, '2025-09-10 20:35:26', '2025-09-10 20:41:10', 'C{%UM1OEJ2mTLFM[(tn{e$C48nX$mU', NULL, NULL),
-(23, 18, '2025-09-10 20:40:22', '2025-09-10 20:47:51', '1SoUfmxJ*#C7[#Q@2gN}FYC7fyeb/]', NULL, NULL),
-(24, 13, '2025-09-10 20:46:59', '2025-09-10 20:48:00', 'C$JbE19NM0$k{Z9SmpQ*%60@I}RQRZ', NULL, NULL),
-(25, 13, '2025-09-10 20:50:03', '2025-09-10 21:30:00', 'H4Y[qlSs14TL92dnLvcCZy7W86yBaN', NULL, NULL),
-(26, 13, '2025-09-10 21:29:11', '2025-09-10 22:47:43', 'f@mbJxwHM1XFrZWWt/YRp1AhY@*&RP', NULL, NULL),
-(27, 13, '2025-09-10 22:58:54', '2025-09-11 06:19:25', 'B&[P&7L@R*}0f8V#nVW*TyrZtKOHIl', NULL, NULL);
+(43, 18, '2025-10-21 05:17:59', '2025-10-21 05:26:23', 'YyVLVvrFWn3w1hZy8SNjSpx)h6f]#x', NULL, NULL),
+(44, 18, '2025-10-21 05:28:42', '2025-10-21 05:48:20', 'bjo*ZQTT0sMVT{5RaSbTF5P4pYX2vB', NULL, NULL),
+(45, 18, '2025-10-21 05:47:31', '2025-10-21 06:09:09', '%Cj#6T7R@exZ#AJ[p}y3O0&}8wdcct', NULL, NULL),
+(46, 18, '2025-10-22 18:27:07', '2025-10-22 23:04:41', 'N1u*h3sgz{G*HU*GV3IaQG[)8$C9DE', NULL, NULL),
+(47, 18, '2025-10-22 23:04:17', '2025-10-22 23:05:23', 'G[[R7Hl*p2[TncrIB@BBemKmxUkwmG', NULL, NULL),
+(48, 13, '2025-10-22 23:05:44', '2025-10-22 23:07:53', '4()qnCo%VMH#%08Lc05$)3A1pkrkXi', NULL, NULL),
+(49, 18, '2025-10-22 23:07:13', '2025-10-22 23:20:27', '9p$fjzXXqXtWlY4Wc)O9T3&IQWX}Jo', NULL, NULL),
+(50, 18, '2025-10-22 23:19:56', '2025-10-23 00:16:21', 'Nyh{jFlFyRNx%RF@tPgNYcC#/K[V8r', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -447,7 +483,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `bienes`
 --
 ALTER TABLE `bienes`
-  MODIFY `id_bien` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_bien` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT de la tabla `carreras`
@@ -477,7 +513,7 @@ ALTER TABLE `cont_request`
 -- AUTO_INCREMENT de la tabla `dependencias`
 --
 ALTER TABLE `dependencias`
-  MODIFY `id_dependencia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_dependencia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `log_actividades`
@@ -489,13 +525,13 @@ ALTER TABLE `log_actividades`
 -- AUTO_INCREMENT de la tabla `movimientos`
 --
 ALTER TABLE `movimientos`
-  MODIFY `id_movimiento` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_movimiento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `sesiones`
 --
 ALTER TABLE `sesiones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT de la tabla `tokens`

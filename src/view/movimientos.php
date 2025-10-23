@@ -14,7 +14,8 @@
             <div class="card-body">
                 <h4 class="card-title">Filtros de Búsqueda</h4>
                 <div class="row col-12">
-                    <div class="form-group row mb-3 col-3">
+                    <!-- Filtro por Tipo de Movimiento -->
+                    <div class="form-group row mb-3 col-md-4">
                         <label for="busqueda_tipo_movimiento" class="col-5 col-form-label">Tipo:</label>
                         <div class="col-7">
                             <select class="form-control" name="busqueda_tipo_movimiento" id="busqueda_tipo_movimiento">
@@ -27,7 +28,8 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group row mb-3 col-3">
+                    <!-- Filtro por Estado del Movimiento -->
+                    <div class="form-group row mb-3 col-md-4">
                         <label for="busqueda_estado_movimiento" class="col-5 col-form-label">Estado:</label>
                         <div class="col-7">
                             <select class="form-control" name="busqueda_estado_movimiento" id="busqueda_estado_movimiento">
@@ -38,23 +40,14 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group row mb-3 col-3">
-                        <label for="busqueda_bien" class="col-5 col-form-label">Bien:</label>
-                        <div class="col-7">
-                            <input type="text" class="form-control" name="busqueda_bien" id="busqueda_bien" placeholder="ID del bien">
+                    <!-- Espacio adicional para alinear el botón de búsqueda -->
+                    <div class="form-group row mb-3 col-md-4 d-flex align-items-end">
+                        <div class="col-12 text-right">
+                            <button type="button" class="btn btn-primary waves-effect waves-light" onclick="numero_pagina(1);">
+                                <i class="fa fa-search"></i> Buscar
+                            </button>
                         </div>
                     </div>
-                    <div class="form-group row mb-3 col-3">
-                        <label for="busqueda_dependencia" class="col-5 col-form-label">Dependencia:</label>
-                        <div class="col-7">
-                            <input type="text" class="form-control" name="busqueda_dependencia" id="busqueda_dependencia" placeholder="ID de dependencia">
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group mb-0 text-center">
-                    <button type="button" class="btn btn-primary waves-effect waves-light" onclick="numero_pagina(1);">
-                        <i class="fa fa-search"></i> Buscar
-                    </button>
                 </div>
             </div>
         </div>

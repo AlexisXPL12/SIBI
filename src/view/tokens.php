@@ -14,13 +14,8 @@
             <div class="card-body">
                 <h4 class="card-title">Filtros de Búsqueda</h4>
                 <div class="row col-12">
-                    <div class="form-group row mb-3 col-6">
-                        <label for="busqueda_tabla_token" class="col-5 col-form-label">Token:</label>
-                        <div class="col-7">
-                            <input type="text" class="form-control" name="busqueda_tabla_token" id="busqueda_tabla_token">
-                        </div>
-                    </div>
-                    <div class="form-group row mb-3 col-6">
+                    <!-- Filtro por Cliente -->
+                    <div class="form-group row mb-3 col-md-6">
                         <label for="busqueda_tabla_cliente" class="col-5 col-form-label">Cliente:</label>
                         <div class="col-7">
                             <select class="form-control" name="busqueda_tabla_cliente" id="busqueda_tabla_cliente">
@@ -28,7 +23,8 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group row mb-3 col-6">
+                    <!-- Filtro por Estado -->
+                    <div class="form-group row mb-3 col-md-6">
                         <label for="busqueda_tabla_estado" class="col-5 col-form-label">Estado:</label>
                         <div class="col-7">
                             <select class="form-control" name="busqueda_tabla_estado" id="busqueda_tabla_estado">
@@ -40,7 +36,9 @@
                     </div>
                 </div>
                 <div class="form-group mb-0 text-center">
-                    <button type="button" class="btn btn-primary waves-effect waves-light" onclick="numero_pagina(1);"><i class="fa fa-search"></i> Buscar</button>
+                    <button type="button" class="btn btn-primary waves-effect waves-light" onclick="numero_pagina(1);">
+                        <i class="fa fa-search"></i> Buscar
+                    </button>
                 </div>
             </div>
         </div>
@@ -52,7 +50,6 @@
                 <h4 class="card-title">Resultados de Búsqueda</h4>
                 <div id="filtros_tabla_header" class="form-group row page-title-box d-flex align-items-center justify-content-between m-0 mb-1 p-0">
                     <input type="hidden" id="pagina" value="1">
-                    <input type="hidden" id="filtro_token" value="">
                     <input type="hidden" id="filtro_cliente" value="">
                     <input type="hidden" id="filtro_estado" value="">
                     <div>

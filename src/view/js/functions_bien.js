@@ -3,6 +3,9 @@ function numero_pagina(pagina) {
     listar_bienes_ordenados();
 }
 
+// ============================================
+// LISTAR BIENES
+// ============================================
 async function listar_bienes_ordenados() {
     try {
         mostrarPopupCarga();
@@ -35,7 +38,6 @@ async function listar_bienes_ordenados() {
         
         let json = await respuesta.json();
 
-
         if (json.status) {
             let datos = json.contenido;
             if (datos.length === 0) {
@@ -52,7 +54,10 @@ async function listar_bienes_ordenados() {
                                 <th>Nro</th>
                                 <th>Código Patrimonial</th>
                                 <th>Nombre del Bien</th>
-                                <th>Descripción</th>
+                                <th>Categoría</th>
+                                <th>Dependencia</th>
+                                <th>Marca/Modelo</th>
+                                <th>Estado</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -91,11 +96,34 @@ async function listar_bienes_ordenados() {
     }
 }
 
+// ============================================
+// GENERAR FILA
+// ============================================
 function generarFilaTabla(item) {
     let cont = 1;
     $(".filas_tabla").each(function () {
         cont++;
     });
+
+    // Badge de estado
+    let badgeEstado = {
+        'ACTIVO': '<span class="badge badge-success">ACTIVO</span>',
+        'BAJA': '<span class="badge badge-danger">BAJA</span>',
+        'MANTENIMIENTO': '<span class="badge badge-warning">MANTENIMIENTO</span>',
+        'PRESTADO': '<span class="badge badge-info">PRESTADO</span>'
+    }[item.estado_bien] || '<span class="badge badge-secondary">N/A</span>';
+
+    // Marca/Modelo
+    let marcaModelo = '';
+    if (item.marca && item.modelo) {
+        marcaModelo = `${item.marca} - ${item.modelo}`;
+    } else if (item.marca) {
+        marcaModelo = item.marca;
+    } else if (item.modelo) {
+        marcaModelo = item.modelo;
+    } else {
+        marcaModelo = '<span class="text-muted">N/A</span>';
+    }
 
     let nueva_fila = document.createElement("tr");
     nueva_fila.id = "fila" + item.id;
@@ -105,10 +133,14 @@ function generarFilaTabla(item) {
         <th>${cont}</th>
         <td>${item.codigo_patrimonial}</td>
         <td>${item.nombre_bien}</td>
-        <td>${item.descripcion}</td>
+        <td>${item.nombre_categoria || '<span class="text-muted">N/A</span>'}</td>
+        <td>${item.nombre_dependencia || '<span class="text-muted">N/A</span>'}</td>
+        <td>${marcaModelo}</td>
+        <td>${badgeEstado}</td>
         <td>${item.options}</td>
     `;
 
+    // Modal de edición
     document.querySelector('#modals_editar').innerHTML += `
         <div class="modal fade modal_editar${item.id}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
@@ -137,7 +169,60 @@ function generarFilaTabla(item) {
                                 <div class="form-group row mb-2">
                                     <label for="descripcion${item.id}" class="col-3 col-form-label">Descripción:</label>
                                     <div class="col-9">
-                                        <textarea name="descripcion" id="descripcion${item.id}" class="form-control">${item.descripcion}</textarea>
+                                        <textarea name="descripcion" id="descripcion${item.id}" class="form-control">${item.descripcion || ''}</textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-2">
+                                    <label for="nombre_categoria${item.id}" class="col-3 col-form-label">Categoría:</label>
+                                    <div class="col-9">
+                                        <input type="text" class="form-control" id="nombre_categoria${item.id}" value="${item.nombre_categoria || 'N/A'}" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-2">
+                                    <label for="nombre_dependencia${item.id}" class="col-3 col-form-label">Dependencia:</label>
+                                    <div class="col-9">
+                                        <input type="text" class="form-control" id="nombre_dependencia${item.id}" value="${item.nombre_dependencia || 'N/A'}" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-2">
+                                    <label for="marca${item.id}" class="col-3 col-form-label">Marca:</label>
+                                    <div class="col-9">
+                                        <input type="text" class="form-control" id="marca${item.id}" name="marca" value="${item.marca || ''}">
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-2">
+                                    <label for="modelo${item.id}" class="col-3 col-form-label">Modelo:</label>
+                                    <div class="col-9">
+                                        <input type="text" class="form-control" id="modelo${item.id}" name="modelo" value="${item.modelo || ''}">
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-2">
+                                    <label for="serie${item.id}" class="col-3 col-form-label">Serie:</label>
+                                    <div class="col-9">
+                                        <input type="text" class="form-control" id="serie${item.id}" name="serie" value="${item.serie || ''}">
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-2">
+                                    <label for="estado_bien${item.id}" class="col-3 col-form-label">Estado:</label>
+                                    <div class="col-9">
+                                        <select class="form-control" id="estado_bien${item.id}" name="estado_bien">
+                                            <option value="ACTIVO" ${item.estado_bien === 'ACTIVO' ? 'selected' : ''}>ACTIVO</option>
+                                            <option value="BAJA" ${item.estado_bien === 'BAJA' ? 'selected' : ''}>BAJA</option>
+                                            <option value="MANTENIMIENTO" ${item.estado_bien === 'MANTENIMIENTO' ? 'selected' : ''}>MANTENIMIENTO</option>
+                                            <option value="PRESTADO" ${item.estado_bien === 'PRESTADO' ? 'selected' : ''}>PRESTADO</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-2">
+                                    <label for="condicion_bien${item.id}" class="col-3 col-form-label">Condición:</label>
+                                    <div class="col-9">
+                                        <select class="form-control" id="condicion_bien${item.id}" name="condicion_bien">
+                                            <option value="NUEVO" ${item.condicion_bien === 'NUEVO' ? 'selected' : ''}>NUEVO</option>
+                                            <option value="BUENO" ${item.condicion_bien === 'BUENO' ? 'selected' : ''}>BUENO</option>
+                                            <option value="REGULAR" ${item.condicion_bien === 'REGULAR' ? 'selected' : ''}>REGULAR</option>
+                                            <option value="MALO" ${item.condicion_bien === 'MALO' ? 'selected' : ''}>MALO</option>
+                                            <option value="INSERVIBLE" ${item.condicion_bien === 'INSERVIBLE' ? 'selected' : ''}>INSERVIBLE</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="form-group mb-0 justify-content-end row text-center">

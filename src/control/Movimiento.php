@@ -127,56 +127,80 @@ if ($tipo == "obtener_dependencia_bien") {
     echo json_encode($arr_Respuesta);
 }
 
-
 if ($tipo == "registrar") {
     $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
-
+    $id_sesion = $_POST['sesion'] ?? '';
+    $token = $_POST['token'] ?? '';
+    if (empty($id_sesion) || empty($token)) {
+        $arr_Respuesta['msg'] = 'Sesión o token no proporcionados.';
+        echo json_encode($arr_Respuesta);
+        exit;
+    }
     if ($objSesion->verificar_sesion_si_activa($id_sesion, $token)) {
+        $usuarioSesion = $objSesion->obtenerUsuarioPorSesion($id_sesion);
+        if (!$usuarioSesion) {
+            $arr_Respuesta = array('status' => false, 'mensaje' => 'Error, usuario no encontrado en la sesión');
+            echo json_encode($arr_Respuesta);
+            exit;
+        }
+        $usuario_solicita = $usuarioSesion->id;
         if ($_POST) {
-            $id_bien = $_POST['id_bien'];
-            $tipo_movimiento = $_POST['tipo_movimiento'];
-            $id_dependencia_origen = $_POST['id_dependencia_origen'];
-            $id_dependencia_destino = $_POST['id_dependencia_destino'];
-            $motivo = $_POST['motivo'];
-            $observaciones = $_POST['observaciones'];
-            $documento_referencia = $_POST['documento_referencia'];
-            $usuario_solicita = $_POST['usuario_solicita'];
+            $id_bien = $_POST['id_bien'] ?? '';
+            $tipo_movimiento = $_POST['tipo_movimiento'] ?? '';
+            $id_dependencia_origen = $_POST['id_dependencia_origen'] ?? '';
+            $id_dependencia_destino = $_POST['id_dependencia_destino'] ?? '';
+            $motivo = $_POST['motivo'] ?? '';
+            $observaciones = $_POST['observaciones'] ?? '';
+            $documento_referencia = $_POST['documento_referencia'] ?? '';
+            $usuario_solicita = $_POST['usuario_solicita'] ?? $usuario_solicita;
 
-            if (empty($id_bien) || empty($tipo_movimiento) || empty($motivo)) {
-                $arr_Respuesta = array('status' => false, 'mensaje' => 'Error, campos obligatorios vacíos');
-            } else {
-                // Validar que el bien exista
-                $bien = $objBien->buscarBienById($id_bien);
-                if (!$bien) {
-                    $arr_Respuesta = array('status' => false, 'mensaje' => 'El bien seleccionado no existe');
-                } else {
-                    // Validar que la dependencia origen exista
-                    if (!empty($id_dependencia_origen)) {
-                        $dependencia_origen = $objDependencia->buscarDependenciaById($id_dependencia_origen);
-                        if (!$dependencia_origen) {
-                            $arr_Respuesta = array('status' => false, 'mensaje' => 'La dependencia de origen no existe');
-                            echo json_encode($arr_Respuesta);
-                            exit;
-                        }
-                    }
+            // Validar campos obligatorios
+            if (empty($id_bien) || empty($tipo_movimiento) || empty($motivo) || empty($id_dependencia_origen)) {
+                $arr_Respuesta = array('status' => false, 'mensaje' => 'Error, campos obligatorios vacíos o dependencia de origen no válida.');
+                echo json_encode($arr_Respuesta);
+                exit;
+            }
 
-                    // Validar que la dependencia destino exista
-                    if (!empty($id_dependencia_destino)) {
-                        $dependencia_destino = $objDependencia->buscarDependenciaById($id_dependencia_destino);
-                        if (!$dependencia_destino) {
-                            $arr_Respuesta = array('status' => false, 'mensaje' => 'La dependencia de destino no existe');
-                            echo json_encode($arr_Respuesta);
-                            exit;
-                        }
-                    }
+            // Validar que el bien exista
+            $bien = $objBien->buscarBienById($id_bien);
+            if (!$bien) {
+                $arr_Respuesta = array('status' => false, 'mensaje' => 'El bien seleccionado no existe');
+                echo json_encode($arr_Respuesta);
+                exit;
+            }
 
-                    $id_movimiento = $objMovimiento->registrarMovimiento($id_bien, $tipo_movimiento, $id_dependencia_origen, $id_dependencia_destino, $motivo, $observaciones, $documento_referencia, $usuario_solicita);
-                    if ($id_movimiento > 0) {
-                        $arr_Respuesta = array('status' => true, 'mensaje' => 'Registro Exitoso');
-                    } else {
-                        $arr_Respuesta = array('status' => false, 'mensaje' => 'Error al registrar movimiento');
-                    }
+            // Validar que la dependencia origen exista
+            $dependencia_origen = $objAmbiente->buscarDependenciaById($id_dependencia_origen);
+            if (!$dependencia_origen) {
+                $arr_Respuesta = array('status' => false, 'mensaje' => 'La dependencia de origen no existe');
+                echo json_encode($arr_Respuesta);
+                exit;
+            }
+
+            // Validar que la dependencia destino exista (si se envía)
+            if (!empty($id_dependencia_destino)) {
+                $dependencia_destino = $objAmbiente->buscarDependenciaById($id_dependencia_destino);
+                if (!$dependencia_destino) {
+                    $arr_Respuesta = array('status' => false, 'mensaje' => 'La dependencia de destino no existe');
+                    echo json_encode($arr_Respuesta);
+                    exit;
                 }
+            }
+
+            $id_movimiento = $objMovimiento->registrarMovimiento(
+                $id_bien,
+                $tipo_movimiento,
+                $id_dependencia_origen,
+                $id_dependencia_destino,
+                $motivo,
+                $observaciones,
+                $documento_referencia,
+                $usuario_solicita
+            );
+            if ($id_movimiento > 0) {
+                $arr_Respuesta = array('status' => true, 'mensaje' => 'Registro Exitoso');
+            } else {
+                $arr_Respuesta = array('status' => false, 'mensaje' => 'Error al registrar movimiento');
             }
         }
     }

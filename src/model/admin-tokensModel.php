@@ -35,19 +35,19 @@ class TokenModel
     {
         $condicion = "1=1";
         if (!empty($busqueda_cliente)) {
-            $condicion .= " AND t.id_client_api = '$busqueda_cliente'";
+            $condicion .= " AND c.razon_social LIKE '%$busqueda_cliente%'";
         }
         if ($busqueda_estado !== '') {
             $condicion .= " AND t.estado = '$busqueda_estado'";
         }
         $arrRespuesta = array();
         $query = "
-            SELECT t.*, c.razon_social
-            FROM tokens t
-            JOIN client_api c ON t.id_client_api = c.id
-            WHERE $condicion
-            ORDER BY t.fecha_registro DESC
-        ";
+        SELECT t.*, c.razon_social
+        FROM tokens t
+        JOIN client_api c ON t.id_client_api = c.id
+        WHERE $condicion
+        ORDER BY t.fecha_registro DESC
+    ";
         $respuesta = $this->conexion->query($query);
         while ($objeto = $respuesta->fetch_object()) {
             array_push($arrRespuesta, $objeto);
@@ -55,27 +55,23 @@ class TokenModel
         return $arrRespuesta;
     }
 
-    public function contarTokensConFiltros($busqueda_token, $busqueda_cliente, $busqueda_estado)
+    public function contarTokensConFiltros($busqueda_cliente, $busqueda_estado)
     {
         $condicion = "1=1";
-        if (!empty($busqueda_token)) {
-            $condicion .= " AND t.token LIKE '%$busqueda_token%'";
-        }
         if (!empty($busqueda_cliente)) {
-            $condicion .= " AND t.id_client_api = '$busqueda_cliente'";
+            $condicion .= " AND c.razon_social LIKE '%$busqueda_cliente%'";
         }
         if ($busqueda_estado !== '') {
             $condicion .= " AND t.estado = '$busqueda_estado'";
         }
         $query = "
-            SELECT COUNT(*) as total
-            FROM tokens t
-            JOIN client_api c ON t.id_client_api = c.id
-            WHERE $condicion
-        ";
+        SELECT COUNT(*) as total
+        FROM tokens t
+        JOIN client_api c ON t.id_client_api = c.id
+        WHERE $condicion
+    ";
         $respuesta = $this->conexion->query($query);
         $objeto = $respuesta->fetch_object();
         return $objeto->total;
     }
 }
-?>

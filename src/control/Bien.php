@@ -26,17 +26,17 @@ $token = $_REQUEST['token'];
 
 if ($tipo == "listar_bienes_ordenados_tabla") {
     $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
-
+    
     try {
         if ($objSesion->verificar_sesion_si_activa($id_sesion, $token)) {
             $pagina = $_POST['pagina'] ?? 1;
             $cantidad_mostrar = $_POST['cantidad_mostrar'] ?? 10;
             $busqueda_codigo_patrimonial = $_POST['busqueda_codigo_patrimonial'] ?? '';
             $busqueda_nombre_bien = $_POST['busqueda_nombre_bien'] ?? '';
-
+            
             $busqueda_filtro = $objBien->buscarBienesOrderByNombre_tabla_filtro($busqueda_codigo_patrimonial, $busqueda_nombre_bien);
             $arr_Bienes = $objBien->buscarBienesOrderByNombre_tabla($pagina, $cantidad_mostrar, $busqueda_codigo_patrimonial, $busqueda_nombre_bien);
-
+            
             $arr_contenido = [];
             if (!empty($arr_Bienes)) {
                 for ($i = 0; $i < count($arr_Bienes); $i++) {
@@ -51,7 +51,11 @@ if ($tipo == "listar_bienes_ordenados_tabla") {
                     $arr_contenido[$i]->color = $arr_Bienes[$i]->color;
                     $arr_contenido[$i]->dimensiones = $arr_Bienes[$i]->dimensiones;
                     $arr_contenido[$i]->id_categoria = $arr_Bienes[$i]->id_categoria;
+                    $arr_contenido[$i]->codigo_categoria = $arr_Bienes[$i]->codigo_categoria;
+                    $arr_contenido[$i]->nombre_categoria = $arr_Bienes[$i]->nombre_categoria;
                     $arr_contenido[$i]->id_dependencia = $arr_Bienes[$i]->id_dependencia;
+                    $arr_contenido[$i]->codigo_dependencia = $arr_Bienes[$i]->codigo_dependencia;
+                    $arr_contenido[$i]->nombre_dependencia = $arr_Bienes[$i]->nombre_dependencia;
                     $arr_contenido[$i]->ubicacion_especifica = $arr_Bienes[$i]->ubicacion_especifica;
                     $arr_contenido[$i]->fecha_adquisicion = $arr_Bienes[$i]->fecha_adquisicion;
                     $arr_contenido[$i]->fecha_ingreso = $arr_Bienes[$i]->fecha_ingreso;
@@ -60,7 +64,7 @@ if ($tipo == "listar_bienes_ordenados_tabla") {
                     $arr_contenido[$i]->observaciones = $arr_Bienes[$i]->observaciones;
                     $arr_contenido[$i]->es_inventariable = $arr_Bienes[$i]->es_inventariable;
                     $arr_contenido[$i]->usuario_registro = $arr_Bienes[$i]->usuario_registro;
-
+                    
                     $opciones = '<button type="button" title="Editar" class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target=".modal_editar' . $arr_Bienes[$i]->id_bien . '"><i class="fa fa-edit"></i></button>';
                     $arr_contenido[$i]->options = $opciones;
                 }
@@ -76,7 +80,7 @@ if ($tipo == "listar_bienes_ordenados_tabla") {
     } catch (Exception $e) {
         $arr_Respuesta['msg'] = 'Error en el servidor: ' . $e->getMessage();
     }
-
+    
     header('Content-Type: application/json');
     echo json_encode($arr_Respuesta);
     exit;
@@ -85,8 +89,8 @@ if ($tipo == "listar_bienes_ordenados_tabla") {
 if ($tipo == "registrar") {
     $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
 
-    $id_sesion = $_POST['sesion'] ?? '';
-    $token = $_POST['token'] ?? '';
+    $id_sesion = $_POST['sesion'];
+    $token = $_POST['token'];
 
     if (empty($id_sesion) || empty($token)) {
         $arr_Respuesta['msg'] = 'Sesión o token no proporcionados.';
@@ -105,8 +109,8 @@ if ($tipo == "registrar") {
         $usuario_registro = $usuarioSesion->id;
 
         if ($_POST) {
-            $codigo_patrimonial = trim($_POST['codigo_patrimonial'] ?? '');
-            $nombre_bien = trim($_POST['nombre_bien'] ?? '');
+            $codigo_patrimonial = trim($_POST['codigo_patrimonial']);
+            $nombre_bien = trim($_POST['nombre_bien']);
 
             // Validar que los campos obligatorios no estén vacíos
             if (empty($codigo_patrimonial) || empty($nombre_bien)) {
@@ -115,21 +119,21 @@ if ($tipo == "registrar") {
                 exit;
             }
 
-            $descripcion = $_POST['descripcion'] ?? '';
-            $marca = $_POST['marca'] ?? '';
-            $modelo = $_POST['modelo'] ?? '';
-            $serie = $_POST['serie'] ?? '';
-            $color = $_POST['color'] ?? '';
-            $dimensiones = $_POST['dimensiones'] ?? '';
-            $id_categoria = $_POST['id_categoria'] ?? '';
-            $id_dependencia = $_POST['id_dependencia'] ?? '';
-            $ubicacion_especifica = $_POST['ubicacion_especifica'] ?? '';
-            $fecha_adquisicion = $_POST['fecha_adquisicion'] ?? '';
-            $fecha_ingreso = $_POST['fecha_ingreso'] ?? '';
-            $estado_bien = $_POST['estado_bien'] ?? '';
-            $condicion_bien = $_POST['condicion_bien'] ?? '';
-            $observaciones = $_POST['observaciones'] ?? '';
-            $es_inventariable = $_POST['es_inventariable'] ?? '';
+            $descripcion = $_POST['descripcion'];
+            $marca = $_POST['marca'];
+            $modelo = $_POST['modelo'];
+            $serie = $_POST['serie'];
+            $color = $_POST['color'];
+            $dimensiones = $_POST['dimensiones'];
+            $id_categoria = $_POST['id_categoria'];
+            $id_dependencia = $_POST['id_dependencia'];
+            $ubicacion_especifica = $_POST['ubicacion_especifica'];
+            $fecha_adquisicion = $_POST['fecha_adquisicion'];
+            $fecha_ingreso = $_POST['fecha_ingreso'];
+            $estado_bien = $_POST['estado_bien'];
+            $condicion_bien = $_POST['condicion_bien'];
+            $observaciones = $_POST['observaciones'];
+            $es_inventariable = $_POST['es_inventariable'];
             $usuario_registro = $_POST['usuario_registro'] ?? $usuarioSesion->id;
 
             $arr_Bien = $objBien->buscarBienByCodigoPatrimonial($codigo_patrimonial);
@@ -286,5 +290,41 @@ if ($tipo == "listar_todos_bienes") {
         }
     }
 
+    echo json_encode($arr_Respuesta);
+}
+if ($tipo == "verBienApiByNombre") {
+    $arr_Respuesta = array('status' => false, 'msg' => 'Token no válido o no proporcionado.');
+    $token = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+
+    if (empty($token)) {
+        echo json_encode($arr_Respuesta);
+        exit;
+    }
+
+    $token_arr = explode("-", $token);
+    if (count($token_arr) < 3) {
+        $arr_Respuesta['msg'] = 'Token inválido.';
+        echo json_encode($arr_Respuesta);
+        exit;
+    }
+
+    $id_cliente = $token_arr[2];
+    $arr_Cliente = $objApi->buscarClienteById($id_cliente);
+
+    if (!$arr_Cliente || !$arr_Cliente->estado) {
+        $arr_Respuesta['msg'] = 'Error, cliente no activo o no encontrado.';
+        echo json_encode($arr_Respuesta);
+        exit;
+    }
+
+    $data = $_POST['data'] ?? '';
+    if (empty($data)) {
+        $arr_Respuesta['msg'] = 'Debe proporcionar un nombre de bien para buscar.';
+        echo json_encode($arr_Respuesta);
+        exit;
+    }
+
+    $arr_bienes = $objApi->buscarBienByDenominacion($data);
+    $arr_Respuesta = array('status' => true, 'msg' => 'Búsqueda exitosa.', 'contenido' => $arr_bienes);
     echo json_encode($arr_Respuesta);
 }

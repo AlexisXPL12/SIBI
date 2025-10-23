@@ -42,17 +42,16 @@ async function listar_tokens_ordenados() {
         mostrarPopupCarga();
         let pagina = document.getElementById('pagina').value;
         let cantidad_mostrar = document.getElementById('cantidad_mostrar').value;
-        let busqueda_tabla_token = document.getElementById('busqueda_tabla_token').value;
         let busqueda_tabla_cliente = document.getElementById('busqueda_tabla_cliente').value;
         let busqueda_tabla_estado = document.getElementById('busqueda_tabla_estado').value;
-        document.getElementById('filtro_token').value = busqueda_tabla_token;
+
+        // Asignar valores a los campos ocultos
         document.getElementById('filtro_cliente').value = busqueda_tabla_cliente;
         document.getElementById('filtro_estado').value = busqueda_tabla_estado;
 
         const formData = new FormData();
         formData.append('pagina', pagina);
         formData.append('cantidad_mostrar', cantidad_mostrar);
-        formData.append('busqueda_tabla_token', busqueda_tabla_token);
         formData.append('busqueda_tabla_cliente', busqueda_tabla_cliente);
         formData.append('busqueda_tabla_estado', busqueda_tabla_estado);
         formData.append('sesion', session_session);
@@ -64,6 +63,7 @@ async function listar_tokens_ordenados() {
             cache: 'no-cache',
             body: formData
         });
+
         let json = await respuesta.json();
         document.getElementById('tablas').innerHTML = `
             <table class="table dt-responsive" width="100%">
@@ -81,7 +81,6 @@ async function listar_tokens_ordenados() {
             </table>
         `;
         document.querySelector('#modals_editar').innerHTML = ``;
-
         if (json.status) {
             let datos = json.contenido;
             datos.forEach(item => {
@@ -92,7 +91,6 @@ async function listar_tokens_ordenados() {
         } else {
             document.getElementById('tablas').innerHTML = `No se encontraron resultados`;
         }
-
         let paginacion = generar_paginacion(json.total, cantidad_mostrar);
         let texto_paginacion = generar_texto_paginacion(json.total, cantidad_mostrar);
         document.getElementById('texto_paginacion_tabla').innerHTML = texto_paginacion;
@@ -103,6 +101,7 @@ async function listar_tokens_ordenados() {
         ocultarPopupCarga();
     }
 }
+
 
 function generarfilastabla(item) {
     let cont = 1;

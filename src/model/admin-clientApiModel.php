@@ -98,13 +98,20 @@ class ClientApiModel
     // ==================================================
     public function buscarBienByDenominacion($denominacion)
     {
-        $sql = "SELECT id, denominacion, descripcion, estado
-                FROM bien
-                WHERE denominacion LIKE ? AND estado = 1
-                ORDER BY denominacion ASC";
-
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->execute(["%$denominacion%"]);
-        return $stmt->fetchAll(PDO::FETCH_OBJ);
+        $denominacion = $this->conexion->real_escape_string($denominacion);
+        $query = "
+        SELECT b.*, c.nombre_categoria, d.nombre_dependencia
+        FROM bienes b
+        LEFT JOIN categorias c ON b.id_categoria = c.id_categoria
+        LEFT JOIN dependencias d ON b.id_dependencia = d.id_dependencia
+        WHERE b.nombre_bien LIKE '%$denominacion%'
+        AND b.estado_bien = 'ACTIVO'
+    ";
+        $respuesta = $this->conexion->query($query);
+        $arrRespuesta = array();
+        while ($objeto = $respuesta->fetch_object()) {
+            array_push($arrRespuesta, $objeto);
+        }
+        return $arrRespuesta;
     }
 }

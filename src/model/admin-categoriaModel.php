@@ -22,6 +22,15 @@ class CategoriaModel
     }
     return $arrRespuesta;
 }
+public function listarCategoriasActivas() {
+    $query = "SELECT id_categoria, nombre_categoria FROM categorias WHERE estado = 'ACTIVO' ORDER BY nombre_categoria";
+    $respuesta = $this->conexion->query($query);
+    $arrRespuesta = array();
+    while ($objeto = $respuesta->fetch_object()) {
+        array_push($arrRespuesta, $objeto);
+    }
+    return $arrRespuesta;
+}
 
     public function registrarCategoria($codigo_categoria, $nombre_categoria, $descripcion, $vida_util_anos, $estado)
     {

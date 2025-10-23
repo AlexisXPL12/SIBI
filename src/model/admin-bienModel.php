@@ -78,52 +78,83 @@ class BienModel
         return $sql;
     }
 
-    public function buscarBienesOrderByNombre_tabla_filtro($busqueda_codigo_patrimonial, $busqueda_nombre_bien)
+    public function buscarBienesOrderByNombre_tabla($pagina, $cantidad_mostrar, $busqueda_codigo_patrimonial, $busqueda_nombre_bien)
     {
         $condicion = "1=1";
         if (!empty($busqueda_codigo_patrimonial)) {
-            $condicion .= " AND codigo_patrimonial LIKE '%$busqueda_codigo_patrimonial%'";
+            $condicion .= " AND b.codigo_patrimonial LIKE '%$busqueda_codigo_patrimonial%'";
         }
         if (!empty($busqueda_nombre_bien)) {
-            $condicion .= " AND nombre_bien LIKE '%$busqueda_nombre_bien%'";
+            $condicion .= " AND b.nombre_bien LIKE '%$busqueda_nombre_bien%'";
         }
 
+        $iniciar = ($pagina - 1) * $cantidad_mostrar;
         $arrRespuesta = array();
-        $respuesta = $this->conexion->query("SELECT * FROM bienes WHERE $condicion ORDER BY nombre_bien");
+
+        $query = "SELECT 
+                b.*,
+                c.codigo_categoria,
+                c.nombre_categoria,
+                d.codigo_dependencia,
+                d.nombre_dependencia
+              FROM bienes b
+              LEFT JOIN categorias c ON b.id_categoria = c.id_categoria
+              LEFT JOIN dependencias d ON b.id_dependencia = d.id_dependencia
+              WHERE $condicion 
+              ORDER BY b.nombre_bien 
+              LIMIT $iniciar, $cantidad_mostrar";
+
+        $respuesta = $this->conexion->query($query);
+
         if ($respuesta === false) {
             throw new Exception("Error en la consulta SQL: " . $this->conexion->error);
         }
+
         while ($objeto = $respuesta->fetch_object()) {
             array_push($arrRespuesta, $objeto);
         }
         return $arrRespuesta;
     }
 
-    public function buscarBienesOrderByNombre_tabla($pagina, $cantidad_mostrar, $busqueda_codigo_patrimonial, $busqueda_nombre_bien)
+    public function buscarBienesOrderByNombre_tabla_filtro($busqueda_codigo_patrimonial, $busqueda_nombre_bien)
     {
         $condicion = "1=1";
         if (!empty($busqueda_codigo_patrimonial)) {
-            $condicion .= " AND codigo_patrimonial LIKE '%$busqueda_codigo_patrimonial%'";
+            $condicion .= " AND b.codigo_patrimonial LIKE '%$busqueda_codigo_patrimonial%'";
         }
         if (!empty($busqueda_nombre_bien)) {
-            $condicion .= " AND nombre_bien LIKE '%$busqueda_nombre_bien%'";
+            $condicion .= " AND b.nombre_bien LIKE '%$busqueda_nombre_bien%'";
         }
 
-        $iniciar = ($pagina - 1) * $cantidad_mostrar;
         $arrRespuesta = array();
-        $respuesta = $this->conexion->query("SELECT * FROM bienes WHERE $condicion ORDER BY nombre_bien LIMIT $iniciar, $cantidad_mostrar");
+
+        $query = "SELECT 
+                b.*,
+                c.codigo_categoria,
+                c.nombre_categoria,
+                d.codigo_dependencia,
+                d.nombre_dependencia
+              FROM bienes b
+              LEFT JOIN categorias c ON b.id_categoria = c.id_categoria
+              LEFT JOIN dependencias d ON b.id_dependencia = d.id_dependencia
+              WHERE $condicion 
+              ORDER BY b.nombre_bien";
+
+        $respuesta = $this->conexion->query($query);
+
         if ($respuesta === false) {
             throw new Exception("Error en la consulta SQL: " . $this->conexion->error);
         }
+
         while ($objeto = $respuesta->fetch_object()) {
             array_push($arrRespuesta, $objeto);
         }
         return $arrRespuesta;
     }
     public function listarTodosLosBienes()
-{
-    $arrRespuesta = array();
-    $query = "
+    {
+        $arrRespuesta = array();
+        $query = "
         SELECT 
             b.id AS bien_id,
             b.cod_patrimonial,
@@ -163,8 +194,22 @@ class BienModel
         WHERE b.estado = 1  -- Solo bienes activos
         ORDER BY b.fecha_registro ASC;
     ";
-    
+
+        $respuesta = $this->conexion->query($query);
+        while ($objeto = $respuesta->fetch_object()) {
+            array_push($arrRespuesta, $objeto);
+        }
+        return $arrRespuesta;
+    }
+    public function buscarBienByDenominacion($denominacion) {
+    $denominacion = $this->conexion->real_escape_string($denominacion);
+    $query = "
+        SELECT b.*
+        FROM bienes b
+        WHERE b.nombre_bien LIKE '%$denominacion%'
+    ";
     $respuesta = $this->conexion->query($query);
+    $arrRespuesta = array();
     while ($objeto = $respuesta->fetch_object()) {
         array_push($arrRespuesta, $objeto);
     }

@@ -60,7 +60,8 @@ $vistas_sin_encabezado_pie = [
     'imprimir-usuarios',
     'reporte-ambientes',
     'imprimir-ambientes',
-    'imprimir-movimientosg'
+    'imprimir-movimientosg',
+    'api-bienes'
 ];
 
 if ($vista == "login" || $vista == "404" || $vista == "reset-password") {

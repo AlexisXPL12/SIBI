@@ -59,8 +59,14 @@
                     <div class="form-group row mb-2">
                         <label for="documento_referencia" class="col-3 col-form-label">Documento de Referencia:</label>
                         <div class="col-9">
-                            <input type="text" class="form-control" id="documento_referencia"
-                                name="documento_referencia">
+                            <select class="form-control" id="documento_referencia" name="documento_referencia">
+                                <option value="">Seleccione un tipo de documento</option>
+                                <option value="Factura">Factura</option>
+                                <option value="Orden de Compra">Orden de Compra</option>
+                                <option value="Acta de Entrega">Acta de Entrega</option>
+                                <option value="Informe Técnico">Informe Técnico</option>
+                                <option value="Otro">Otro</option>
+                            </select>
                         </div>
                     </div>
                     <div class="form-group mb-0 justify-content-end row text-center">
@@ -79,12 +85,15 @@
 <script src="<?php echo BASE_URL; ?>src/view/js/functions_movimiento.js"></script>
 <script>
     cargarDatosRegistro();
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         cargarDatosRegistro();
-
-        // Agregar evento onchange al select de bienes
-        document.getElementById('id_bien').addEventListener('change', function () {
-            cargarDependenciaDelBien(this.value);
-        });
+        let selectBien = document.getElementById('id_bien');
+        if (selectBien) {
+            selectBien.addEventListener('change', function() {
+                cargarDependenciaDelBien(this.value);
+            });
+        } else {
+            console.error("Elemento id_bien no encontrado");
+        }
     });
 </script>

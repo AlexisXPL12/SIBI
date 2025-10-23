@@ -38,6 +38,8 @@ $token = $_REQUEST['token'];
 // ===============================================
 // CONTROLADOR TOKEN API
 // ===============================================
+
+
 if ($tipo == "registrar") {
     $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
 
@@ -69,8 +71,8 @@ if ($tipo == "registrar") {
         }
     } 
     echo json_encode($arr_Respuesta);   
-
-} elseif ($tipo == "actualizar") {
+} 
+elseif ($tipo == "actualizar") {
     $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
 
     $id = $_POST['data'];
@@ -88,28 +90,28 @@ if ($tipo == "registrar") {
 
     echo json_encode($arr_Respuesta);
 
-} elseif ($tipo == "listar_tokens_ordenados_tabla") {
+} 
+elseif ($tipo == "listar_tokens_ordenados_tabla") {
     $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
-
-    $pagina = $_POST['pagina'];
-    $cantidad_mostrar = $_POST['cantidad_mostrar'];
-    $busqueda_tabla_token = $_POST['busqueda_tabla_token']; // corregido, antes no estaba definido
-    $busqueda_tabla_cliente = $_POST['busqueda_tabla_cliente'];
-    $busqueda_tabla_estado = $_POST['busqueda_tabla_estado'];
-
-    $datos = $objToken->buscarTokensConFiltros($busqueda_tabla_token, $busqueda_tabla_cliente, $busqueda_tabla_estado);
-    $total = $objToken->contarTokensConFiltros($busqueda_tabla_token, $busqueda_tabla_cliente, $busqueda_tabla_estado);
-
-    $arrContenido = array();
-    foreach ($datos as $item) {
-        $item->options = '<button class="btn btn-info btn-sm" data-toggle="modal" data-target=".modal_editar' . $item->id . '">Editar</button>';
-        array_push($arrContenido, $item);
+    if ($objSesion->verificar_sesion_si_activa($id_sesion, $token)) {
+        $pagina = $_POST['pagina'];
+        $cantidad_mostrar = $_POST['cantidad_mostrar'];
+        $busqueda_tabla_cliente = $_POST['busqueda_tabla_cliente'] ?? '';
+        $busqueda_tabla_estado = $_POST['busqueda_tabla_estado'] ?? '';
+        $datos = $objToken->buscarTokensConFiltros($busqueda_tabla_cliente, $busqueda_tabla_estado);
+        $total = $objToken->contarTokensConFiltros($busqueda_tabla_cliente, $busqueda_tabla_estado);
+        $arrContenido = array();
+        foreach ($datos as $item) {
+            $item->options = '<button class="btn btn-info btn-sm" data-toggle="modal" data-target=".modal_editar' . $item->id . '">Editar</button>';
+            array_push($arrContenido, $item);
+        }
+        $arr_Respuesta = array('status' => true, 'msg' => '', 'contenido' => $arrContenido, 'total' => $total);
+        echo json_encode($arr_Respuesta);
+    } else {
+        echo json_encode($arr_Respuesta);
     }
-
-    $arr_Respuesta = array('status' => true, 'msg' => '', 'contenido' => $arrContenido, 'total' => $total);
-    echo json_encode($arr_Respuesta);
-
-} else {
+}
+else {
 
     $arr_Respuesta = array('status' => false, 'msg' => 'Tipo de operación no válida o no especificada.');
     echo json_encode($arr_Respuesta);
