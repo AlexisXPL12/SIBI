@@ -29,23 +29,39 @@
             border-radius: 5px;
             margin-bottom: 20px;
         }
+        .codigo-patrimonial-group {
+            display: flex;
+            gap: 10px;
+        }
+        .codigo-patrimonial-group input {
+            flex: 1;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1 class="my-4">API de Bienes</h1>
 
+        <!-- Campo oculto para el token -->
+        <input type="hidden" id="token" value="">
+
         <!-- Sección de Filtros -->
         <div class="filter-section">
             <h4>Buscar Bienes</h4>
             <div class="row">
-                <div class="col-md-8 mb-3">
-                    <label for="data" class="form-label">Nombre del Bien:</label>
-                    <input type="text" class="form-control" id="data" placeholder="Ej: Laptop HP">
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Código Patrimonial:</label>
+                    <div class="codigo-patrimonial-group">
+                        <input type="text" class="form-control" id="prefijo" placeholder="Prefijo (IES)" maxlength="3">
+                        <input type="text" class="form-control" id="numero" placeholder="Número (001)" maxlength="3">
+                        <input type="text" class="form-control" id="anio" placeholder="Año (2025)" maxlength="4">
+                    </div>
                 </div>
-                <div class="col-md-4 mb-3">
-                    <label for="token" class="form-label">Token:</label>
-                    <input type="text" class="form-control" id="token" placeholder="Token de autenticación">
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-12 mb-3">
+                    <label for="nombre" class="form-label">Nombre del Bien:</label>
+                    <input type="text" class="form-control" id="nombre" placeholder="Ej: Laptop HP">
                 </div>
             </div>
             <button id="btn_buscar" class="btn btn-primary">
@@ -57,7 +73,7 @@
         <div class="mt-4">
             <h4>Resultados</h4>
             <div id="resultados" class="mt-3">
-                <p>No se han cargado datos aún.</p>
+                <p>Cargando...</p>
             </div>
         </div>
     </div>
@@ -65,9 +81,10 @@
     <!-- Bootstrap JS y dependencias -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Lógica para consumir la API -->
     <script src="<?php echo BASE_URL; ?>src/view/js/api_bienes.js"></script>
 </body>
 </html>
+
+
+
 

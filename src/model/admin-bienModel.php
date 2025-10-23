@@ -201,13 +201,52 @@ class BienModel
         }
         return $arrRespuesta;
     }
-    public function buscarBienByDenominacion($denominacion) {
-    $denominacion = $this->conexion->real_escape_string($denominacion);
-    $query = "
+    public function buscarBienByDenominacion($denominacion)
+    {
+        $denominacion = $this->conexion->real_escape_string($denominacion);
+        $query = "
         SELECT b.*
         FROM bienes b
         WHERE b.nombre_bien LIKE '%$denominacion%'
     ";
+        $respuesta = $this->conexion->query($query);
+        $arrRespuesta = array();
+        while ($objeto = $respuesta->fetch_object()) {
+            array_push($arrRespuesta, $objeto);
+        }
+        return $arrRespuesta;
+    }
+    public function buscarBienesPorCodigoAvanzado($prefijo, $numero, $anio, $nombre) {
+    $condicion = "1=1";
+
+    if (!empty($prefijo)) {
+        $prefijo = $this->conexion->real_escape_string($prefijo);
+        $condicion .= " AND b.codigo_patrimonial LIKE '$prefijo%'";
+    }
+
+    if (!empty($numero)) {
+        $numero = $this->conexion->real_escape_string($numero);
+        $numero = str_pad($numero, 3, '0', STR_PAD_LEFT); // Aseguramos que el número tenga 3 dígitos
+        $condicion .= " AND b.codigo_patrimonial LIKE '%-$numero-%'";
+    }
+
+    if (!empty($anio)) {
+        $anio = $this->conexion->real_escape_string($anio);
+        $condicion .= " AND b.codigo_patrimonial LIKE '%-$anio'";
+    }
+
+    if (!empty($nombre)) {
+        $nombre = $this->conexion->real_escape_string($nombre);
+        $condicion .= " AND b.nombre_bien LIKE '%$nombre%'";
+    }
+
+    $query = "
+        SELECT b.*
+        FROM bienes b
+        WHERE $condicion
+        ORDER BY b.codigo_patrimonial
+    ";
+
     $respuesta = $this->conexion->query($query);
     $arrRespuesta = array();
     while ($objeto = $respuesta->fetch_object()) {
@@ -215,4 +254,8 @@ class BienModel
     }
     return $arrRespuesta;
 }
+
+
+
+
 }

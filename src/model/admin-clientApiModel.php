@@ -96,22 +96,19 @@ class ClientApiModel
     // ==================================================
     // BUSCAR BIEN POR DENOMINACIÓN (para API externa)
     // ==================================================
-    public function buscarBienByDenominacion($denominacion)
-    {
-        $denominacion = $this->conexion->real_escape_string($denominacion);
-        $query = "
-        SELECT b.*, c.nombre_categoria, d.nombre_dependencia
+    public function buscarBienByDenominacion($denominacion) {
+    $denominacion = $this->conexion->real_escape_string($denominacion);
+    $query = "
+        SELECT b.*
         FROM bienes b
-        LEFT JOIN categorias c ON b.id_categoria = c.id_categoria
-        LEFT JOIN dependencias d ON b.id_dependencia = d.id_dependencia
         WHERE b.nombre_bien LIKE '%$denominacion%'
-        AND b.estado_bien = 'ACTIVO'
     ";
-        $respuesta = $this->conexion->query($query);
-        $arrRespuesta = array();
-        while ($objeto = $respuesta->fetch_object()) {
-            array_push($arrRespuesta, $objeto);
-        }
-        return $arrRespuesta;
+    $respuesta = $this->conexion->query($query);
+    $arrRespuesta = array();
+    while ($objeto = $respuesta->fetch_object()) {
+        array_push($arrRespuesta, $objeto);
     }
+    return $arrRespuesta;
+}
+
 }
