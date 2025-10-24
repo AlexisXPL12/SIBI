@@ -73,11 +73,20 @@ elseif ($tipo == "buscar_bienes") {
     $anio = $_GET['anio'] ?? '';
     $nombre = $_GET['nombre'] ?? '';
 
-    $bienes = $objBien->buscarBienesPorCodigoAvanzado($prefijo, $numero, $anio, $nombre);
+    if (!empty($prefijo) && !empty($numero) && !empty($anio)) {
+        // Si se proporcionan prefijo, número y año, buscamos coincidencias exactas
+        $codigoCompleto = "$prefijo-" . str_pad($numero, 3, '0', STR_PAD_LEFT) . "-$anio";
+        $bienes = $objBien->buscarBienPorCodigoExacto($codigoCompleto);
+    } else {
+        // Búsqueda avanzada por partes
+        $bienes = $objBien->buscarBienesPorCodigoAvanzado($prefijo, $numero, $anio, $nombre);
+    }
+
     $arr_Respuesta = array('status' => true, 'msg' => 'Búsqueda exitosa.', 'contenido' => $bienes);
     echo json_encode($arr_Respuesta);
     exit;
 }
+
 ?>
 
 

@@ -235,6 +235,12 @@ class BienModel
         $condicion .= " AND b.codigo_patrimonial LIKE '%-$anio'";
     }
 
+    if (!empty($prefijo) && !empty($numero) && !empty($anio)) {
+        // Si se proporcionan prefijo, número y año, buscamos coincidencias exactas
+        $codigoCompleto = "$prefijo-$numero-$anio";
+        $condicion = "b.codigo_patrimonial = '$codigoCompleto'";
+    }
+
     if (!empty($nombre)) {
         $nombre = $this->conexion->real_escape_string($nombre);
         $condicion .= " AND b.nombre_bien LIKE '%$nombre%'";
@@ -244,6 +250,42 @@ class BienModel
         SELECT b.*
         FROM bienes b
         WHERE $condicion
+        ORDER BY b.codigo_patrimonial
+    ";
+
+    $respuesta = $this->conexion->query($query);
+    $arrRespuesta = array();
+    while ($objeto = $respuesta->fetch_object()) {
+        array_push($arrRespuesta, $objeto);
+    }
+    return $arrRespuesta;
+}
+public function buscarBienesPorNumeroExacto($numero) {
+    $numero = $this->conexion->real_escape_string($numero);
+    $numero = str_pad($numero, 3, '0', STR_PAD_LEFT); // Aseguramos que el número tenga 3 dígitos
+
+    $query = "
+        SELECT b.*
+        FROM bienes b
+        WHERE b.codigo_patrimonial LIKE '%-$numero-%'
+        ORDER BY b.codigo_patrimonial
+    ";
+
+    $respuesta = $this->conexion->query($query);
+    $arrRespuesta = array();
+    while ($objeto = $respuesta->fetch_object()) {
+        array_push($arrRespuesta, $objeto);
+    }
+    return $arrRespuesta;
+}
+
+public function buscarBienPorCodigoExacto($codigoCompleto) {
+    $codigoCompleto = $this->conexion->real_escape_string($codigoCompleto);
+
+    $query = "
+        SELECT b.*
+        FROM bienes b
+        WHERE b.codigo_patrimonial = '$codigoCompleto'
         ORDER BY b.codigo_patrimonial
     ";
 
