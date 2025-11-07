@@ -1,5 +1,8 @@
 <?php
-session_start();
+header('Content-Type: application/json');
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 // ===============================================
 // CONTROLADOR: ClienteApliController.php
 // ===============================================
@@ -31,6 +34,9 @@ $model         = new ClientApiModel();
 // CONTROLADOR CLIENTE API
 // ===============================================
 $tipo = $_GET['tipo'];
+
+//variables de sesion
+$token = $_POST['token'];
 
 if ($tipo == "listar_clientes_select") {
 
