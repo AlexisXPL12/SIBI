@@ -1,6 +1,8 @@
 <?php
 header('Content-Type: application/json');
 header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 
 require_once('../model/admin-apiModel.php');
 require_once('../model/admin-sesionModel.php');
@@ -17,7 +19,7 @@ $objAdmin = new AdminModel();
 //variables de sesion
 $token = $_POST['token'];
 // consultas de API
-if ($tipo = "verBienApiByNombre") {
+if ($tipo == "verBienApiByNombre") {
     $token_arr = explode("-", $token);
     $id_cliente = $token_arr[2];
     $arr_Cliente = $objApi->buscarClienteById($id_cliente);
