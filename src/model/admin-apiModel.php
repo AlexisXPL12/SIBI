@@ -138,7 +138,7 @@ class ApiModel
     public function buscarBienByDenominacion($data)
     {
         $arrRespuesta = array();
-        $sql = $this->conexion->query("SELECT * FROM bienes WHERE denominacion LIKE '%$data%'");
+        $sql = $this->conexion->query("SELECT * FROM bienes WHERE nombre_bien LIKE '%$data%'");
         while ($objeto = $sql->fetch_object()) {
             array_push($arrRespuesta, $objeto);
         }
