@@ -39,8 +39,6 @@ $tipo = $_GET['tipo'];
 $token = $_POST['token'];
 
 if ($tipo == "listar_clientes_select") {
-
-    $datos = $model->listarClientesSelect();
     $arr_Respuesta = array('status' => true, 'msg' => '', 'contenido' => $datos);
     echo json_encode($arr_Respuesta);
 
