@@ -19,6 +19,10 @@ $objAdmin = new AdminModel();
 
 // Consultas de API
 if ($tipo == "verBienApiByNombre") {
+    // Log para debug - puedes comentarlo después
+    error_log("=== INICIO VALIDACIÓN API ===");
+    error_log("POST recibido: " . print_r($_POST, true));
+    
     // Validar que se envió el token
     if (!isset($_POST['token']) || empty($_POST['token'])) {
         $arr_Respuesta = array(
@@ -29,33 +33,23 @@ if ($tipo == "verBienApiByNombre") {
         exit;
     }
 
-    $token = $_POST['token'];
-    
-    // Validar formato del token
-    $token_arr = explode("-", $token);
-    
-    if (count($token_arr) !== 3) {
-        $arr_Respuesta = array(
-            'status' => false, 
-            'msg' => 'Formato de token inválido. El token debe tener el formato correcto.'
-        );
-        echo json_encode($arr_Respuesta);
-        exit;
-    }
-
-    $id_cliente = $token_arr[2];
+    $token = trim($_POST['token']); // Eliminar espacios en blanco
+    error_log("Token recibido: " . $token);
     
     // Verificar que el token existe en la base de datos
     $arr_Token = $objApi->buscarToken($token);
+    error_log("Token encontrado en BD: " . ($arr_Token ? 'SI' : 'NO'));
     
     if (!$arr_Token) {
         $arr_Respuesta = array(
             'status' => false, 
-            'msg' => 'Token no válido. El token no existe en el sistema.'
+            'msg' => 'Token no válido. El token no existe en el sistema o ha expirado.'
         );
         echo json_encode($arr_Respuesta);
         exit;
     }
+    
+    error_log("Estado del token: " . $arr_Token->estado);
     
     // Verificar que el token está activo
     if ($arr_Token->estado != 1) {
@@ -67,8 +61,11 @@ if ($tipo == "verBienApiByNombre") {
         exit;
     }
     
+    error_log("ID Cliente del token: " . $arr_Token->id_client_api);
+    
     // Verificar que el cliente existe
     $arr_Cliente = $objApi->buscarClienteById($arr_Token->id_client_api);
+    error_log("Cliente encontrado: " . ($arr_Cliente ? 'SI' : 'NO'));
     
     if (!$arr_Cliente) {
         $arr_Respuesta = array(
@@ -78,6 +75,8 @@ if ($tipo == "verBienApiByNombre") {
         echo json_encode($arr_Respuesta);
         exit;
     }
+    
+    error_log("Estado del cliente: " . $arr_Cliente->estado);
     
     // Verificar que el cliente está activo
     if ($arr_Cliente->estado != 1) {
@@ -100,9 +99,12 @@ if ($tipo == "verBienApiByNombre") {
     }
     
     $data = $_POST['data'];
+    error_log("Buscando bienes con término: " . $data);
     
     // Buscar bienes
     $arr_bienes = $objApi->buscarBienByDenominacion($data);
+    error_log("Bienes encontrados: " . count($arr_bienes));
+    error_log("=== FIN VALIDACIÓN API ===");
     
     if (empty($arr_bienes)) {
         $arr_Respuesta = array(
