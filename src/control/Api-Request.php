@@ -34,7 +34,7 @@ if ($tipo == "verBienApiByNombre") {
     // Validar formato del token
     $token_arr = explode("-", $token);
     
-    if (count($token_arr) < 3) {
+    if (count($token_arr) !== 3) {
         $arr_Respuesta = array(
             'status' => false, 
             'msg' => 'Formato de token inválido. El token debe tener el formato correcto.'
@@ -45,13 +45,35 @@ if ($tipo == "verBienApiByNombre") {
 
     $id_cliente = $token_arr[2];
     
+    // Verificar que el token existe en la base de datos
+    $arr_Token = $objApi->buscarToken($token);
+    
+    if (!$arr_Token) {
+        $arr_Respuesta = array(
+            'status' => false, 
+            'msg' => 'Token no válido. El token no existe en el sistema.'
+        );
+        echo json_encode($arr_Respuesta);
+        exit;
+    }
+    
+    // Verificar que el token está activo
+    if ($arr_Token->estado != 1) {
+        $arr_Respuesta = array(
+            'status' => false, 
+            'msg' => 'Token inactivo. El token ha sido deshabilitado.'
+        );
+        echo json_encode($arr_Respuesta);
+        exit;
+    }
+    
     // Verificar que el cliente existe
-    $arr_Cliente = $objApi->buscarClienteById($id_cliente);
+    $arr_Cliente = $objApi->buscarClienteById($arr_Token->id_client_api);
     
     if (!$arr_Cliente) {
         $arr_Respuesta = array(
             'status' => false, 
-            'msg' => 'Token no válido. El cliente asociado no existe en el sistema.'
+            'msg' => 'Cliente no encontrado. El cliente asociado al token no existe en el sistema.'
         );
         echo json_encode($arr_Respuesta);
         exit;
