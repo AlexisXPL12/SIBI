@@ -22,11 +22,11 @@ if ($tipo == "verBienApiByNombre") {
     // Log para debug - puedes comentarlo después
     error_log("=== INICIO VALIDACIÓN API ===");
     error_log("POST recibido: " . print_r($_POST, true));
-    
+
     // Validar que se envió el token
     if (!isset($_POST['token']) || empty($_POST['token'])) {
         $arr_Respuesta = array(
-            'status' => false, 
+            'status' => false,
             'msg' => 'Token no proporcionado. Por favor, incluya un token válido.'
         );
         echo json_encode($arr_Respuesta);
@@ -35,98 +35,107 @@ if ($tipo == "verBienApiByNombre") {
 
     $token = trim($_POST['token']); // Eliminar espacios en blanco
     error_log("Token recibido: " . $token);
-    
+
     // Verificar que el token existe en la base de datos
     $arr_Token = $objApi->buscarToken($token);
     error_log("Token encontrado en BD: " . ($arr_Token ? 'SI' : 'NO'));
-    
+
     if (!$arr_Token) {
         $arr_Respuesta = array(
-            'status' => false, 
+            'status' => false,
             'msg' => 'Token no válido. El token no existe en el sistema o ha expirado.'
         );
         echo json_encode($arr_Respuesta);
         exit;
     }
-    
+
     error_log("Estado del token: " . $arr_Token->estado);
-    
+
     // Verificar que el token está activo
     if ($arr_Token->estado != 1) {
         $arr_Respuesta = array(
-            'status' => false, 
+            'status' => false,
             'msg' => 'Token inactivo. El token ha sido deshabilitado.'
         );
         echo json_encode($arr_Respuesta);
         exit;
     }
-    
+
     error_log("ID Cliente del token: " . $arr_Token->id_client_api);
-    
+
     // Verificar que el cliente existe
     $arr_Cliente = $objApi->buscarClienteById($arr_Token->id_client_api);
     error_log("Cliente encontrado: " . ($arr_Cliente ? 'SI' : 'NO'));
-    
+
     if (!$arr_Cliente) {
         $arr_Respuesta = array(
-            'status' => false, 
+            'status' => false,
             'msg' => 'Cliente no encontrado. El cliente asociado al token no existe en el sistema.'
         );
         echo json_encode($arr_Respuesta);
         exit;
     }
-    
+
     error_log("Estado del cliente: " . $arr_Cliente->estado);
-    
+
     // Verificar que el cliente está activo
     if ($arr_Cliente->estado != 1) {
         $arr_Respuesta = array(
-            'status' => false, 
+            'status' => false,
             'msg' => 'Cliente inactivo. El acceso a la API ha sido deshabilitado para este cliente.'
         );
         echo json_encode($arr_Respuesta);
         exit;
     }
-    
-    // Validar que se envió el parámetro 'data'
-    if (!isset($_POST['data']) || empty($_POST['data'])) {
+
+    // Validar que se envió al menos un parámetro de búsqueda
+    if ((!isset($_POST['data']) || empty($_POST['data'])) && (!isset($_POST['codigo_patrimonial']) || empty($_POST['codigo_patrimonial']))) {
         $arr_Respuesta = array(
-            'status' => false, 
-            'msg' => 'Parámetro de búsqueda no proporcionado. Por favor, incluya el término de búsqueda.'
+            'status' => false,
+            'msg' => 'Parámetro de búsqueda no proporcionado. Por favor, incluya el nombre o el código patrimonial del bien.'
         );
         echo json_encode($arr_Respuesta);
         exit;
     }
-    
+
     $data = $_POST['data'];
     error_log("Buscando bienes con término: " . $data);
-    
+
     // Buscar bienes
-    $arr_bienes = $objApi->buscarBienByDenominacion($data);
+    $data = isset($_POST['data']) ? trim($_POST['data']) : null;
+    $codigo_patrimonial = isset($_POST['codigo_patrimonial']) ? trim($_POST['codigo_patrimonial']) : null;
+
+    // Priorizar el código patrimonial si está presente
+    if (!empty($codigo_patrimonial)) {
+        $arr_bienes = $objApi->buscarBienByCodigoPatrimonial($codigo_patrimonial);
+    } else {
+        $arr_bienes = $objApi->buscarBienByDenominacion($data);
+    }
+
     error_log("Bienes encontrados: " . count($arr_bienes));
     error_log("=== FIN VALIDACIÓN API ===");
-    
+
     if (empty($arr_bienes)) {
         $arr_Respuesta = array(
-            'status' => true, 
+            'status' => true,
             'msg' => 'No se encontraron resultados para la búsqueda.',
             'contenido' => []
         );
     } else {
         $arr_Respuesta = array(
-            'status' => true, 
+            'status' => true,
             'msg' => 'Búsqueda exitosa.',
             'contenido' => $arr_bienes
         );
     }
-    
+
     echo json_encode($arr_Respuesta);
     exit;
 }
 
 // Si no es un tipo válido
 $arr_Respuesta = array(
-    'status' => false, 
+    'status' => false,
     'msg' => 'Tipo de operación no válido.'
 );
 echo json_encode($arr_Respuesta);
