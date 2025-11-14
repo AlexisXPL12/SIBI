@@ -12,14 +12,7 @@ async function cargarClientesEnSelect() {
         });
         let json = await respuesta.json();
         if (json.status) {
-            let selectCliente = document.getElementById('id_client_api');
             let selectBusquedaCliente = document.getElementById('busqueda_tabla_cliente');
-            if (selectCliente) {
-                selectCliente.innerHTML = '<option value="">Seleccione un cliente</option>';
-                json.contenido.forEach(cliente => {
-                    selectCliente.innerHTML += `<option value="${cliente.id}">${cliente.razon_social}</option>`;
-                });
-            }
             if (selectBusquedaCliente) {
                 selectBusquedaCliente.innerHTML = '<option value="">TODOS</option>';
                 json.contenido.forEach(cliente => {
@@ -39,13 +32,17 @@ function numero_pagina(pagina) {
 
 async function listar_tokens_ordenados() {
     try {
+        console.log("=== Iniciando carga de tokens ===");
         mostrarPopupCarga();
+        
         let pagina = document.getElementById('pagina').value;
         let cantidad_mostrar = document.getElementById('cantidad_mostrar').value;
         let busqueda_tabla_cliente = document.getElementById('busqueda_tabla_cliente').value;
         let busqueda_tabla_estado = document.getElementById('busqueda_tabla_estado').value;
 
-        // Asignar valores a los campos ocultos
+        console.log("Parámetros:", {pagina, cantidad_mostrar, busqueda_tabla_cliente, busqueda_tabla_estado});
+
+        // Guardar valores de filtro
         document.getElementById('filtro_cliente').value = busqueda_tabla_cliente;
         document.getElementById('filtro_estado').value = busqueda_tabla_estado;
 
@@ -64,7 +61,11 @@ async function listar_tokens_ordenados() {
             body: formData
         });
 
+        console.log("Respuesta HTTP:", respuesta.status);
+
         let json = await respuesta.json();
+        console.log("JSON recibido:", json);
+
         document.getElementById('tablas').innerHTML = `
             <table class="table dt-responsive" width="100%">
                 <thead>
@@ -80,7 +81,7 @@ async function listar_tokens_ordenados() {
                 <tbody id="contenido_tabla"></tbody>
             </table>
         `;
-        document.querySelector('#modals_editar').innerHTML = ``;
+
         if (json.status) {
             let datos = json.contenido;
             datos.forEach(item => {
@@ -89,92 +90,246 @@ async function listar_tokens_ordenados() {
         } else if (json.msg == "Error_Sesion") {
             alerta_sesion();
         } else {
-            document.getElementById('tablas').innerHTML = `No se encontraron resultados`;
+            document.getElementById('tablas').innerHTML = `
+                <div class="alert alert-info">
+                    <i class="fa fa-info-circle"></i> No se encontraron resultados
+                </div>
+            `;
         }
+
         let paginacion = generar_paginacion(json.total, cantidad_mostrar);
         let texto_paginacion = generar_texto_paginacion(json.total, cantidad_mostrar);
         document.getElementById('texto_paginacion_tabla').innerHTML = texto_paginacion;
         document.getElementById('lista_paginacion_tabla').innerHTML = paginacion;
+
     } catch (e) {
-        console.log("Error al cargar tokens: " + e);
+        console.error("Error completo:", e);
     } finally {
         ocultarPopupCarga();
     }
 }
-
 
 function generarfilastabla(item) {
     let cont = 1;
     $(".filas_tabla").each(function () {
         cont++;
     });
+
+    let estado;
+    if (item.estado == 1) {
+        estado = '<span class="badge badge-success">ACTIVO</span>';
+    } else {
+        estado = '<span class="badge badge-secondary">INACTIVO</span>';
+    }
+
     let nueva_fila = document.createElement("tr");
     nueva_fila.id = "fila" + item.id;
     nueva_fila.className = "filas_tabla";
-    let estado = item.estado == 1 ? "ACTIVO" : "INACTIVO";
     nueva_fila.innerHTML = `
         <th>${cont}</th>
         <td>${item.token}</td>
         <td>${item.razon_social}</td>
         <td>${item.fecha_registro}</td>
         <td>${estado}</td>
-        <td>
-            <button class="btn btn-info btn-sm" data-toggle="modal" data-target=".modal_editar${item.id}">Editar</button>
-        </td>
+        <td>${item.options}</td>
     `;
-    document.querySelector('#modals_editar').innerHTML += `
-        <div class="modal fade modal_editar${item.id}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header text-center">
-                        <h5 class="modal-title h4" id="myLargeModalLabel">Actualizar Token</h5>
-                        <button type="button" class="close waves-effect waves-light" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="col-12">
-                            <form class="form-horizontal" id="frmActualizar${item.id}">
-                                <div class="form-group row mb-2">
-                                    <label for="id_client_api${item.id}" class="col-3 col-form-label">Cliente</label>
-                                    <div class="col-9">
-                                        <select class="form-control" id="id_client_api${item.id}" name="id_client_api" required>
-                                            <option value="">Seleccione un cliente</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row mb-2">
-                                    <label for="token${item.id}" class="col-3 col-form-label">Token</label>
-                                    <div class="col-9">
-                                        <input type="text" class="form-control" id="token${item.id}" name="token" value="${item.token}">
-                                    </div>
-                                </div>
-                                <div class="form-group row mb-2">
-                                    <label for="estado${item.id}" class="col-3 col-form-label">Estado</label>
-                                    <div class="col-9">
-                                        <select class="form-control" id="estado${item.id}" name="estado">
-                                            <option value="1" ${item.estado == 1 ? 'selected' : ''}>ACTIVO</option>
-                                            <option value="0" ${item.estado == 0 ? 'selected' : ''}>INACTIVO</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group mb-0 justify-content-end row text-center">
-                                    <div class="col-12">
-                                        <button type="button" class="btn btn-light waves-effect waves-light" data-dismiss="modal">Cancelar</button>
-                                        <button type="button" class="btn btn-success waves-effect waves-light" onclick="actualizarToken(${item.id})">Actualizar</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-    document.querySelector('#contenido_tabla').appendChild(nueva_fila);
 
-    // Cargar clientes en el select del modal específico
-    cargarClientesEnSelectModal(item.id, item.id_client_api);
+    document.querySelector('#contenido_tabla').appendChild(nueva_fila);
+}
+// ============================================
+// FUNCIÓN AUXILIAR PARA CARGAR CLIENTES
+// ============================================
+async function cargarClientesParaModal() {
+    try {
+        const formData = new FormData();
+        formData.append('sesion', session_session);
+        formData.append('token', token_token);
+
+        let respuesta = await fetch(base_url_server + 'src/control/ClienteApi.php?tipo=listar_clientes_select', {
+            method: 'POST',
+            mode: 'cors',
+            cache: 'no-cache',
+            body: formData
+        });
+        
+        let json = await respuesta.json();
+        
+        if (json.status) {
+            let options = '<option value="">Seleccione un cliente</option>';
+            json.contenido.forEach(cliente => {
+                options += `<option value="${cliente.id}">${cliente.razon_social}</option>`;
+            });
+            return options;
+        }
+        return '<option value="">Error al cargar clientes</option>';
+    } catch (e) {
+        console.log("Error al cargar clientes: " + e);
+        return '<option value="">Error al cargar clientes</option>';
+    }
+}
+// ============================================
+// FUNCIÓN PARA ABRIR MODAL DE EDICIÓN CON SWEETALERT
+// ============================================
+async function abrirModalEditarToken(id, id_client_api, token, estado) {
+    // Primero cargar los clientes
+    let clientesOptions = await cargarClientesParaModal();
+    
+    Swal.fire({
+        title: 'Actualizar Token',
+        html: `
+            <div class="form-group text-left mb-3">
+                <label for="swal-cliente">Cliente:</label>
+                <select id="swal-cliente" class="form-control">
+                    ${clientesOptions}
+                </select>
+            </div>
+            <div class="form-group text-left mb-3">
+                <label for="swal-token">Token:</label>
+                <input type="text" id="swal-token" class="form-control" value="${token}" readonly>
+            </div>
+            <div class="form-group text-left mb-3">
+                <label for="swal-estado">Estado:</label>
+                <select id="swal-estado" class="form-control">
+                    <option value="">Seleccione...</option>
+                    <option value="1" ${estado == 1 ? 'selected' : ''}>ACTIVO</option>
+                    <option value="0" ${estado == 0 ? 'selected' : ''}>INACTIVO</option>
+                </select>
+            </div>
+        `,
+        width: '600px',
+        showCancelButton: true,
+        confirmButtonText: 'Actualizar',
+        cancelButtonText: 'Cancelar',
+        customClass: {
+            confirmButton: 'btn btn-success mt-2',
+            cancelButton: 'btn btn-secondary mt-2'
+        },
+        buttonsStyling: false,
+        focusConfirm: false,
+        didOpen: () => {
+            // Establecer el cliente seleccionado después de que se abra el modal
+            document.getElementById('swal-cliente').value = id_client_api;
+        },
+        preConfirm: () => {
+            const clienteVal = document.getElementById('swal-cliente').value;
+            const tokenVal = document.getElementById('swal-token').value.trim();
+            const estadoVal = document.getElementById('swal-estado').value;
+            
+            if (!clienteVal || !tokenVal || estadoVal === "") {
+                Swal.showValidationMessage('Por favor complete todos los campos');
+                return false;
+            }
+            
+            return {
+                id_client_api: clienteVal,
+                token: tokenVal,
+                estado: estadoVal
+            };
+        }
+    }).then((result) => {
+        if (result.value) {
+            actualizarToken(id, result.value);
+        }
+    });
+}
+
+// ============================================
+// FUNCIÓN PARA ACTUALIZAR TOKEN
+// ============================================
+async function actualizarToken(id, datos) {
+    if (!datos) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Datos incompletos',
+            customClass: {
+                confirmButton: 'btn btn-danger mt-2'
+            }
+        });
+        return;
+    }
+
+    // Mostrar loading
+    Swal.fire({
+        title: 'Actualizando...',
+        text: 'Por favor espere',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        showConfirmButton: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    const formData = new FormData();
+    formData.append('data', id);
+    formData.append('id_client_api', datos.id_client_api);
+    formData.append('token', datos.token);  // Token del registro
+    formData.append('estado', datos.estado);
+    formData.append('sesion', session_session);
+    formData.append('token_sesion', token_token);  // ⭐ CAMBIAR NOMBRE AQUÍ
+
+    try {
+        let respuesta = await fetch(base_url_server + 'src/control/Tokens.php?tipo=actualizar', {
+            method: 'POST',
+            mode: 'cors',
+            cache: 'no-cache',
+            body: formData
+        });
+
+        const textoRespuesta = await respuesta.text();
+        let json;
+        
+        try {
+            json = JSON.parse(textoRespuesta);
+        } catch (e) {
+            console.error("Error al parsear JSON:", textoRespuesta);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error del Servidor',
+                text: 'La respuesta del servidor no es válida',
+                customClass: {
+                    confirmButton: 'btn btn-danger mt-2'
+                }
+            });
+            return;
+        }
+
+        if (json.status) {
+            Swal.fire({
+                icon: 'success',
+                title: '¡Actualizado!',
+                text: json.mensaje || 'Token actualizado correctamente',
+                customClass: {
+                    confirmButton: 'btn btn-success mt-2'
+                },
+                timer: 2000
+            }).then(() => {
+                listar_tokens_ordenados();
+            });
+        } else if (json.msg == "Error_Sesion") {
+            alerta_sesion();
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: json.mensaje || 'Error al actualizar el token',
+                customClass: {
+                    confirmButton: 'btn btn-danger mt-2'
+                }
+            });
+        }
+    } catch (e) {
+        console.error("Error en la petición:", e);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error de Conexión',
+            text: 'No se pudo conectar con el servidor',
+            customClass: {
+                confirmButton: 'btn btn-danger mt-2'
+            }
+        });
+    }
 }
 
 async function registrar_token() {
@@ -183,11 +338,12 @@ async function registrar_token() {
 
     if (id_client_api == "" || estado == "") {
         Swal.fire({
-            type: 'error',
+            icon: 'error',
             title: 'Error',
             text: 'Campos vacíos...',
-            confirmButtonClass: 'btn btn-confirm mt-2',
-            footer: ''
+            customClass: {
+                confirmButton: 'btn btn-confirm mt-2'
+            }
         });
         return;
     }
@@ -207,111 +363,29 @@ async function registrar_token() {
         if (json.status) {
             document.getElementById("frmRegistrar").reset();
             Swal.fire({
-                type: 'success',
+                icon: 'success',
                 title: 'Registro',
                 text: json.mensaje,
-                confirmButtonClass: 'btn btn-confirm mt-2',
-                footer: '',
+                customClass: {
+                    confirmButton: 'btn btn-confirm mt-2'
+                },
                 timer: 1000
             });
         } else if (json.msg == "Error_Sesion") {
             alerta_sesion();
         } else {
             Swal.fire({
-                type: 'error',
+                icon: 'error',
                 title: 'Error',
                 text: json.mensaje,
-                confirmButtonClass: 'btn btn-confirm mt-2',
-                footer: '',
+                customClass: {
+                    confirmButton: 'btn btn-confirm mt-2'
+                },
                 timer: 1000
             });
         }
     } catch (e) {
         console.log("Oops, ocurrió un error: " + e);
-    }
-}
-
-async function actualizarToken(id) {
-    let id_client_api = document.getElementById(`id_client_api${id}`).value;
-    let token = document.getElementById(`token${id}`).value;
-    let estado = document.getElementById(`estado${id}`).value;
-
-    if (id_client_api == "" || token == "" || estado == "") {
-        Swal.fire({
-            type: 'error',
-            title: 'Error',
-            text: 'Campos vacíos...',
-            confirmButtonClass: 'btn btn-confirm mt-2',
-            footer: '',
-            timer: 1000
-        });
-        return;
-    }
-
-    const formulario = document.getElementById(`frmActualizar${id}`);
-    const datos = new FormData(formulario);
-    datos.append('data', id);
-    datos.append('sesion', session_session);
-    datos.append('token', token_token);
-
-    try {
-        let respuesta = await fetch(base_url_server + 'src/control/Tokens.php?tipo=actualizar', {
-            method: 'POST',
-            mode: 'cors',
-            cache: 'no-cache',
-            body: datos
-        });
-        json = await respuesta.json();
-        if (json.status) {
-            $(`.modal_editar${id}`).modal('hide');
-            Swal.fire({
-                type: 'success',
-                title: 'Actualizar',
-                text: json.mensaje,
-                confirmButtonClass: 'btn btn-confirm mt-2',
-                footer: '',
-                timer: 1000
-            });
-            listar_tokens_ordenados();
-        } else if (json.msg == "Error_Sesion") {
-            alerta_sesion();
-        } else {
-            Swal.fire({
-                type: 'error',
-                title: 'Error',
-                text: json.mensaje,
-                confirmButtonClass: 'btn btn-confirm mt-2',
-                footer: '',
-                timer: 1000
-            });
-        }
-    } catch (e) {
-        console.log("Error al actualizar token: " + e);
-    }
-}
-async function cargarClientesEnSelectModal(modalId, idClienteSeleccionado) {
-    try {
-        const formData = new FormData();
-        formData.append('sesion', session_session);
-        formData.append('token', token_token);
-
-        let respuesta = await fetch(base_url_server + 'src/control/ClienteApi.php?tipo=listar_clientes_select', {
-            method: 'POST',
-            mode: 'cors',
-            cache: 'no-cache',
-            body: formData
-        });
-        let json = await respuesta.json();
-        if (json.status) {
-            let selectCliente = document.getElementById(`id_client_api${modalId}`);
-            selectCliente.innerHTML = '<option value="">Seleccione un cliente</option>';
-            json.contenido.forEach(cliente => {
-                let selected = (cliente.id == idClienteSeleccionado) ? 'selected' : '';
-                selectCliente.innerHTML += `<option value="${cliente.id}" ${selected}>${cliente.razon_social}</option>`;
-            });
-        }
-    } catch (e) {
-        console.log("Error al cargar clientes en modal: " + e);
     }
 }
 

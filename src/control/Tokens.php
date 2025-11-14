@@ -74,45 +74,57 @@ if ($tipo == "registrar") {
 } 
 elseif ($tipo == "actualizar") {
     $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
+    
+    // ⭐ CAMBIAR AQUÍ - Leer token_sesion en lugar de token
+    $token_sesion = $_REQUEST['token_sesion'];
+    
+    if ($objSesion->verificar_sesion_si_activa($id_sesion, $token_sesion)) {
+        if ($_POST) {
+            $id = $_POST['data'];
+            $id_client_api = $_POST['id_client_api'];
+            $token_valor = $_POST['token'];
+            $estado = $_POST['estado'];
 
-    $id = $_POST['data'];
-    $id_client_api = $_POST['id_client_api'];
-    $token = $_POST['token'];
-    $estado = $_POST['estado'];
-
-    $respuesta = $objToken->actualizarToken($id, $id_client_api, $token, $estado);
-
-    if ($respuesta) {
-        $arr_Respuesta = array('status' => true, 'msg' => 'Token actualizado correctamente.');
-    } else {
-        $arr_Respuesta = array('status' => false, 'msg' => 'Error al actualizar el token.');
+            if ($id == "" || $id_client_api == "" || $token_valor == "" || $estado === "") {
+                $arr_Respuesta = array('status' => false, 'mensaje' => 'Error, campos vacíos');
+            } else {
+                $consulta = $objToken->actualizarToken($id, $id_client_api, $token_valor, $estado);
+                if ($consulta) {
+                    $arr_Respuesta = array('status' => true, 'mensaje' => 'Token actualizado correctamente');
+                } else {
+                    $arr_Respuesta = array('status' => false, 'mensaje' => 'Error al actualizar el token');
+                }
+            }
+        }
     }
-
+    
     echo json_encode($arr_Respuesta);
-
-} 
+}
 elseif ($tipo == "listar_tokens_ordenados_tabla") {
     $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
+    
     if ($objSesion->verificar_sesion_si_activa($id_sesion, $token)) {
         $pagina = $_POST['pagina'];
         $cantidad_mostrar = $_POST['cantidad_mostrar'];
         $busqueda_tabla_cliente = $_POST['busqueda_tabla_cliente'] ?? '';
         $busqueda_tabla_estado = $_POST['busqueda_tabla_estado'] ?? '';
+        
         $datos = $objToken->buscarTokensConFiltros($busqueda_tabla_cliente, $busqueda_tabla_estado);
         $total = $objToken->contarTokensConFiltros($busqueda_tabla_cliente, $busqueda_tabla_estado);
+        
         $arrContenido = array();
         foreach ($datos as $item) {
-            $item->options = '<button class="btn btn-info btn-sm" data-toggle="modal" data-target=".modal_editar' . $item->id . '">Editar</button>';
+            // BOTÓN CON ONCLICK PARA SWEETALERT
+            $item->options = '<button class="btn btn-info btn-sm" onclick="abrirModalEditarToken(\'' . $item->id . '\', \'' . $item->id_client_api . '\', \'' . addslashes($item->token) . '\', \'' . $item->estado . '\')">Editar</button>';
             array_push($arrContenido, $item);
         }
+        
         $arr_Respuesta = array('status' => true, 'msg' => '', 'contenido' => $arrContenido, 'total' => $total);
-        echo json_encode($arr_Respuesta);
-    } else {
-        echo json_encode($arr_Respuesta);
     }
+    
+    echo json_encode($arr_Respuesta);
 }
 else {
-
     $arr_Respuesta = array('status' => false, 'msg' => 'Tipo de operación no válida o no especificada.');
     echo json_encode($arr_Respuesta);
 }

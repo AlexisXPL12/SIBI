@@ -36,14 +36,24 @@ class ClientApiModel
         return $arrRespuesta;
     }
 
+    // Método para actualizar cliente API
     public function actualizarCliente($id, $ruc, $razon_social, $telefono, $correo, $estado)
     {
-        $sql = $this->conexion->query("
-            UPDATE client_api
-            SET ruc='$ruc', razon_social='$razon_social', telefono='$telefono', correo='$correo', estado='$estado'
-            WHERE id='$id'
-        ");
+        $sql = $this->conexion->query("UPDATE client_api SET 
+        ruc='$ruc',
+        razon_social='$razon_social',
+        telefono='$telefono',
+        correo='$correo',
+        estado='$estado' 
+        WHERE id='$id'");
         return $sql;
+    }
+
+    // Método para buscar cliente por RUC (para evitar duplicados)
+    public function buscarClienteByRuc($ruc)
+    {
+        $sql = $this->conexion->query("SELECT * FROM client_api WHERE ruc='$ruc'");
+        return $sql->fetch_object();
     }
 
     public function buscarClienteById($id)
@@ -97,9 +107,9 @@ class ClientApiModel
     // BUSCAR BIEN POR DENOMINACIÓN (para API externa)
     // ==================================================
     public function buscarBienByDenominacion($data)
-{
-    $arrRespuesta = array();
-    $sql = $this->conexion->query("
+    {
+        $arrRespuesta = array();
+        $sql = $this->conexion->query("
         SELECT 
             b.*,
             d.nombre_dependencia as nombre_ambiente
@@ -107,10 +117,9 @@ class ClientApiModel
         LEFT JOIN dependencias d ON b.id_dependencia = d.id_dependencia
         WHERE b.nombre_bien LIKE '%$data%'
     ");
-    while ($objeto = $sql->fetch_object()) {
-        array_push($arrRespuesta, $objeto);
+        while ($objeto = $sql->fetch_object()) {
+            array_push($arrRespuesta, $objeto);
+        }
+        return $arrRespuesta;
     }
-    return $arrRespuesta;
-}
-
 }

@@ -36,8 +36,6 @@
       <!-- Sweet Alerts Js-->
       <script src="<?php echo BASE_URL ?>src/view/pp/plugins/sweetalert2/sweetalert2.min.js"></script>
 
-
-
      <!-- third party js -->
      <script src="<?php echo BASE_URL ?>src/view/pp/plugins/datatables/jquery.dataTables.min.js"></script>
      <script src="<?php echo BASE_URL ?>src/view/pp/plugins/datatables/dataTables.bootstrap4.js"></script>

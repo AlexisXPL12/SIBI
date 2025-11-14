@@ -77,6 +77,5 @@
 </div>
 <script src="<?php echo BASE_URL; ?>src/view/js/functions_tokens.js"></script>
 <script>
-    cargarClientesEnSelect();
     listar_tokens_ordenados();
 </script>

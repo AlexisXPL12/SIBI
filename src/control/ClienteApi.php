@@ -38,7 +38,8 @@ if ($tipo == "listar_clientes_select") {
     $arr_Respuesta = array('status' => true, 'msg' => '', 'contenido' => $datos);
     echo json_encode($arr_Respuesta);
 
-} elseif ($tipo == "registrar") {
+} 
+elseif ($tipo == "registrar") {
     $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
 
     $ruc = $_POST['ruc'];
@@ -58,27 +59,8 @@ if ($tipo == "listar_clientes_select") {
 
     echo json_encode($arr_Respuesta);
 
-} elseif ($tipo == "actualizar") {
-    $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
-
-    $id = $_POST['data'];
-    $ruc = $_POST['ruc'];
-    $razon_social = $_POST['razon_social'];
-    $telefono = $_POST['telefono'];
-    $correo = $_POST['correo'];
-    $estado = $_POST['estado'];
-
-    $respuesta = $model->actualizarCliente($id, $ruc, $razon_social, $telefono, $correo, $estado);
-
-    if ($respuesta) {
-        $arr_Respuesta = array('status' => true, 'msg' => 'Cliente API actualizado correctamente.');
-    } else {
-        $arr_Respuesta = array('status' => false, 'msg' => 'Error al actualizar el cliente API.');
-    }
-
-    echo json_encode($arr_Respuesta);
-
-} elseif ($tipo == "listar_clientes_api_ordenados_tabla") {
+} 
+elseif ($tipo == "listar_clientes_api_ordenados_tabla") {
     $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
 
     $pagina = $_POST['pagina'];
@@ -92,14 +74,14 @@ if ($tipo == "listar_clientes_select") {
 
     $arrContenido = array();
     foreach ($datos as $item) {
-        $item->options = '<button class="btn btn-info btn-sm" data-toggle="modal" data-target=".modal_editar' . $item->id . '">Editar</button>';
+        $item->options = '<button class="btn btn-info btn-sm" onclick="abrirModalEditarClienteApi(\'' . $item->id . '\', \'' . $item->ruc . '\', \'' . addslashes($item->razon_social) . '\', \'' . $item->telefono . '\', \'' . addslashes($item->correo) . '\', \'' . $item->estado . '\')">Editar</button>';
         array_push($arrContenido, $item);
     }
 
     $arr_Respuesta = array('status' => true, 'msg' => '', 'contenido' => $arrContenido, 'total' => $total);
     echo json_encode($arr_Respuesta);
-
-} elseif ($tipo == "verBienApiByNombre") {
+}
+elseif ($tipo == "verBienApiByNombre") {
     $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
 
     // Validación del token (ejemplo similar a tu lógica original)
@@ -119,7 +101,52 @@ if ($tipo == "listar_clientes_select") {
 
     echo json_encode($arr_Respuesta);
 
-} else {
+}
+elseif ($tipo == "actualizar") {
+    $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
+    
+        if ($_POST) {
+            $id = $_POST['data'];
+            $ruc = $_POST['ruc'];
+            $razon_social = $_POST['razon_social'];
+            $telefono = $_POST['telefono'];
+            $correo = $_POST['correo'];
+            $estado = $_POST['estado'];
+
+            if ($id == "" || $ruc == "" || $razon_social == "" || $telefono == "" || $correo == "" || $estado == "") {
+                $arr_Respuesta = array('status' => false, 'mensaje' => 'Error, campos vacíos');
+            } else {
+                // Verificar si el RUC ya existe en otro registro
+                $arr_Cliente = $model->buscarClienteByRuc($ruc);
+                
+                if ($arr_Cliente) {
+                    // Si existe, verificar que sea el mismo cliente que estamos editando
+                    if ($arr_Cliente->id == $id) {
+                        // Es el mismo cliente, proceder con la actualización
+                        $consulta = $model->actualizarCliente($id, $ruc, $razon_social, $telefono, $correo, $estado);
+                        if ($consulta) {
+                            $arr_Respuesta = array('status' => true, 'mensaje' => 'Cliente API actualizado correctamente');
+                        } else {
+                            $arr_Respuesta = array('status' => false, 'mensaje' => 'Error al actualizar el cliente API');
+                        }
+                    } else {
+                        // El RUC pertenece a otro cliente
+                        $arr_Respuesta = array('status' => false, 'mensaje' => 'El RUC ya está registrado en otro cliente');
+                    }
+                } else {
+                    // El RUC no existe, proceder con la actualización
+                    $consulta = $model->actualizarCliente($id, $ruc, $razon_social, $telefono, $correo, $estado);
+                    if ($consulta) {
+                        $arr_Respuesta = array('status' => true, 'mensaje' => 'Cliente API actualizado correctamente');
+                    } else {
+                        $arr_Respuesta = array('status' => false, 'mensaje' => 'Error al actualizar el cliente API');
+                    }
+                }
+            }
+        }
+    echo json_encode($arr_Respuesta);
+}
+else {
 
     $arr_Respuesta = array('status' => false, 'msg' => 'Tipo de operación no válida o no especificada.');
     echo json_encode($arr_Respuesta);

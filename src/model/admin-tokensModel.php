@@ -9,6 +9,11 @@ class TokenModel
         $this->conexion = new Conexion();
         $this->conexion = $this->conexion->connect();
     }
+    public function buscarTokenByValor($token)
+{
+    $sql = $this->conexion->query("SELECT * FROM tokens WHERE token='$token'");
+    return $sql->fetch_object();
+}
 
     public function registrarToken($cliente, $token_final)
     {
@@ -32,46 +37,54 @@ class TokenModel
     }
 
     public function buscarTokensConFiltros($busqueda_cliente, $busqueda_estado)
-    {
-        $condicion = "1=1";
-        if (!empty($busqueda_cliente)) {
-            $condicion .= " AND c.razon_social LIKE '%$busqueda_cliente%'";
-        }
-        if ($busqueda_estado !== '') {
-            $condicion .= " AND t.estado = '$busqueda_estado'";
-        }
-        $arrRespuesta = array();
-        $query = "
+{
+    $condicion = "1=1";
+    
+    // CORREGIR: Debe buscar por ID, no por nombre
+    if (!empty($busqueda_cliente)) {
+        $condicion .= " AND t.id_client_api = '$busqueda_cliente'";
+    }
+    
+    if ($busqueda_estado !== '') {
+        $condicion .= " AND t.estado = '$busqueda_estado'";
+    }
+    
+    $arrRespuesta = array();
+    $query = "
         SELECT t.*, c.razon_social
         FROM tokens t
         JOIN client_api c ON t.id_client_api = c.id
         WHERE $condicion
         ORDER BY t.fecha_registro DESC
     ";
-        $respuesta = $this->conexion->query($query);
-        while ($objeto = $respuesta->fetch_object()) {
-            array_push($arrRespuesta, $objeto);
-        }
-        return $arrRespuesta;
+    $respuesta = $this->conexion->query($query);
+    while ($objeto = $respuesta->fetch_object()) {
+        array_push($arrRespuesta, $objeto);
     }
+    return $arrRespuesta;
+}
 
-    public function contarTokensConFiltros($busqueda_cliente, $busqueda_estado)
-    {
-        $condicion = "1=1";
-        if (!empty($busqueda_cliente)) {
-            $condicion .= " AND c.razon_social LIKE '%$busqueda_cliente%'";
-        }
-        if ($busqueda_estado !== '') {
-            $condicion .= " AND t.estado = '$busqueda_estado'";
-        }
-        $query = "
+public function contarTokensConFiltros($busqueda_cliente, $busqueda_estado)
+{
+    $condicion = "1=1";
+    
+    // CORREGIR: Debe buscar por ID, no por nombre
+    if (!empty($busqueda_cliente)) {
+        $condicion .= " AND t.id_client_api = '$busqueda_cliente'";
+    }
+    
+    if ($busqueda_estado !== '') {
+        $condicion .= " AND t.estado = '$busqueda_estado'";
+    }
+    
+    $query = "
         SELECT COUNT(*) as total
         FROM tokens t
         JOIN client_api c ON t.id_client_api = c.id
         WHERE $condicion
     ";
-        $respuesta = $this->conexion->query($query);
-        $objeto = $respuesta->fetch_object();
-        return $objeto->total;
-    }
+    $respuesta = $this->conexion->query($query);
+    $objeto = $respuesta->fetch_object();
+    return $objeto->total;
+}
 }
