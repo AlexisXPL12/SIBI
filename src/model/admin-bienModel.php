@@ -36,30 +36,28 @@ class BienModel
         return $sql;
     }
 
-    public function actualizarBien($id_bien, $codigo_patrimonial, $nombre_bien, $descripcion, $marca, $modelo, $serie, $color, $dimensiones, $id_categoria, $id_dependencia, $ubicacion_especifica, $fecha_adquisicion, $fecha_ingreso, $numero_factura, $numero_orden_compra, $estado_bien, $condicion_bien, $observaciones, $es_inventariable, $usuario_registro)
+    public function actualizarBien($id_bien, $codigo_patrimonial, $nombre_bien, $descripcion, $marca, $modelo, $serie, $estado_bien, $condicion_bien)
     {
+        // Escapar strings para prevenir SQL injection
+        $codigo_patrimonial = $this->conexion->real_escape_string($codigo_patrimonial);
+        $nombre_bien = $this->conexion->real_escape_string($nombre_bien);
+        $descripcion = $this->conexion->real_escape_string($descripcion);
+        $marca = $this->conexion->real_escape_string($marca);
+        $modelo = $this->conexion->real_escape_string($modelo);
+        $serie = $this->conexion->real_escape_string($serie);
+        $estado_bien = $this->conexion->real_escape_string($estado_bien);
+        $condicion_bien = $this->conexion->real_escape_string($condicion_bien);
+
         $sql = $this->conexion->query("UPDATE bienes SET
-            codigo_patrimonial='$codigo_patrimonial',
-            nombre_bien='$nombre_bien',
-            descripcion='$descripcion',
-            marca='$marca',
-            modelo='$modelo',
-            serie='$serie',
-            color='$color',
-            dimensiones='$dimensiones',
-            id_categoria=$id_categoria,
-            id_dependencia=$id_dependencia,
-            ubicacion_especifica='$ubicacion_especifica',
-            fecha_adquisicion='$fecha_adquisicion',
-            fecha_ingreso='$fecha_ingreso',
-            numero_factura='$numero_factura',
-            numero_orden_compra='$numero_orden_compra',
-            estado_bien='$estado_bien',
-            condicion_bien='$condicion_bien',
-            observaciones='$observaciones',
-            es_inventariable=$es_inventariable,
-            usuario_registro='$usuario_registro'
-            WHERE id_bien=$id_bien");
+        codigo_patrimonial='$codigo_patrimonial',
+        nombre_bien='$nombre_bien',
+        descripcion='$descripcion',
+        marca='$marca',
+        modelo='$modelo',
+        serie='$serie',
+        estado_bien='$estado_bien',
+        condicion_bien='$condicion_bien'
+        WHERE id_bien=$id_bien");
 
         return $sql;
     }
@@ -216,86 +214,89 @@ class BienModel
         }
         return $arrRespuesta;
     }
-    public function buscarBienesPorCodigoAvanzado($prefijo, $numero, $anio, $nombre) {
-    $condicion = "1=1";
+    public function buscarBienesPorCodigoAvanzado($prefijo, $numero, $anio, $nombre)
+    {
+        $condicion = "1=1";
 
-    if (!empty($prefijo)) {
-        $prefijo = $this->conexion->real_escape_string($prefijo);
-        $condicion .= " AND b.codigo_patrimonial LIKE '$prefijo%'";
-    }
+        if (!empty($prefijo)) {
+            $prefijo = $this->conexion->real_escape_string($prefijo);
+            $condicion .= " AND b.codigo_patrimonial LIKE '$prefijo%'";
+        }
 
-    if (!empty($numero)) {
-        $numero = $this->conexion->real_escape_string($numero);
-        $numero = str_pad($numero, 3, '0', STR_PAD_LEFT); // Aseguramos que el número tenga 3 dígitos
-        $condicion .= " AND b.codigo_patrimonial LIKE '%-$numero-%'";
-    }
+        if (!empty($numero)) {
+            $numero = $this->conexion->real_escape_string($numero);
+            $numero = str_pad($numero, 3, '0', STR_PAD_LEFT); // Aseguramos que el número tenga 3 dígitos
+            $condicion .= " AND b.codigo_patrimonial LIKE '%-$numero-%'";
+        }
 
-    if (!empty($anio)) {
-        $anio = $this->conexion->real_escape_string($anio);
-        $condicion .= " AND b.codigo_patrimonial LIKE '%-$anio'";
-    }
+        if (!empty($anio)) {
+            $anio = $this->conexion->real_escape_string($anio);
+            $condicion .= " AND b.codigo_patrimonial LIKE '%-$anio'";
+        }
 
-    if (!empty($prefijo) && !empty($numero) && !empty($anio)) {
-        // Si se proporcionan prefijo, número y año, buscamos coincidencias exactas
-        $codigoCompleto = "$prefijo-$numero-$anio";
-        $condicion = "b.codigo_patrimonial = '$codigoCompleto'";
-    }
+        if (!empty($prefijo) && !empty($numero) && !empty($anio)) {
+            // Si se proporcionan prefijo, número y año, buscamos coincidencias exactas
+            $codigoCompleto = "$prefijo-$numero-$anio";
+            $condicion = "b.codigo_patrimonial = '$codigoCompleto'";
+        }
 
-    if (!empty($nombre)) {
-        $nombre = $this->conexion->real_escape_string($nombre);
-        $condicion .= " AND b.nombre_bien LIKE '%$nombre%'";
-    }
+        if (!empty($nombre)) {
+            $nombre = $this->conexion->real_escape_string($nombre);
+            $condicion .= " AND b.nombre_bien LIKE '%$nombre%'";
+        }
 
-    $query = "
+        $query = "
         SELECT b.*
         FROM bienes b
         WHERE $condicion
         ORDER BY b.codigo_patrimonial
     ";
 
-    $respuesta = $this->conexion->query($query);
-    $arrRespuesta = array();
-    while ($objeto = $respuesta->fetch_object()) {
-        array_push($arrRespuesta, $objeto);
+        $respuesta = $this->conexion->query($query);
+        $arrRespuesta = array();
+        while ($objeto = $respuesta->fetch_object()) {
+            array_push($arrRespuesta, $objeto);
+        }
+        return $arrRespuesta;
     }
-    return $arrRespuesta;
-}
-public function buscarBienesPorNumeroExacto($numero) {
-    $numero = $this->conexion->real_escape_string($numero);
-    $numero = str_pad($numero, 3, '0', STR_PAD_LEFT); // Aseguramos que el número tenga 3 dígitos
+    public function buscarBienesPorNumeroExacto($numero)
+    {
+        $numero = $this->conexion->real_escape_string($numero);
+        $numero = str_pad($numero, 3, '0', STR_PAD_LEFT); // Aseguramos que el número tenga 3 dígitos
 
-    $query = "
+        $query = "
         SELECT b.*
         FROM bienes b
         WHERE b.codigo_patrimonial LIKE '%-$numero-%'
         ORDER BY b.codigo_patrimonial
     ";
 
-    $respuesta = $this->conexion->query($query);
-    $arrRespuesta = array();
-    while ($objeto = $respuesta->fetch_object()) {
-        array_push($arrRespuesta, $objeto);
+        $respuesta = $this->conexion->query($query);
+        $arrRespuesta = array();
+        while ($objeto = $respuesta->fetch_object()) {
+            array_push($arrRespuesta, $objeto);
+        }
+        return $arrRespuesta;
     }
-    return $arrRespuesta;
-}
 
-public function buscarBienPorCodigoExacto($codigoCompleto) {
-    $codigoCompleto = $this->conexion->real_escape_string($codigoCompleto);
+    public function buscarBienPorCodigoExacto($codigoCompleto)
+    {
+        $codigoCompleto = $this->conexion->real_escape_string($codigoCompleto);
 
-    $query = "
+        $query = "
         SELECT b.*
         FROM bienes b
         WHERE b.codigo_patrimonial = '$codigoCompleto'
         ORDER BY b.codigo_patrimonial
     ";
 
-    $respuesta = $this->conexion->query($query);
-    $arrRespuesta = array();
-    while ($objeto = $respuesta->fetch_object()) {
-        array_push($arrRespuesta, $objeto);
+        $respuesta = $this->conexion->query($query);
+        $arrRespuesta = array();
+        while ($objeto = $respuesta->fetch_object()) {
+            array_push($arrRespuesta, $objeto);
+        }
+        return $arrRespuesta;
     }
-    return $arrRespuesta;
-}
 
 
 

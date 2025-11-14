@@ -178,57 +178,112 @@ if ($tipo == "registrar") {
 if ($tipo == "actualizar") {
     $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');
 
-    if ($objSesion->verificar_sesion_si_activa($id_sesion, $token)) {
-        if ($_POST) {
-            $id_bien = $_POST['data'];
-            $codigo_patrimonial = $_POST['codigo_patrimonial'];
-            $nombre_bien = $_POST['nombre_bien'];
-            $descripcion = $_POST['descripcion'];
-            $marca = $_POST['marca'];
-            $modelo = $_POST['modelo'];
-            $serie = $_POST['serie'];
-            $color = $_POST['color'];
-            $dimensiones = $_POST['dimensiones'];
-            $id_categoria = $_POST['id_categoria'];
-            $id_dependencia = $_POST['id_dependencia'];
-            $ubicacion_especifica = $_POST['ubicacion_especifica'];
-            $fecha_adquisicion = $_POST['fecha_adquisicion'];
-            $fecha_ingreso = $_POST['fecha_ingreso'];
-            $numero_factura = $_POST['numero_factura'];
-            $numero_orden_compra = $_POST['numero_orden_compra'];
-            $estado_bien = $_POST['estado_bien'];
-            $condicion_bien = $_POST['condicion_bien'];
-            $observaciones = $_POST['observaciones'];
-            $es_inventariable = $_POST['es_inventariable'];
-            $usuario_registro = $_POST['usuario_registro'];
+    try {
+        // Verificar sesión
+        if ($objSesion->verificar_sesion_si_activa($id_sesion, $token)) {
+            
+            if ($_POST) {
+                // Obtener datos del POST
+                $id_bien = $_POST['data'];
+                $codigo_patrimonial = trim($_POST['codigo_patrimonial']);
+                $nombre_bien = trim($_POST['nombre_bien']);
+                $descripcion = trim($_POST['descripcion'] ?? '');
+                $marca = trim($_POST['marca'] ?? '');
+                $modelo = trim($_POST['modelo'] ?? '');
+                $serie = trim($_POST['serie'] ?? '');
+                $estado_bien = $_POST['estado_bien'];
+                $condicion_bien = $_POST['condicion_bien'];
 
-            if (empty($id_bien) || empty($codigo_patrimonial) || empty($nombre_bien)) {
-                $arr_Respuesta = array('status' => false, 'mensaje' => 'Error, campos obligatorios vacíos');
-            } else {
+                // Validar campos obligatorios
+                if (empty($id_bien) || empty($codigo_patrimonial) || empty($nombre_bien)) {
+                    $arr_Respuesta = array(
+                        'status' => false, 
+                        'mensaje' => 'Error: Campos obligatorios vacíos'
+                    );
+                    echo json_encode($arr_Respuesta);
+                    exit;
+                }
+
+                // Verificar si el código patrimonial ya existe en otro bien
                 $arr_Bien = $objBien->buscarBienByCodigoPatrimonial($codigo_patrimonial);
+                
                 if ($arr_Bien) {
+                    // Si existe, verificar que sea el mismo bien que estamos editando
                     if ($arr_Bien->id_bien == $id_bien) {
-                        $consulta = $objBien->actualizarBien($id_bien, $codigo_patrimonial, $nombre_bien, $descripcion, $marca, $modelo, $serie, $color, $dimensiones, $id_categoria, $id_dependencia, $ubicacion_especifica, $fecha_adquisicion, $fecha_ingreso, $numero_factura, $numero_orden_compra, $estado_bien, $condicion_bien, $observaciones, $es_inventariable, $usuario_registro);
+                        // Es el mismo bien, proceder con la actualización
+                        $consulta = $objBien->actualizarBien(
+                            $id_bien,
+                            $codigo_patrimonial,
+                            $nombre_bien,
+                            $descripcion,
+                            $marca,
+                            $modelo,
+                            $serie,
+                            $estado_bien,
+                            $condicion_bien
+                        );
+                        
                         if ($consulta) {
-                            $arr_Respuesta = array('status' => true, 'mensaje' => 'Actualizado Correctamente');
+                            $arr_Respuesta = array(
+                                'status' => true, 
+                                'mensaje' => 'Bien actualizado correctamente'
+                            );
                         } else {
-                            $arr_Respuesta = array('status' => false, 'mensaje' => 'Error al actualizar registro');
+                            $arr_Respuesta = array(
+                                'status' => false, 
+                                'mensaje' => 'Error al actualizar el bien'
+                            );
                         }
                     } else {
-                        $arr_Respuesta = array('status' => false, 'mensaje' => 'El código patrimonial ya está registrado');
+                        // El código patrimonial pertenece a otro bien
+                        $arr_Respuesta = array(
+                            'status' => false, 
+                            'mensaje' => 'El código patrimonial ya está registrado en otro bien'
+                        );
                     }
                 } else {
-                    $consulta = $objBien->actualizarBien($id_bien, $codigo_patrimonial, $nombre_bien, $descripcion, $marca, $modelo, $serie, $color, $dimensiones, $id_categoria, $id_dependencia, $ubicacion_especifica, $fecha_adquisicion, $fecha_ingreso, $numero_factura, $numero_orden_compra, $estado_bien, $condicion_bien, $observaciones, $es_inventariable, $usuario_registro);
+                    // El código patrimonial no existe, proceder con la actualización
+                    $consulta = $objBien->actualizarBien(
+                        $id_bien,
+                        $codigo_patrimonial,
+                        $nombre_bien,
+                        $descripcion,
+                        $marca,
+                        $modelo,
+                        $serie,
+                        $estado_bien,
+                        $condicion_bien
+                    );
+                    
                     if ($consulta) {
-                        $arr_Respuesta = array('status' => true, 'mensaje' => 'Actualizado Correctamente');
+                        $arr_Respuesta = array(
+                            'status' => true, 
+                            'mensaje' => 'Bien actualizado correctamente'
+                        );
                     } else {
-                        $arr_Respuesta = array('status' => false, 'mensaje' => 'Error al actualizar registro');
+                        $arr_Respuesta = array(
+                            'status' => false, 
+                            'mensaje' => 'Error al actualizar el bien'
+                        );
                     }
                 }
+            } else {
+                $arr_Respuesta = array(
+                    'status' => false, 
+                    'mensaje' => 'No se recibieron datos por POST'
+                );
             }
         }
+    } catch (Exception $e) {
+        $arr_Respuesta = array(
+            'status' => false, 
+            'mensaje' => 'Error en el servidor: ' . $e->getMessage()
+        );
     }
+    
+    header('Content-Type: application/json');
     echo json_encode($arr_Respuesta);
+    exit;
 }
 if ($tipo == "datos_registro") {
     $arr_Respuesta = array('status' => false, 'msg' => 'Error_Sesion');

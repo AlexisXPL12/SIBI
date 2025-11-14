@@ -97,7 +97,7 @@ async function listar_bienes_ordenados() {
 }
 
 // ============================================
-// GENERAR FILA
+// GENERAR FILA (CON SWEETALERT)
 // ============================================
 function generarFilaTabla(item) {
     let cont = 1;
@@ -125,6 +125,12 @@ function generarFilaTabla(item) {
         marcaModelo = '<span class="text-muted">N/A</span>';
     }
 
+    // Escapar comillas para JavaScript
+    const escaparComillas = (str) => {
+        if (!str) return '';
+        return str.replace(/'/g, "\\'").replace(/"/g, '\\"');
+    };
+
     let nueva_fila = document.createElement("tr");
     nueva_fila.id = "fila" + item.id;
     nueva_fila.className = "filas_tabla";
@@ -137,106 +143,27 @@ function generarFilaTabla(item) {
         <td>${item.nombre_dependencia || '<span class="text-muted">N/A</span>'}</td>
         <td>${marcaModelo}</td>
         <td>${badgeEstado}</td>
-        <td>${item.options}</td>
-    `;
-
-    // Modal de edición
-    document.querySelector('#modals_editar').innerHTML += `
-        <div class="modal fade modal_editar${item.id}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header text-center">
-                        <h5 class="modal-title h4" id="myLargeModalLabel">Actualizar datos del bien</h5>
-                        <button type="button" class="close waves-effect waves-light" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="col-12">
-                            <form class="form-horizontal" id="frmActualizar${item.id}">
-                                <div class="form-group row mb-2">
-                                    <label for="codigo_patrimonial${item.id}" class="col-3 col-form-label">Código Patrimonial:</label>
-                                    <div class="col-9">
-                                        <input type="text" class="form-control" id="codigo_patrimonial${item.id}" name="codigo_patrimonial" value="${item.codigo_patrimonial}">
-                                    </div>
-                                </div>
-                                <div class="form-group row mb-2">
-                                    <label for="nombre_bien${item.id}" class="col-3 col-form-label">Nombre del Bien:</label>
-                                    <div class="col-9">
-                                        <input type="text" class="form-control" id="nombre_bien${item.id}" name="nombre_bien" value="${item.nombre_bien}">
-                                    </div>
-                                </div>
-                                <div class="form-group row mb-2">
-                                    <label for="descripcion${item.id}" class="col-3 col-form-label">Descripción:</label>
-                                    <div class="col-9">
-                                        <textarea name="descripcion" id="descripcion${item.id}" class="form-control">${item.descripcion || ''}</textarea>
-                                    </div>
-                                </div>
-                                <div class="form-group row mb-2">
-                                    <label for="nombre_categoria${item.id}" class="col-3 col-form-label">Categoría:</label>
-                                    <div class="col-9">
-                                        <input type="text" class="form-control" id="nombre_categoria${item.id}" value="${item.nombre_categoria || 'N/A'}" readonly>
-                                    </div>
-                                </div>
-                                <div class="form-group row mb-2">
-                                    <label for="nombre_dependencia${item.id}" class="col-3 col-form-label">Dependencia:</label>
-                                    <div class="col-9">
-                                        <input type="text" class="form-control" id="nombre_dependencia${item.id}" value="${item.nombre_dependencia || 'N/A'}" readonly>
-                                    </div>
-                                </div>
-                                <div class="form-group row mb-2">
-                                    <label for="marca${item.id}" class="col-3 col-form-label">Marca:</label>
-                                    <div class="col-9">
-                                        <input type="text" class="form-control" id="marca${item.id}" name="marca" value="${item.marca || ''}">
-                                    </div>
-                                </div>
-                                <div class="form-group row mb-2">
-                                    <label for="modelo${item.id}" class="col-3 col-form-label">Modelo:</label>
-                                    <div class="col-9">
-                                        <input type="text" class="form-control" id="modelo${item.id}" name="modelo" value="${item.modelo || ''}">
-                                    </div>
-                                </div>
-                                <div class="form-group row mb-2">
-                                    <label for="serie${item.id}" class="col-3 col-form-label">Serie:</label>
-                                    <div class="col-9">
-                                        <input type="text" class="form-control" id="serie${item.id}" name="serie" value="${item.serie || ''}">
-                                    </div>
-                                </div>
-                                <div class="form-group row mb-2">
-                                    <label for="estado_bien${item.id}" class="col-3 col-form-label">Estado:</label>
-                                    <div class="col-9">
-                                        <select class="form-control" id="estado_bien${item.id}" name="estado_bien">
-                                            <option value="ACTIVO" ${item.estado_bien === 'ACTIVO' ? 'selected' : ''}>ACTIVO</option>
-                                            <option value="BAJA" ${item.estado_bien === 'BAJA' ? 'selected' : ''}>BAJA</option>
-                                            <option value="MANTENIMIENTO" ${item.estado_bien === 'MANTENIMIENTO' ? 'selected' : ''}>MANTENIMIENTO</option>
-                                            <option value="PRESTADO" ${item.estado_bien === 'PRESTADO' ? 'selected' : ''}>PRESTADO</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row mb-2">
-                                    <label for="condicion_bien${item.id}" class="col-3 col-form-label">Condición:</label>
-                                    <div class="col-9">
-                                        <select class="form-control" id="condicion_bien${item.id}" name="condicion_bien">
-                                            <option value="NUEVO" ${item.condicion_bien === 'NUEVO' ? 'selected' : ''}>NUEVO</option>
-                                            <option value="BUENO" ${item.condicion_bien === 'BUENO' ? 'selected' : ''}>BUENO</option>
-                                            <option value="REGULAR" ${item.condicion_bien === 'REGULAR' ? 'selected' : ''}>REGULAR</option>
-                                            <option value="MALO" ${item.condicion_bien === 'MALO' ? 'selected' : ''}>MALO</option>
-                                            <option value="INSERVIBLE" ${item.condicion_bien === 'INSERVIBLE' ? 'selected' : ''}>INSERVIBLE</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group mb-0 justify-content-end row text-center">
-                                    <div class="col-12">
-                                        <button type="button" class="btn btn-light waves-effect waves-light" data-dismiss="modal">Cancelar</button>
-                                        <button type="button" class="btn btn-success waves-effect waves-light" onclick="actualizarBien(${item.id})">Actualizar</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <td>
+            <button 
+                type="button" 
+                title="Editar" 
+                class="btn btn-primary btn-sm waves-effect waves-light" 
+                onclick="abrirModalEditarBien(
+                    '${item.id}',
+                    '${escaparComillas(item.codigo_patrimonial)}',
+                    '${escaparComillas(item.nombre_bien)}',
+                    '${escaparComillas(item.descripcion)}',
+                    '${escaparComillas(item.marca)}',
+                    '${escaparComillas(item.modelo)}',
+                    '${escaparComillas(item.serie)}',
+                    '${item.estado_bien}',
+                    '${item.condicion_bien}',
+                    '${escaparComillas(item.nombre_categoria)}',
+                    '${escaparComillas(item.nombre_dependencia)}'
+                )">
+                <i class="fa fa-edit"></i>
+            </button>
+        </td>
     `;
 
     document.querySelector('#contenido_tabla').appendChild(nueva_fila);
@@ -258,66 +185,215 @@ function generar_texto_paginacion(total, cantidad_mostrar) {
     return `Mostrando ${inicio} a ${fin} de ${total} registros`;
 }
 
-async function actualizarBien(id) {
-    let codigo_patrimonial = document.querySelector('#codigo_patrimonial' + id).value;
-    let nombre_bien = document.querySelector('#nombre_bien' + id).value;
-    let descripcion = document.querySelector('#descripcion' + id).value;
+// ============================================
+// FUNCIÓN PARA ABRIR MODAL DE EDICIÓN CON SWEETALERT
+// ============================================
+function abrirModalEditarBien(id, codigo_patrimonial, nombre_bien, descripcion, marca, modelo, serie, estado_bien, condicion_bien, nombre_categoria, nombre_dependencia) {
+    Swal.fire({
+        title: '<i class="fa fa-edit"></i> Actualizar Bien',
+        html: `
+            <div class="container-fluid">
+                <div class="form-group text-left mb-3">
+                    <label for="swal-codigo-patrimonial">Código Patrimonial: <span class="text-danger">*</span></label>
+                    <input type="text" id="swal-codigo-patrimonial" class="form-control" value="${codigo_patrimonial}">
+                </div>
+                <div class="form-group text-left mb-3">
+                    <label for="swal-nombre-bien">Nombre del Bien: <span class="text-danger">*</span></label>
+                    <input type="text" id="swal-nombre-bien" class="form-control" value="${nombre_bien}">
+                </div>
+                <div class="form-group text-left mb-3">
+                    <label for="swal-descripcion">Descripción:</label>
+                    <textarea id="swal-descripcion" class="form-control" rows="3">${descripcion || ''}</textarea>
+                </div>
+                <div class="form-group text-left mb-3">
+                    <label for="swal-categoria">Categoría:</label>
+                    <input type="text" id="swal-categoria" class="form-control bg-light" value="${nombre_categoria || 'N/A'}" readonly>
+                </div>
+                <div class="form-group text-left mb-3">
+                    <label for="swal-dependencia">Dependencia:</label>
+                    <input type="text" id="swal-dependencia" class="form-control bg-light" value="${nombre_dependencia || 'N/A'}" readonly>
+                </div>
+                <div class="form-group text-left mb-3">
+                    <label for="swal-marca">Marca:</label>
+                    <input type="text" id="swal-marca" class="form-control" value="${marca || ''}">
+                </div>
+                <div class="form-group text-left mb-3">
+                    <label for="swal-modelo">Modelo:</label>
+                    <input type="text" id="swal-modelo" class="form-control" value="${modelo || ''}">
+                </div>
+                <div class="form-group text-left mb-3">
+                    <label for="swal-serie">Serie:</label>
+                    <input type="text" id="swal-serie" class="form-control" value="${serie || ''}">
+                </div>
+                <div class="form-group text-left mb-3">
+                    <label for="swal-estado-bien">Estado: <span class="text-danger">*</span></label>
+                    <select id="swal-estado-bien" class="form-control">
+                        <option value="ACTIVO" ${estado_bien === 'ACTIVO' ? 'selected' : ''}>ACTIVO</option>
+                        <option value="BAJA" ${estado_bien === 'BAJA' ? 'selected' : ''}>BAJA</option>
+                        <option value="MANTENIMIENTO" ${estado_bien === 'MANTENIMIENTO' ? 'selected' : ''}>MANTENIMIENTO</option>
+                        <option value="PRESTADO" ${estado_bien === 'PRESTADO' ? 'selected' : ''}>PRESTADO</option>
+                    </select>
+                </div>
+                <div class="form-group text-left mb-3">
+                    <label for="swal-condicion-bien">Condición: <span class="text-danger">*</span></label>
+                    <select id="swal-condicion-bien" class="form-control">
+                        <option value="NUEVO" ${condicion_bien === 'NUEVO' ? 'selected' : ''}>NUEVO</option>
+                        <option value="BUENO" ${condicion_bien === 'BUENO' ? 'selected' : ''}>BUENO</option>
+                        <option value="REGULAR" ${condicion_bien === 'REGULAR' ? 'selected' : ''}>REGULAR</option>
+                        <option value="MALO" ${condicion_bien === 'MALO' ? 'selected' : ''}>MALO</option>
+                        <option value="INSERVIBLE" ${condicion_bien === 'INSERVIBLE' ? 'selected' : ''}>INSERVIBLE</option>
+                    </select>
+                </div>
+            </div>
+        `,
+        width: '700px',
+        showCancelButton: true,
+        confirmButtonText: '<i class="fa fa-save"></i> Actualizar',
+        cancelButtonText: '<i class="fa fa-times"></i> Cancelar',
+        customClass: {
+            confirmButton: 'btn btn-success mt-2',
+            cancelButton: 'btn btn-secondary mt-2'
+        },
+        buttonsStyling: false,
+        focusConfirm: false,
+        preConfirm: () => {
+            const codigoPatrimonialVal = document.getElementById('swal-codigo-patrimonial').value.trim();
+            const nombreBienVal = document.getElementById('swal-nombre-bien').value.trim();
+            const descripcionVal = document.getElementById('swal-descripcion').value.trim();
+            const marcaVal = document.getElementById('swal-marca').value.trim();
+            const modeloVal = document.getElementById('swal-modelo').value.trim();
+            const serieVal = document.getElementById('swal-serie').value.trim();
+            const estadoBienVal = document.getElementById('swal-estado-bien').value;
+            const condicionBienVal = document.getElementById('swal-condicion-bien').value;
+            
+            if (!codigoPatrimonialVal || !nombreBienVal) {
+                Swal.showValidationMessage('El código patrimonial y nombre del bien son obligatorios');
+                return false;
+            }
+            
+            return {
+                codigo_patrimonial: codigoPatrimonialVal,
+                nombre_bien: nombreBienVal,
+                descripcion: descripcionVal,
+                marca: marcaVal,
+                modelo: modeloVal,
+                serie: serieVal,
+                estado_bien: estadoBienVal,
+                condicion_bien: condicionBienVal
+            };
+        }
+    }).then((result) => {
+        if (result.value) {
+            actualizarBien(id, result.value);
+        }
+    });
+}
 
-    if (codigo_patrimonial == "" || nombre_bien == "") {
+// ============================================
+// FUNCIÓN PARA ACTUALIZAR BIEN
+// ============================================
+async function actualizarBien(id, datos) {
+    if (!datos) {
         Swal.fire({
-            type: 'error',
+            icon: 'error',
             title: 'Error',
-            text: 'Campos obligatorios vacíos...',
-            confirmButtonClass: 'btn btn-confirm mt-2',
-            footer: '',
-            timer: 1000
+            text: 'Datos incompletos',
+            customClass: {
+                confirmButton: 'btn btn-danger mt-2'
+            }
         });
         return;
     }
 
-    const formulario = document.getElementById('frmActualizar' + id);
-    const datos = new FormData(formulario);
-    datos.append('data', id);
-    datos.append('sesion', session_session);
-    datos.append('token', token_token);
+    // Mostrar loading
+    Swal.fire({
+        title: 'Actualizando...',
+        text: 'Por favor espere',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        showConfirmButton: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    const formData = new FormData();
+    formData.append('data', id);
+    formData.append('codigo_patrimonial', datos.codigo_patrimonial);
+    formData.append('nombre_bien', datos.nombre_bien);
+    formData.append('descripcion', datos.descripcion);
+    formData.append('marca', datos.marca);
+    formData.append('modelo', datos.modelo);
+    formData.append('serie', datos.serie);
+    formData.append('estado_bien', datos.estado_bien);
+    formData.append('condicion_bien', datos.condicion_bien);
+    formData.append('sesion', session_session);
+    formData.append('token', token_token);
 
     try {
         let respuesta = await fetch(base_url_server + 'src/control/Bien.php?tipo=actualizar', {
             method: 'POST',
             mode: 'cors',
             cache: 'no-cache',
-            body: datos
+            body: formData
         });
 
-        let json = await respuesta.json();
-        if (json.status) {
-            $('.modal_editar' + id).modal('hide');
-            $('body').removeClass('modal-open');
-            $('.modal-backdrop').remove();
+        if (!respuesta.ok) {
+            throw new Error(`Error HTTP: ${respuesta.status}`);
+        }
 
+        const textoRespuesta = await respuesta.text();
+        let json;
+        
+        try {
+            json = JSON.parse(textoRespuesta);
+        } catch (e) {
+            console.error("Error al parsear JSON:", textoRespuesta);
             Swal.fire({
-                type: 'success',
-                title: 'Actualizar',
-                text: json.mensaje,
-                confirmButtonClass: 'btn btn-confirm mt-2',
-                footer: '',
-                timer: 1000
+                icon: 'error',
+                title: 'Error del Servidor',
+                text: 'La respuesta del servidor no es válida',
+                customClass: {
+                    confirmButton: 'btn btn-danger mt-2'
+                }
             });
-            listar_bienes_ordenados();
+            return;
+        }
+
+        if (json.status) {
+            Swal.fire({
+                icon: 'success',
+                title: '¡Actualizado!',
+                text: json.mensaje || 'Bien actualizado correctamente',
+                customClass: {
+                    confirmButton: 'btn btn-success mt-2'
+                },
+                timer: 2000
+            }).then(() => {
+                listar_bienes_ordenados();
+            });
         } else if (json.msg == "Error_Sesion") {
             alerta_sesion();
         } else {
             Swal.fire({
-                type: 'error',
+                icon: 'error',
                 title: 'Error',
-                text: json.mensaje,
-                confirmButtonClass: 'btn btn-confirm mt-2',
-                footer: '',
-                timer: 1000
+                text: json.mensaje || 'Error al actualizar el bien',
+                customClass: {
+                    confirmButton: 'btn btn-danger mt-2'
+                }
             });
         }
     } catch (e) {
-        console.log("Error al actualizar bien: " + e);
+        console.error("Error en la petición:", e);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error de Conexión',
+            text: 'No se pudo conectar con el servidor: ' + e.message,
+            customClass: {
+                confirmButton: 'btn btn-danger mt-2'
+            }
+        });
     }
 }
 async function datos_form() {
